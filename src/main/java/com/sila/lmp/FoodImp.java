@@ -1,9 +1,7 @@
 package com.sila.lmp;
 
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
-import com.sila.dto.request.FoodByRestaurantIdReq;
 import com.sila.dto.request.FoodReq;
-import com.sila.dto.request.PaginationReq;
 import com.sila.dto.request.SearchReq;
 import com.sila.dto.response.FoodRes;
 import com.sila.exception.BadRequestException;
@@ -15,13 +13,10 @@ import com.sila.repository.FoodRepository;
 import com.sila.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +38,7 @@ public class FoodImp implements FoodService {
     food_create.setCreationDate(new Date());
     food_create.setSeasonal(food.isSeasional());
     food_create.setVegetarian(food.isVegetarin());
-    food_create.setIngredientsItems(food.getIngredients());
+//    food_create.setIngredientsItems(food.getIngredients());
     Food saveFood = foodRepository.save(food_create);
     restaurant.getFoods().add(saveFood);
     return saveFood;

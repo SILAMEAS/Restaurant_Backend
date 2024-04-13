@@ -1,7 +1,6 @@
 package com.sila.dto.request;
 
 import com.sila.model.Category;
-import com.sila.model.IngredientsItem;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
@@ -19,6 +18,6 @@ public class FoodReq {
     private  Long categoryId;
     private boolean vegetarin;
     private boolean seasional;
-    private List<IngredientsItem> ingredients;
+//    private List<IngredientsItem> ingredients;
 
 }

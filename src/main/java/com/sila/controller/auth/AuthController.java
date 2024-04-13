@@ -1,16 +1,15 @@
 package com.sila.controller.auth;
+
+import com.sila.config.CustomerUserDetailsService;
 import com.sila.config.JwtProvider;
-import com.sila.exception.BadRequestException;
-import com.sila.exception.NotFoundException;
-import com.sila.model.Card;
-import com.sila.service.UserService;
-import com.sila.utlis.enums.USER_ROLE;
-import com.sila.model.User;
-import com.sila.repository.CardRepository;
-import com.sila.repository.UserRepository;
 import com.sila.dto.request.LoginReq;
 import com.sila.dto.response.AuthResponse;
-import com.sila.config.CustomerUserDetailsService;
+import com.sila.exception.BadRequestException;
+import com.sila.exception.NotFoundException;
+import com.sila.model.User;
+import com.sila.repository.UserRepository;
+import com.sila.service.UserService;
+import com.sila.utlis.enums.USER_ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.Collection;
 
 @RestController
@@ -36,7 +36,6 @@ public class AuthController {
   private final PasswordEncoder passwordEncoder;
   private final JwtProvider jwtProvider;
   private final CustomerUserDetailsService customerUserDetailsService;
-  private final CardRepository cartRepository;
   private final UserService userService;
   private Authentication authenticate(String email, String password) {
     UserDetails userDetails = customerUserDetailsService.loadUserByUsername(email);
@@ -64,9 +63,9 @@ public class AuthController {
   //    Save New User
     User saveUser = userRepository.save(createUser);
   //   Add Card to New User
-    Card card = new Card();
-    card.setCustomer(saveUser);
-    cartRepository.save(card);
+//    Card card = new Card();
+//    card.setCustomer(saveUser);
+//    cartRepository.save(card);
 //   Add Information of New User to Authentication
     Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword());
     SecurityContextHolder.getContext().setAuthentication(authentication);
