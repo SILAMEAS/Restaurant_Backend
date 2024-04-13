@@ -1,9 +1,12 @@
 package com.sila.model;
 
 import jakarta.persistence.Embeddable;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ContactInformation {
     private  String email;
     private String phone;
