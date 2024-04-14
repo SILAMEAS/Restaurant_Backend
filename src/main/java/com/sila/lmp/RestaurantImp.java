@@ -80,10 +80,17 @@ public class RestaurantImp implements RestaurantService {
     if (!Objects.isNull(updateRestaurant.getImages())) {
       restaurant.setImages(updateRestaurant.getImages());
     }
-    if (!Objects.isNull(updateRestaurant.getImages())) {
-      restaurant.setImages(updateRestaurant.getImages());
+    if (!Objects.isNull(updateRestaurant.getAddress())) {
+      restaurant.setAddress(updateRestaurant.getAddress());
+    }
+    if (!Objects.isNull(updateRestaurant.getOpeningHours())) {
+      restaurant.setOpeningHours(updateRestaurant.getOpeningHours());
+    }
+    if (!Objects.isNull(updateRestaurant.getContactInformation())) {
+      restaurant.setContactInformation(updateRestaurant.getContactInformation());
     }
     restaurant.setOpen(updateRestaurant.isOpen());
+    restaurantRepository.save(restaurant);
     return restaurant;
   }
 

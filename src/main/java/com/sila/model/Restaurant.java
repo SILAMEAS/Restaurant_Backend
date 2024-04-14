@@ -26,7 +26,8 @@ public class Restaurant {
     private String name;
     private String description;
     private String cuisineType;
-    @OneToOne
+    @OneToOne( orphanRemoval = true,
+            cascade = CascadeType.ALL)
     private Address address;
     @Embedded
     private ContactInformation contactInformation;

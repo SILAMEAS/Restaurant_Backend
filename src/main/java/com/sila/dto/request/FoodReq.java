@@ -18,6 +18,7 @@ public class FoodReq {
     private  Long categoryId;
     private boolean vegetarin;
     private boolean seasional;
+    private boolean available;
 //    private List<IngredientsItem> ingredients;
 
 }

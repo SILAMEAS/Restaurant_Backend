@@ -18,6 +18,10 @@ public class FoodRes implements Serializable {
   @NotEmpty
   private String name;
   @NotEmpty
+  private Long categoryId;
+  @NotEmpty
+  private String description;
+  @NotEmpty
   private Long price;
   @NotEmpty
   private List<String> images;

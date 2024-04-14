@@ -38,6 +38,7 @@ public class FoodImp implements FoodService {
     food_create.setCreationDate(new Date());
     food_create.setSeasonal(food.isSeasional());
     food_create.setVegetarian(food.isVegetarin());
+    food_create.setAvailable(food.isAvailable());
 //    food_create.setIngredientsItems(food.getIngredients());
     Food saveFood = foodRepository.save(food_create);
     restaurant.getFoods().add(saveFood);
