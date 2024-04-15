@@ -17,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface FoodService {
     public Food createFood(FoodReq food, Category category, Restaurant restaurant)throws Exception;
+    public Food updateFood(FoodReq food,Long foodId)throws Exception;
     public Void deleteFoodById(Long id)throws Exception;
+    public String deleteFoodByCategoryId(Long categoryId)throws Exception;
     public Food findFoodById(Long foodId)throws Exception;
     public Food updateAvailibilityStatus(Long id)throws Exception;
     public EntityResponseHandler<FoodRes> listFoods(Pageable pageable, SearchReq searchReq, String filterBy);

@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.List;
+
 public interface FoodRepository extends JpaRepository<Food,Long>, PagingAndSortingRepository<Food,Long> , JpaSpecificationExecutor<Food> {
     Page<Food> findAllByRestaurantId(Long restaurant_id,Specification<Food> specification, Pageable pageable);
+    List<Food> findAllByFoodCategoryId(Long categoryId);
 }

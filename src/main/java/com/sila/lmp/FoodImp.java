@@ -9,7 +9,9 @@ import com.sila.lmp.filterImp.FilterImpFood;
 import com.sila.model.Category;
 import com.sila.model.Food;
 import com.sila.model.Restaurant;
+import com.sila.repository.CategoryRepository;
 import com.sila.repository.FoodRepository;
+import com.sila.service.CategoryService;
 import com.sila.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -17,12 +19,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class FoodImp implements FoodService {
 
   private final FoodRepository foodRepository;
+  private final CategoryRepository categoryRepository;
   private final ModelMapper modelMapper;
 
   @Override
@@ -46,11 +51,47 @@ public class FoodImp implements FoodService {
   }
 
   @Override
+  public Food updateFood(FoodReq food,Long foodId) throws Exception {
+    Food foodExited = findFoodById(foodId);
+    Category category= categoryRepository.findById(food.getCategoryId()).orElseThrow(()->new BadRequestException("category not found"));
+    if(!Objects.isNull(food.getName())){
+      foodExited.setName(food.getName());
+    }
+    if(!Objects.isNull(food.getImages())){
+      foodExited.setImages(food.getImages());
+    }
+    if(!Objects.isNull(food.getCategoryId())){
+      foodExited.setFoodCategory(category);
+    }
+    if(!Objects.isNull(food.getPrice())){
+      foodExited.setPrice(food.getPrice());
+    }
+    if(!Objects.isNull(food.getDescription())){
+      foodExited.setDescription(food.getDescription());
+    }
+      foodExited.setVegetarian(food.isVegetarin());
+      foodExited.setSeasonal(food.isSeasional());
+      foodExited.setAvailable(food.isAvailable());
+
+      return foodRepository.save(foodExited);
+  }
+
+  @Override
   public Void deleteFoodById(Long id) throws Exception {
     Food foodByID = findFoodById(id);
     foodByID.setRestaurant(null);
     foodRepository.deleteById(id);
     return null;
+  }
+
+  @Override
+  public String deleteFoodByCategoryId(Long categoryId) throws Exception {
+    List<Food> foodsToDelete = foodRepository.findAllByFoodCategoryId(categoryId);
+    if(foodsToDelete.isEmpty()){
+      throw new BadRequestException("No food have category id : "+categoryId);
+    }
+    foodRepository.deleteAll(foodsToDelete);
+    return "All food have categoryId : "+categoryId+" was deleted";
   }
 
   @Override

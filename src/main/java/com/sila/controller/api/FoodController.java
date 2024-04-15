@@ -45,7 +45,7 @@ public ResponseEntity<EntityResponseHandler<FoodRes>> listFoods(
         return new ResponseEntity<>(foodResEntityResponseHandler,
                 HttpStatus.OK);
 }
-  @GetMapping("/{restaurantId}")
+  @GetMapping("restaurant/{restaurantId}")
   public ResponseEntity<EntityResponseHandler<FoodRes>> listFoodByRestaurantId(
           @RequestHeader("Authorization") String jwt,
           @RequestParam(required = false) boolean vegetarian,
