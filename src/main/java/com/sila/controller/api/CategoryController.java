@@ -38,7 +38,7 @@ public class CategoryController {
     }
     @DeleteMapping("/admin/categories/{category_id}")
     public ResponseEntity<String> deleteCategory(@RequestHeader("Authorization") String jwt, @PathVariable Long category_id) throws Exception {
-        User user=userService.findUserByJwtToken(jwt);
+        userService.findUserByJwtToken(jwt);
         categoryService.deleteCategoryById(category_id);
         return new ResponseEntity<>("Category id : "+category_id+" deleted", HttpStatus.CREATED);
     }

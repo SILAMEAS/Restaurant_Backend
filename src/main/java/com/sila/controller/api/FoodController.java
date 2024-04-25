@@ -36,11 +36,11 @@ public ResponseEntity<EntityResponseHandler<FoodRes>> listFoods(
         @RequestParam(defaultValue = "1") Integer pageNo,
         @RequestParam(defaultValue = "10") Integer pageSize,
         @RequestParam(defaultValue = "id") String sortBy,
-        @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder)
+        @RequestParam(defaultValue = "desc") String sortOrder)
         throws Exception {
 
         userService.findUserByJwtToken(jwt);
-        Pageable pageable = PageRequest.of(pageNo-1, pageSize,Sort.by(sortOrder,sortBy));
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize,Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()),sortBy));
         var foodResEntityResponseHandler=foodService.listFoods(pageable, new SearchReq(search,seasanal,vegetarian), filterBy);
         return new ResponseEntity<>(foodResEntityResponseHandler,
                 HttpStatus.OK);
@@ -55,7 +55,7 @@ public ResponseEntity<EntityResponseHandler<FoodRes>> listFoods(
           @RequestParam(defaultValue = "1") Integer pageNo,
           @RequestParam(defaultValue = "10") Integer pageSize,
           @RequestParam(defaultValue = "id") String sortBy,
-          @RequestParam(defaultValue = "asc") String sortOrder,
+          @RequestParam(defaultValue = "desc") String sortOrder,
           @PathVariable Long restaurantId)
           throws Exception {
 

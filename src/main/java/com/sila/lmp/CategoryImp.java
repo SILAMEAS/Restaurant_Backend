@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class CategoryImp implements CategoryService {
     private final RestaurantRepository restaurantRepository;
     private final UserService userService;
     private final FoodService foodService;
+    private final FoodRepository foodRepository;
     @Override
     public Category createCategory(String jwt,String name) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
@@ -52,7 +54,10 @@ public class CategoryImp implements CategoryService {
     @Override
     public Void deleteCategoryById(Long category_id) throws Exception {
         findCategoryById(category_id);
-        foodService.deleteFoodByCategoryId(category_id);
+        var isExitFoodInCategory = foodRepository.findAllByFoodCategoryId(category_id);
+        if(!isExitFoodInCategory.isEmpty()){
+            foodService.deleteFoodByCategoryId(category_id);
+        }
         categoryRepository.deleteById(category_id);
         return null;
     }
