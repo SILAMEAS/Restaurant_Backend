@@ -41,8 +41,8 @@ public class FoodImp implements FoodService {
     food_create.setName(food.getName());
     food_create.setPrice(food.getPrice());
     food_create.setCreationDate(new Date());
-    food_create.setSeasonal(food.isSeasional());
-    food_create.setVegetarian(food.isVegetarin());
+    food_create.setSeasonal(food.isSeasonal());
+    food_create.setVegetarian(food.isVegetarian());
     food_create.setAvailable(food.isAvailable());
 //    food_create.setIngredientsItems(food.getIngredients());
     Food saveFood = foodRepository.save(food_create);
@@ -69,8 +69,8 @@ public class FoodImp implements FoodService {
     if(!Objects.isNull(food.getDescription())){
       foodExited.setDescription(food.getDescription());
     }
-      foodExited.setVegetarian(food.isVegetarin());
-      foodExited.setSeasonal(food.isSeasional());
+      foodExited.setVegetarian(food.isVegetarian());
+      foodExited.setSeasonal(food.isSeasonal());
       foodExited.setAvailable(food.isAvailable());
 
       return foodRepository.save(foodExited);

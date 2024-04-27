@@ -16,8 +16,8 @@ public class FoodReq {
     private List<String> images;
     private  Long restaurantId;
     private  Long categoryId;
-    private boolean vegetarin;
-    private boolean seasional;
+    private boolean vegetarian;
+    private boolean seasonal;
     private boolean available;
 //    private List<IngredientsItem> ingredients;
 
