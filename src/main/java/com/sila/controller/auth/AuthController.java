@@ -59,6 +59,10 @@ public class AuthController {
     createUser.setAddresses(user.getAddresses());
     createUser.setFullName(user.getFullName());
     createUser.setRole(user.getRole());
+    if(!user.getProfile().isEmpty()){
+      createUser.setProfile(user.getProfile());
+    }
+    createUser.setEmail(user.getEmail());
     createUser.setPassword(passwordEncoder.encode(user.getPassword()));
   //    Save New User
     User saveUser = userRepository.save(createUser);
@@ -69,7 +73,7 @@ public class AuthController {
 //   Add Information of New User to Authentication
     Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword());
     SecurityContextHolder.getContext().setAuthentication(authentication);
-    String jwt=jwtProvider.generateToken(authentication);
+    jwtProvider.generateToken(authentication);
     return new ResponseEntity<>("Register user successfully", HttpStatus.CREATED);
   }
   @PostMapping("/sign-in")

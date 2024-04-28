@@ -1,7 +1,10 @@
 package com.sila.controller.api;
 
+import com.sila.dto.request.UserReq;
+import com.sila.dto.response.UserRes;
 import com.sila.model.User;
 import com.sila.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,11 @@ public class UserController {
     public ResponseEntity<User> getUserByJwtToken(@RequestHeader("Authorization") String jwt) throws Exception {
         User user=userService.findUserByJwtToken(jwt);
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+    @PutMapping("/profile")
+    public ResponseEntity<UserRes> updateProfile(@RequestHeader("Authorization") String jwt,@Valid @RequestBody UserReq userReq) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        return new ResponseEntity<>(userService.updateProfile(user,userReq), HttpStatus.OK);
     }
 
 }
