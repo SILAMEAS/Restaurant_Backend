@@ -1,4 +1,4 @@
-package com.sila.dto.specification;
+package com.sila.specifcation;
 
 import com.sila.model.Address_;
 import com.sila.model.Food_;

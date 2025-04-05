@@ -1,4 +1,4 @@
-package com.sila.dto.specification;
+package com.sila.specifcation;
 
 import com.sila.model.*;
 import org.springframework.data.jpa.domain.Specification;

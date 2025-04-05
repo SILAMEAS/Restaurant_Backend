@@ -1,6 +1,8 @@
 package com.sila.config;
 
+import com.sila.utlis.context.UserContextFilter;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,6 +33,13 @@ public class AppConfig {
               }
             });
         return http.build();
+    }
+/** Store Information fo User Login */
+    public FilterRegistrationBean<UserContextFilter> userContextFilter(UserContextFilter filter) {
+        FilterRegistrationBean<UserContextFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(filter);
+        registrationBean.setOrder(1); // early in the chain
+        return registrationBean;
     }
 
     private CorsConfigurationSource corsConfigrationSource() {

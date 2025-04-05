@@ -1,17 +1,18 @@
 package com.sila.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
 
-@Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Setter
+@Getter
+@ToString
 public class Food {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +21,7 @@ public class Food {
     private String  description;
     private Long price;
     @ManyToOne
-    private Category foodCategory;
+    private Category category;
     @Column(length = 1000)
     private List<String> images;
     private boolean available;

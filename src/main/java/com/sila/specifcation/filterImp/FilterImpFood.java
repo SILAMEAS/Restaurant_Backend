@@ -1,11 +1,9 @@
-package com.sila.lmp.filterImp;
+package com.sila.specifcation.filterImp;
 
 import com.sila.dto.request.SearchReq;
-import com.sila.dto.specification.FoodSpecification;
-import com.sila.dto.specification.RestaurantSpecification;
+import com.sila.specifcation.FoodSpecification;
 import com.sila.model.Food;
 import com.sila.repository.AddressRepository;
-import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,8 +20,8 @@ import java.util.Objects;
 public class FilterImpFood {
     private AddressRepository addressRepository;
     private UserService userService;
-    private static RestaurantService restaurantService;
-    public static Specification<Food> filterFood(SearchReq searchReq,String filterBy){
+
+    public static Specification<Food> filterFood(SearchReq searchReq, String filterBy) {
         Specification<Food> spec = Specification.where(null);
         if (Objects.nonNull(searchReq.getSearch())) {
             spec = spec.and(FoodSpecification.search(searchReq.getSearch()));
@@ -39,7 +37,8 @@ public class FilterImpFood {
         }
         return spec;
     }
-    public static Specification<Food> filterFoodByRestaurantId(Long restaurantId,SearchReq searchReq,String filterBy){
+
+    public static Specification<Food> filterFoodByRestaurantId(Long restaurantId, SearchReq searchReq, String filterBy) {
         Specification<Food> spec = Specification.where(null);
         if (Objects.nonNull(filterBy)) {
             spec = spec.and(FoodSpecification.filterCategory(filterBy));

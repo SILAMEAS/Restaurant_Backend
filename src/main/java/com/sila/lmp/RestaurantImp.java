@@ -3,12 +3,10 @@ package com.sila.lmp;
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.request.RestaurantReq;
 import com.sila.dto.request.SearchReq;
-import com.sila.dto.response.RestaurantFavRes;
 import com.sila.dto.response.RestaurantRes;
 import com.sila.exception.BadRequestException;
-import com.sila.lmp.filterImp.FilterImpRestaurant;
+import com.sila.specifcation.filterImp.FilterImpRestaurant;
 import com.sila.model.Address;
-import com.sila.model.Favorite;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
 import com.sila.repository.AddressRepository;
@@ -16,7 +14,6 @@ import com.sila.repository.RestaurantRepository;
 import com.sila.repository.UserRepository;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -24,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @RequiredArgsConstructor

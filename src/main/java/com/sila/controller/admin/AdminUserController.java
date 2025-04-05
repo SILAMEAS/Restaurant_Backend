@@ -2,23 +2,14 @@ package com.sila.controller.admin;
 
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.response.UserRes;
-import com.sila.dto.specification.UserSpecification;
-import com.sila.model.Restaurant;
-import com.sila.model.User;
-import com.sila.repository.UserRepository;
 import com.sila.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")

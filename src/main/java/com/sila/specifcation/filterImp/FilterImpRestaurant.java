@@ -1,8 +1,8 @@
-package com.sila.lmp.filterImp;
+package com.sila.specifcation.filterImp;
 
 import com.sila.dto.request.RestaurantReq;
 import com.sila.dto.request.SearchReq;
-import com.sila.dto.specification.RestaurantSpecification;
+import com.sila.specifcation.RestaurantSpecification;
 import com.sila.model.Address;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
@@ -30,12 +30,6 @@ public class FilterImpRestaurant {
         if (Objects.nonNull(searchReq.getSearch())) {
             spec = spec.and(RestaurantSpecification.likeNameOrDescription(searchReq.getSearch()));
         }
-//        if (Boolean.TRUE.equals(searchReq.getSessional())) {
-//            spec = spec.and(RestaurantSpecification.bySession(true));
-//        }
-//        if (Boolean.TRUE.equals(searchReq.getVegeterain())) {
-//            spec = spec.and(RestaurantSpecification.byVegetarian(true));
-//        }
         return spec;
     }
     public Restaurant handleCreateRestaurant(RestaurantReq req, Long userId) throws Exception {

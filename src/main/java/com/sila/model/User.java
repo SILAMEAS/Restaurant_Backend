@@ -30,10 +30,9 @@ public class User {
 //  private List<Order> orders=new ArrayList<>();
 //  @ElementCollection
 //  private List<RestaurantFavRes> favourites=new ArrayList<>();
+  @JsonIgnore
   @OneToMany(cascade = CascadeType.ALL,orphanRemoval=true,mappedBy ="owner")
   private  List<Favorite> favourites = new ArrayList<>();
   @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,mappedBy = "user")
    private  List<Address> addresses=new ArrayList<>();
-
-
 }

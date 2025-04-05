@@ -3,17 +3,11 @@ package com.sila.controller.api;
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.request.SearchReq;
 import com.sila.dto.response.RestaurantRes;
-import com.sila.dto.specification.RestaurantSpecification;
-import com.sila.exception.BadRequestException;
-import com.sila.model.Restaurant;
 import com.sila.model.User;
-import com.sila.repository.RestaurantRepository;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
-import com.sila.utlis.enums.EnumSort;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,8 +15,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/restaurants")

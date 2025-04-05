@@ -32,13 +32,6 @@ public class HandleException {
     messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
     StringBuilder str = new StringBuilder();
     var fieldErrors = exception.getBindingResult().getFieldErrors();
-    /**
-     for (var fieldError : fieldErrors) {
-     str.append("{").append(fieldError.getField()).append(": ")
-     .append(fieldError.getDefaultMessage()).append(" },");
-     }
-     **/
-
     str.append(fieldErrors.get(0).getField()).append(" : ").append(fieldErrors.get(0).getDefaultMessage());
     messageResponse.setMessage(str.toString());
     return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);

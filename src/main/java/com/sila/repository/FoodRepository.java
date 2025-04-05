@@ -12,5 +12,5 @@ import java.util.List;
 
 public interface FoodRepository extends JpaRepository<Food,Long>, PagingAndSortingRepository<Food,Long> , JpaSpecificationExecutor<Food> {
     Page<Food> findAllByRestaurantId(Long restaurant_id,Specification<Food> specification, Pageable pageable);
-    List<Food> findAllByFoodCategoryId(Long categoryId);
+    List<Food> findAllByCategoryId(Long categoryId);
 }

@@ -2,7 +2,6 @@ package com.sila.lmp;
 
 import com.sila.exception.BadRequestException;
 import com.sila.model.Category;
-import com.sila.model.Food;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
 import com.sila.repository.CategoryRepository;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -52,14 +50,13 @@ public class CategoryImp implements CategoryService {
         return categoryRepository.findByRestaurantId(restaurant_id);
     }
     @Override
-    public Void deleteCategoryById(Long category_id) throws Exception {
+    public void deleteCategoryById(Long category_id) throws Exception {
         findCategoryById(category_id);
-        var isExitFoodInCategory = foodRepository.findAllByFoodCategoryId(category_id);
+        var isExitFoodInCategory = foodRepository.findAllByCategoryId(category_id);
         if(!isExitFoodInCategory.isEmpty()){
             foodService.deleteFoodByCategoryId(category_id);
         }
         categoryRepository.deleteById(category_id);
-        return null;
     }
 
 }

@@ -4,7 +4,7 @@ import com.sila.config.JwtProvider;
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.request.UserReq;
 import com.sila.dto.response.UserRes;
-import com.sila.dto.specification.UserSpecification;
+import com.sila.specifcation.UserSpecification;
 import com.sila.exception.BadRequestException;
 import com.sila.model.User;
 import com.sila.repository.UserRepository;

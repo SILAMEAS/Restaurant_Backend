@@ -1,4 +1,4 @@
-package com.sila.dto.specification;
+package com.sila.specifcation;
 
 import com.sila.model.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,7 +15,7 @@ public class FoodSpecification {
         if(category==null){
             return null;
         }
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Food_.FOOD_CATEGORY).get(Category_.NAME),category);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Food_.category).get(Category_.NAME),category);
 
     }
     public static Specification<Food> bySession(Boolean sessional){
