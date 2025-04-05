@@ -47,7 +47,7 @@ public class AppConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration cfg=new CorsConfiguration();
-                cfg.setAllowedOrigins(List.of("http://localhost:3000","https://next-js-wow-now.vercel.app",
+                cfg.setAllowedOrigins(List.of("http://localhost:3000","https://sila-restrurant.vercel.app",
                         "http://localhost:3030","http://192.168.1.8:3030","http://192.168.1.8:3000"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
