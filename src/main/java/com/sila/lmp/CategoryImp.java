@@ -10,11 +10,14 @@ import com.sila.repository.RestaurantRepository;
 import com.sila.service.CategoryService;
 import com.sila.service.FoodService;
 import com.sila.service.UserService;
+import com.sila.utlis.context.UserContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CategoryImp implements CategoryService {
@@ -23,13 +26,15 @@ public class CategoryImp implements CategoryService {
     private final UserService userService;
     private final FoodService foodService;
     private final FoodRepository foodRepository;
+
     @Override
-    public Category createCategory(String jwt,String name) throws Exception {
-        User user = userService.findUserByJwtToken(jwt);
+    public Category createCategory(String jwt,String name) {
+        User user = UserContext.getUser();
         Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
-        Category category = new Category();
-        category.setName(name);
-        category.setRestaurant(restaurant);
+        if (categoryRepository.existsByNameAndRestaurant(name, restaurant)) {
+            throw new BadRequestException("Category name already exists for this restaurant");
+        }
+        Category category =Category.builder().name(name).restaurant(restaurant).build();
         return categoryRepository.save(category);
     }
 

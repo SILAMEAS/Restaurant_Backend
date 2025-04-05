@@ -21,14 +21,12 @@ import java.util.List;
 public class CategoryController {
     private final UserService userService;
     private final CategoryService categoryService;
-    private final RestaurantService restaurantService;
     @PostMapping("/admin/categories")
     public ResponseEntity<Category> createCategory(@RequestHeader("Authorization") String jwt, @RequestBody CategoryReq categoryReq) throws Exception {
         return new ResponseEntity<>(categoryService.createCategory(jwt,categoryReq.getName()), HttpStatus.CREATED);
     }
     @GetMapping("/categories/restaurant/{restaurantId}")
-    public ResponseEntity<List<Category>> getRestaurantCategory(@RequestHeader("Authorization") String jwt,@PathVariable Long restaurantId) throws Exception {
-        User user=userService.findUserByJwtToken(jwt);
+    public ResponseEntity<List<Category>> getRestaurantCategory(@PathVariable Long restaurantId){
         List<Category> categoriesInRestaurant=categoryService.listCategoriesByRestaurantId(restaurantId);
         return new ResponseEntity<>(categoriesInRestaurant, HttpStatus.OK);
     }

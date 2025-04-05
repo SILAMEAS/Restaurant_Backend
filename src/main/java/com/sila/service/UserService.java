@@ -8,11 +8,11 @@ import com.sila.model.User;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
-    public User findUserByJwtToken(String jwt) throws Exception;
-    public Boolean findUserHasRoleAdmin(String jwt) throws Exception;
-    public  User findUserByEmail(String email) throws Exception;
-    public  User findUserById(Long userId);
-    public EntityResponseHandler<UserRes> listUser(Pageable pageable, String search) throws Exception;
+    User findUserByJwtToken(String jwt) throws Exception;
+    Boolean findUserHasRoleAdmin(String jwt) throws Exception;
+    User findUserByEmail(String email) throws Exception;
+    User findUserById(Long userId);
+    EntityResponseHandler<UserRes> listUser(Pageable pageable, String search) throws Exception;
 
     UserRes updateProfile(User user, UserReq userReq) throws Exception;
 }
