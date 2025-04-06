@@ -6,6 +6,7 @@ import com.sila.dto.response.RestaurantRes;
 import com.sila.model.User;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
+import com.sila.utlis.PaginationDefaults;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
@@ -25,10 +26,10 @@ public class RestaurantController {
     private final ModelMapper modelMapper;
     @GetMapping("")
     public ResponseEntity<EntityResponseHandler<RestaurantRes>> searchRestaurants(@RequestHeader("Authorization") String jwt,
-        @RequestParam(defaultValue = "1") Integer pageNo,
-        @RequestParam(defaultValue = "10") Integer pageSize,
-        @RequestParam(defaultValue = "id") String sortBy,
-        @RequestParam(defaultValue = "ASC") String sortOrder,
+        @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
+        @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
+        @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
+        @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder,
         @RequestParam(required = false) String search,
         @RequestParam(required = false,defaultValue = "true") Boolean sessional,
         @RequestParam(required = false,defaultValue = "true") Boolean vegetarian) {

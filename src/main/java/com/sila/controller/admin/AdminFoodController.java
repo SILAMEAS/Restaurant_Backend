@@ -7,7 +7,6 @@ import com.sila.model.Food;
 import com.sila.model.Restaurant;
 import com.sila.dto.request.FoodReq;
 import com.sila.model.User;
-import com.sila.repository.FoodRepository;
 import com.sila.repository.RestaurantRepository;
 import com.sila.service.CategoryService;
 import com.sila.service.FoodService;
@@ -20,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("api/admin/foods")
@@ -30,7 +28,6 @@ public class AdminFoodController {
     private final UserService userService;
     private final RestaurantService restaurantService;
     private final RestaurantRepository restaurantRepository;
-    private final FoodRepository foodRepository;
     private final CategoryService categoryService;
     private final ModelMapper modelMapper;
     @PostMapping()

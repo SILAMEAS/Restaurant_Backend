@@ -4,11 +4,10 @@ import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.request.SearchReq;
 import com.sila.dto.response.FoodRes;
 import com.sila.service.FoodService;
-import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
+import com.sila.utlis.PaginationDefaults;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,11 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class FoodController {
-
   private final FoodService foodService;
   private final UserService userService;
-  private final RestaurantService restaurantService;
-  private final ModelMapper modelMapper;
 @GetMapping("")
 public ResponseEntity<EntityResponseHandler<FoodRes>> listFoods(
         @RequestHeader("Authorization") String jwt,
@@ -33,10 +29,10 @@ public ResponseEntity<EntityResponseHandler<FoodRes>> listFoods(
         @RequestParam(required = false) boolean seasanal,
         @RequestParam(required = false) String filterBy,
         @RequestParam(required = false) String search,
-        @RequestParam(defaultValue = "1") Integer pageNo,
-        @RequestParam(defaultValue = "10") Integer pageSize,
-        @RequestParam(defaultValue = "id") String sortBy,
-        @RequestParam(defaultValue = "desc") String sortOrder)
+        @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
+        @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
+        @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
+        @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder)
         throws Exception {
 
         userService.findUserByJwtToken(jwt);
@@ -52,10 +48,10 @@ public ResponseEntity<EntityResponseHandler<FoodRes>> listFoods(
           @RequestParam(required = false) boolean seasanal,
           @RequestParam(required = false) String filterBy,
           @RequestParam(required = false) String search,
-          @RequestParam(defaultValue = "1") Integer pageNo,
-          @RequestParam(defaultValue = "10") Integer pageSize,
-          @RequestParam(defaultValue = "id") String sortBy,
-          @RequestParam(defaultValue = "desc") String sortOrder,
+          @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
+          @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
+          @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
+          @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder,
           @PathVariable Long restaurantId)
           throws Exception {
 
