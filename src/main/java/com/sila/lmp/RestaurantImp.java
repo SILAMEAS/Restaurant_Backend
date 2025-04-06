@@ -3,6 +3,7 @@ package com.sila.lmp;
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.request.RestaurantReq;
 import com.sila.dto.request.SearchReq;
+import com.sila.dto.response.FavoriteResponse;
 import com.sila.dto.response.RestaurantRes;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
@@ -112,8 +113,7 @@ public class RestaurantImp implements RestaurantService {
         .map(restaurant -> this.modelMapper.map(restaurant, RestaurantRes.class)));
   }
   @Override
-  public String addRestaurantToFavorites(Long restaurantId, User user) throws Exception {
-    String message;
+  public List<FavoriteResponse>  addRestaurantToFavorites(Long restaurantId, User user) throws Exception {
     // Fetch the restaurant to ensure it's managed
     Restaurant findRestaurant = restaurantRepository.findById(restaurantId)
             .orElseThrow(() -> new RuntimeException("Restaurant not found"));
@@ -139,17 +139,15 @@ public class RestaurantImp implements RestaurantService {
     if (isFavorite) {
       // Remove the favorite if it already exists
       favorites.removeIf(f -> f.getRestaurant().getId().equals(restaurantId));
-      message="Remove restaurant from favourites";
     } else {
       // Add the new favorite
       favorites.add(fav);
-      message="Add restaurant To favourites";
     }
 
     // Save the user (this should also save the favorites if cascade is set correctly)
     userRepository.save(user);
 
-    return message;
+    return userService.getUserProfile().getFavourites();
   }
 
   @Override

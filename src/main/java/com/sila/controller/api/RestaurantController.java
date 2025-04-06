@@ -2,7 +2,9 @@ package com.sila.controller.api;
 
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.request.SearchReq;
+import com.sila.dto.response.FavoriteResponse;
 import com.sila.dto.response.RestaurantRes;
+import com.sila.dto.response.UserRes;
 import com.sila.model.User;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
@@ -16,6 +18,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/restaurants")
@@ -47,7 +51,7 @@ public class RestaurantController {
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
     @PutMapping("/{id}/add-favorites")
-    public ResponseEntity<String> addRestaurantToFavorites(@RequestHeader("Authorization") String jwt, @PathVariable Long id) throws Exception {
+    public ResponseEntity<List<FavoriteResponse>> addRestaurantToFavorites(@RequestHeader("Authorization") String jwt, @PathVariable Long id) throws Exception {
         User userLogin=userService.findUserByJwtToken(jwt);
         return new ResponseEntity<>(restaurantService.addRestaurantToFavorites(id,userLogin), HttpStatus.OK);
     }

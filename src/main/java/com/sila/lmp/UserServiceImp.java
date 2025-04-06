@@ -88,7 +88,7 @@ public class UserServiceImp implements UserService {
 
         UserRes userRes = this.modelMapper.map(user,UserRes.class);
         userRes.setFavourites(user.getFavourites().stream()
-                .map(fav -> new FavoriteResponse(fav.getId(), fav.getName(), fav.getDescription()))
+                .map(fav -> new FavoriteResponse(fav.getId(), fav.getName(), fav.getDescription(),user.getId(),fav.getRestaurant().getId()))
                 .collect(Collectors.toList()));
 
         return userRes;
