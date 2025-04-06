@@ -6,13 +6,13 @@ import com.sila.dto.request.SearchReq;
 import com.sila.dto.response.RestaurantRes;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
-import com.sila.utlis.enums.EnumSort;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface RestaurantService {
-    public Restaurant createRestaurant(RestaurantReq req,String jwt) throws Exception;
-    public Restaurant updateRestaurant(RestaurantReq updateRestaurant) throws Exception;
+    public Restaurant createRestaurant(RestaurantReq req) throws Exception;
+    public Restaurant updateRestaurant(RestaurantReq updateRestaurant, Long restaurantId) throws Exception;
     public void deleteRestaurant(Long id)throws Exception;
     public Restaurant findRestaurantById(Long id) throws Exception;
     public Restaurant getRestaurantByUserId(Long userId) throws Exception;

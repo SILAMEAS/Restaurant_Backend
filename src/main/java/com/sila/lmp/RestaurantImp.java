@@ -5,23 +5,27 @@ import com.sila.dto.request.RestaurantReq;
 import com.sila.dto.request.SearchReq;
 import com.sila.dto.response.RestaurantRes;
 import com.sila.exception.BadRequestException;
+import com.sila.exception.NotFoundException;
 import com.sila.specifcation.filterImp.FilterImpRestaurant;
 import com.sila.model.Address;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
 import com.sila.repository.AddressRepository;
 import com.sila.repository.RestaurantRepository;
-import com.sila.repository.UserRepository;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
+import com.sila.utlis.Util;
+import com.sila.utlis.context.UserContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -29,65 +33,45 @@ import java.util.Objects;
 public class RestaurantImp implements RestaurantService {
 
   private final RestaurantRepository restaurantRepository;
-  private final UserRepository userRepository;
   private final ModelMapper modelMapper;
   private final UserService userService;
   private final AddressRepository addressRepository;
   @Override
-  public Restaurant createRestaurant(RestaurantReq req,String jwt) throws Exception {
-    User user =  userService.findUserByJwtToken(jwt);
-    Restaurant userHaveRes= restaurantRepository.findByOwnerId(user.getId());
-    if(Objects.nonNull(userHaveRes)){
+  public Restaurant createRestaurant(RestaurantReq restaurantReq)  {
+    var userId=UserContext.getUser().getId();
+    boolean existsByOwner=restaurantRepository.existsByOwnerId(userId);
+    if(existsByOwner){
       throw new BadRequestException("User have restaurant ready!");
     }
-    return restaurantRepository.save(handleCreateRestaurant(req,user.getId()));
-  }
-  public Restaurant handleCreateRestaurant(RestaurantReq req, Long userId) throws Exception {
-    Address address = addressRepository.save(req.getAddress());
-    Restaurant restaurant = new Restaurant();
-    restaurant.setAddress(address);
-    restaurant.setName(req.getName());
-    restaurant.setOpeningHours(req.getOpeningHours());
-    restaurant.setDescription(req.getDescription());
-    restaurant.setRegistrationDate(LocalDateTime.now());
+    Address address = addressRepository.save(restaurantReq.getAddress());
+    Restaurant restaurant=Restaurant.builder().address(address).name(restaurantReq.getName()).openingHours(restaurantReq.getOpeningHours())
+            .description(restaurantReq.getDescription()).registrationDate(LocalDateTime.now()).build();
     User user = userService.findUserById(userId);
     restaurant.setOwner(user);
-    restaurant.setCuisineType(req.getCuisineType());
-    restaurant.setContactInformation(req.getContactInformation());
-    restaurant.setImages(req.getImages());
+    restaurant.setCuisineType(restaurantReq.getCuisineType());
+    restaurant.setContactInformation(restaurantReq.getContactInformation());
+    restaurant.setImages(restaurantReq.getImages());
+    restaurantRepository.save(restaurant);
     return restaurant;
   }
 
   @Override
-  public Restaurant updateRestaurant(RestaurantReq updateRestaurant) throws Exception {
-    return restaurantRepository.save(handleUpdateRestaurant(updateRestaurant));
-  }
-  public  Restaurant handleUpdateRestaurant(RestaurantReq updateRestaurant) throws Exception {
-    Restaurant restaurant = findRestaurantById(updateRestaurant.getId());
-    if (!Objects.isNull(updateRestaurant.getName())) {
-      restaurant.setName(updateRestaurant.getName());
+  public Restaurant updateRestaurant(RestaurantReq updateRestaurant, Long restaurantId) throws Exception {
+    var userId=UserContext.getUser().getId();
+    Restaurant restaurantExit = handleFindRestaurantById(restaurantId);
+    if (!isUserOwnerOfRestaurant(userId, restaurantId)) {
+      throw new AccessDeniedException("You are not the owner of this restaurant.");
     }
-    if (!Objects.isNull(updateRestaurant.getDescription())) {
-      restaurant.setDescription(updateRestaurant.getDescription());
-    }
-    if (!Objects.isNull(updateRestaurant.getCuisineType())) {
-      restaurant.setCuisineType(updateRestaurant.getCuisineType());
-    }
-    if (!Objects.isNull(updateRestaurant.getImages())) {
-      restaurant.setImages(updateRestaurant.getImages());
-    }
-    if (!Objects.isNull(updateRestaurant.getAddress())) {
-      restaurant.setAddress(updateRestaurant.getAddress());
-    }
-    if (!Objects.isNull(updateRestaurant.getOpeningHours())) {
-      restaurant.setOpeningHours(updateRestaurant.getOpeningHours());
-    }
-    if (!Objects.isNull(updateRestaurant.getContactInformation())) {
-      restaurant.setContactInformation(updateRestaurant.getContactInformation());
-    }
-    restaurant.setOpen(updateRestaurant.isOpen());
-    restaurantRepository.save(restaurant);
-    return restaurant;
+    Util.setIfNotNull(updateRestaurant.getName(), restaurantExit::setName);
+    Util.setIfNotNull(updateRestaurant.getDescription(), restaurantExit::setDescription);
+    Util.setIfNotNull(updateRestaurant.getCuisineType(), restaurantExit::setCuisineType);
+    Util.setIfNotNull(updateRestaurant.getImages(), restaurantExit::setImages);
+    Util.setIfNotNull(updateRestaurant.getAddress(), restaurantExit::setAddress);
+    Util.setIfNotNull(updateRestaurant.getOpeningHours(), restaurantExit::setOpeningHours);
+    Util.setIfNotNull(updateRestaurant.getContactInformation(), restaurantExit::setContactInformation);
+    Util.setIfNotNull(updateRestaurant.isOpen(), restaurantExit::setOpen);
+    restaurantRepository.save(restaurantExit);
+    return restaurantExit;
   }
 
   @Override
@@ -152,6 +136,15 @@ public class RestaurantImp implements RestaurantService {
     return restaurantRepository.save(findRestaurant);
   }
 
-
-
+  public boolean isUserOwnerOfRestaurant(Long userId, Long restaurantId) throws Exception {
+    Restaurant restaurant = findRestaurantById(restaurantId);
+    return restaurant.getOwner() != null && restaurant.getOwner().getId().equals(userId);
+  }
+  public Restaurant handleFindRestaurantById(Long restaurantId) throws Exception {
+    Optional<Restaurant> restaurantExit = restaurantRepository.findById(restaurantId);
+    if(restaurantExit.isPresent()){
+      return restaurantExit.get();
+    }
+    throw  new NotFoundException("Not Found Restaurant with id : "+restaurantId);
+  }
 }
