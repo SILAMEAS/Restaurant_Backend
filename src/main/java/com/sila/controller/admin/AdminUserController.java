@@ -4,6 +4,7 @@ import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.response.UserRes;
 import com.sila.service.UserService;
 import com.sila.utlis.PaginationDefaults;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@Tag(name = "Admin User Controller", description = "Admin operations related to User")
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor

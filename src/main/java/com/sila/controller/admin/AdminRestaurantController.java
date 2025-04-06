@@ -7,6 +7,7 @@ import com.sila.dto.request.RestaurantReq;
 import com.sila.dto.response.MessageResponse;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+//@SecurityRequirement(name = "bearer-key")
+@Tag(name = "Admin Restaurant Controller", description = "Admin operations related to Restaurant")
 @RestController
 @RequestMapping("/api/admin/restaurants")
 @RequiredArgsConstructor

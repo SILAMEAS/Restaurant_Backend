@@ -3,12 +3,14 @@ import com.sila.dto.request.LoginReq;
 import com.sila.dto.response.AuthResponse;
 import com.sila.model.User;
 import com.sila.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+@Tag(name = "Auth Controller", description = "Operations related to Auth")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor

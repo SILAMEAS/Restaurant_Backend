@@ -3,12 +3,13 @@ package com.sila.controller.admin;
 import com.sila.dto.request.CategoryReq;
 import com.sila.model.Category;
 import com.sila.service.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+@Tag(name = "Admin Category Controller", description = "Admin operations related to category")
 @RestController
 @RequestMapping("api/admin/categories/")
 @RequiredArgsConstructor

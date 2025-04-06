@@ -4,12 +4,14 @@ import com.sila.dto.request.UserReq;
 import com.sila.dto.response.UserRes;
 import com.sila.model.User;
 import com.sila.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Profile Controller", description = "Operations related to Profile")
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor

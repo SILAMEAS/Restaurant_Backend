@@ -9,6 +9,7 @@ import com.sila.model.User;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import com.sila.utlis.PaginationDefaults;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "User Restaurant Controller", description = "User operations related to Restaurant")
 @RestController
 @RequestMapping("/api/restaurants")
 @RequiredArgsConstructor
