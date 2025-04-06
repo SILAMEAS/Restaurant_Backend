@@ -6,6 +6,9 @@ import com.sila.dto.request.SearchReq;
 import com.sila.dto.response.RestaurantRes;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
+import com.sila.model.Favorite;
+import com.sila.repository.FavoriteRepository;
+import com.sila.repository.UserRepository;
 import com.sila.specifcation.filterImp.FilterImpRestaurant;
 import com.sila.model.Address;
 import com.sila.model.Restaurant;
@@ -24,6 +27,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -36,6 +41,9 @@ public class RestaurantImp implements RestaurantService {
   private final ModelMapper modelMapper;
   private final UserService userService;
   private final AddressRepository addressRepository;
+  private final UserRepository userRepository;
+  private final FavoriteRepository favoriteRepository;
+
   @Override
   public Restaurant createRestaurant(RestaurantReq restaurantReq)  {
     var userId=UserContext.getUser().getId();
@@ -104,28 +112,44 @@ public class RestaurantImp implements RestaurantService {
         .map(restaurant -> this.modelMapper.map(restaurant, RestaurantRes.class)));
   }
   @Override
-  public User addRestaurantToFavorites(Long restaurantId, User user) throws Exception {
-//    Restaurant findRestaurant = findRestaurantById(restaurantId);
-//    Favorite fav = new Favorite();
-//    fav.setId(findRestaurant.getId());
-//    fav.setName(findRestaurant.getName());
-//    fav.setDescription(findRestaurant.getDescription());
-//    boolean isFavorite = false;
-//    List<Favorite> favorites = user.getFavourites();
-//    for (Favorite favorite : favorites) {
-//      if (favorite.getId().equals(restaurantId)) {
-//        isFavorite = true;
-//        break;
-//      }
-//
-//    }
-//    if (isFavorite) {
-//      favorites.removeIf(f -> f.getId().equals(restaurantId));
-//    } else {
-//      favorites.add(fav);
-//    }
-//    userRepository.save(user);
-    return user;
+  public String addRestaurantToFavorites(Long restaurantId, User user) throws Exception {
+    String message;
+    // Fetch the restaurant to ensure it's managed
+    Restaurant findRestaurant = restaurantRepository.findById(restaurantId)
+            .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+
+    // Create a new Favorite instance
+    Favorite fav = new Favorite();
+    fav.setName(findRestaurant.getName());
+    fav.setDescription(findRestaurant.getDescription());
+    fav.setRestaurant(findRestaurant); // Set the restaurant
+    fav.setOwner(user); // Set the owner
+
+    boolean isFavorite = false;
+    List<Favorite> favorites = user.getFavourites();
+
+    // Check if the restaurant is already in the favorites
+    for (Favorite favorite : favorites) {
+      if (favorite.getRestaurant().getId().equals(restaurantId)) {
+        isFavorite = true;
+        break;
+      }
+    }
+
+    if (isFavorite) {
+      // Remove the favorite if it already exists
+      favorites.removeIf(f -> f.getRestaurant().getId().equals(restaurantId));
+      message="Remove restaurant from favourites";
+    } else {
+      // Add the new favorite
+      favorites.add(fav);
+      message="Add restaurant To favourites";
+    }
+
+    // Save the user (this should also save the favorites if cascade is set correctly)
+    userRepository.save(user);
+
+    return message;
   }
 
   @Override

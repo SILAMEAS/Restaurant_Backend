@@ -21,5 +21,10 @@ public class Favorite {
     @NotEmpty
     private String description;
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User owner;
+
+    @ManyToOne
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
 }

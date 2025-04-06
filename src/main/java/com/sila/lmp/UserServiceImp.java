@@ -3,19 +3,26 @@ package com.sila.lmp;
 import com.sila.config.JwtProvider;
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.request.UserReq;
+import com.sila.dto.response.FavoriteResponse;
 import com.sila.dto.response.UserRes;
 import com.sila.specifcation.UserSpecification;
 import com.sila.exception.BadRequestException;
 import com.sila.model.User;
 import com.sila.repository.UserRepository;
 import com.sila.service.UserService;
+import com.sila.utlis.context.UserContext;
 import com.sila.utlis.enums.USER_ROLE;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImp implements UserService {
@@ -71,6 +78,22 @@ public class UserServiceImp implements UserService {
         }
         return this.modelMapper.map(userRepository.save(user),UserRes.class);
     }
+
+    @Transactional
+    @Override
+    public UserRes getUserProfile() throws Exception {
+        User userFromContext = UserContext.getUser(); // JWT-based context
+        User user = userRepository.findByIdWithFavorites(userFromContext.getId())
+                .orElseThrow(() -> new Exception("User not found"));
+
+        UserRes userRes = this.modelMapper.map(user,UserRes.class);
+        userRes.setFavourites(user.getFavourites().stream()
+                .map(fav -> new FavoriteResponse(fav.getId(), fav.getName(), fav.getDescription()))
+                .collect(Collectors.toList()));
+
+        return userRes;
+    }
+
 
 
 }

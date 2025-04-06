@@ -6,6 +6,7 @@ import com.sila.dto.response.RestaurantRes;
 import com.sila.utlis.enums.USER_ROLE;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +33,8 @@ public class User {
 //  @ElementCollection
 //  private List<RestaurantFavRes> favourites=new ArrayList<>();
   @JsonIgnore
-  @OneToMany(cascade = CascadeType.ALL,orphanRemoval=true,mappedBy ="owner")
-  private  List<Favorite> favourites = new ArrayList<>();
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "owner")
+  private List<Favorite> favourites = new ArrayList<>();
   @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,mappedBy = "user")
    private  List<Address> addresses=new ArrayList<>();
 }

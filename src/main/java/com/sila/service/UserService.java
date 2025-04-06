@@ -15,4 +15,5 @@ public interface UserService {
     EntityResponseHandler<UserRes> listUser(Pageable pageable, String search) throws Exception;
 
     UserRes updateProfile(User user, UserReq userReq) throws Exception;
+    UserRes getUserProfile() throws Exception;
 }
