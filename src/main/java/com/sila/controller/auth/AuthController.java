@@ -1,5 +1,5 @@
 package com.sila.controller.auth;
-import com.sila.dto.request.LoginReq;
+import com.sila.dto.request.LoginRequest;
 import com.sila.dto.response.AuthResponse;
 import com.sila.model.User;
 import com.sila.service.AuthService;
@@ -24,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<AuthResponse> signIn(@RequestBody LoginReq loginReq) throws Exception {
+    public ResponseEntity<AuthResponse> signIn(@RequestBody LoginRequest loginReq) throws Exception {
         return authService.login(loginReq);
     }
 }

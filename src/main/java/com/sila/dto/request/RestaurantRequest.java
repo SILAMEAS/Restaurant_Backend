@@ -7,9 +7,8 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class RestaurantReq {
+public class RestaurantRequest {
   private Long id;
-//  private Long userId;
   @NotEmpty
   private String name;
   @NotEmpty

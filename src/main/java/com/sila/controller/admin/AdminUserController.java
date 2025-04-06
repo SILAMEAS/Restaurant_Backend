@@ -1,7 +1,7 @@
 package com.sila.controller.admin;
 
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
-import com.sila.dto.response.UserRes;
+import com.sila.dto.response.UserResponse;
 import com.sila.service.UserService;
 import com.sila.utlis.PaginationDefaults;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminUserController {
     private final UserService userService;
-    @GetMapping("")
-    public ResponseEntity<EntityResponseHandler<UserRes>> findUserRoleIsAdmin(
+    @GetMapping
+    public ResponseEntity<EntityResponseHandler<UserResponse>> findUserRoleIsAdmin(
             @RequestHeader("Authorization") String jwt,    @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
                                                            @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
                                                            @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,

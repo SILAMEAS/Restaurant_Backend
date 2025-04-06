@@ -1,6 +1,6 @@
 package com.sila.controller.api;
 
-import com.sila.dto.request.CategoryReq;
+import com.sila.dto.request.CategoryRequest;
 import com.sila.model.Category;
 import com.sila.service.CategoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +18,7 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
     @PostMapping("/admin/categories")
-    public ResponseEntity<Category> createCategory(@RequestHeader("Authorization") String jwt, @RequestBody CategoryReq categoryReq) throws Exception {
+    public ResponseEntity<Category> createCategory(@RequestHeader("Authorization") String jwt, @RequestBody CategoryRequest categoryReq) throws Exception {
         return new ResponseEntity<>(categoryService.createCategory(jwt,categoryReq.getName()), HttpStatus.CREATED);
     }
     @GetMapping("/categories/restaurant/{restaurantId}")

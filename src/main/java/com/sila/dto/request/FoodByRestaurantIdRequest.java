@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FoodByRestaurantIdReq {
+public class FoodByRestaurantIdRequest {
     @NotEmpty
     Long restaurantId;
     @NotEmpty

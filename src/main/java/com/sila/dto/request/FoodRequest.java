@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class FoodReq {
+public class FoodRequest {
     private  String name;
     private String description;
     private Long price;
@@ -19,6 +19,4 @@ public class FoodReq {
     private boolean vegetarian;
     private boolean seasonal;
     private boolean available;
-//    private List<IngredientsItem> ingredients;
-
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ItemCardReq {
+public class ItemCardRequest {
     private Long foodId;
     private Integer qty;
     private List<String> ingredients;

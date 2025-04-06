@@ -1,6 +1,6 @@
 package com.sila.controller.admin;
 
-import com.sila.dto.request.CategoryReq;
+import com.sila.dto.request.CategoryRequest;
 import com.sila.model.Category;
 import com.sila.service.CategoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminCategoryController {
     private final CategoryService categoryService;
     @PutMapping("{categoryId}")
-    public ResponseEntity<Category> editCategory(@RequestHeader("Authorization") String jwt, @RequestBody CategoryReq categoryReq, @PathVariable Long categoryId) throws Exception {
+    public ResponseEntity<Category> editCategory(@RequestHeader("Authorization") String jwt, @RequestBody CategoryRequest categoryReq, @PathVariable Long categoryId) throws Exception {
         return new ResponseEntity<>(categoryService.editCategory(jwt,categoryReq.getName(),categoryId), HttpStatus.CREATED);
     }
     @DeleteMapping("{category_id}")

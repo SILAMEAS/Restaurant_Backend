@@ -1,10 +1,10 @@
-package com.sila.lmp;
+package com.sila.service.lmp;
 
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
-import com.sila.dto.request.RestaurantReq;
-import com.sila.dto.request.SearchReq;
+import com.sila.dto.request.RestaurantRequest;
+import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FavoriteResponse;
-import com.sila.dto.response.RestaurantRes;
+import com.sila.dto.response.RestaurantResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
 import com.sila.model.Favorite;
@@ -28,7 +28,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,7 +45,7 @@ public class RestaurantImp implements RestaurantService {
   private final FavoriteRepository favoriteRepository;
 
   @Override
-  public Restaurant createRestaurant(RestaurantReq restaurantReq)  {
+  public Restaurant createRestaurant(RestaurantRequest restaurantReq)  {
     var userId=UserContext.getUser().getId();
     boolean existsByOwner=restaurantRepository.existsByOwnerId(userId);
     if(existsByOwner){
@@ -65,7 +64,7 @@ public class RestaurantImp implements RestaurantService {
   }
 
   @Override
-  public Restaurant updateRestaurant(RestaurantReq updateRestaurant, Long restaurantId) throws Exception {
+  public Restaurant updateRestaurant(RestaurantRequest updateRestaurant, Long restaurantId) throws Exception {
     var userId=UserContext.getUser().getId();
     Restaurant restaurantExit = handleFindRestaurantById(restaurantId);
     if (!isUserOwnerOfRestaurant(userId, restaurantId)) {
@@ -106,11 +105,11 @@ public class RestaurantImp implements RestaurantService {
   }
 
   @Override
-  public EntityResponseHandler<RestaurantRes> searchRestaurant(Pageable pageable,
-      SearchReq searchReq) {
+  public EntityResponseHandler<RestaurantResponse> searchRestaurant(Pageable pageable,
+                                                                    SearchRequest searchReq) {
     var restaurantPage=restaurantRepository.findAll(FilterImpRestaurant.filterRestaurant(searchReq), pageable);
     return new EntityResponseHandler<>(restaurantPage
-        .map(restaurant -> this.modelMapper.map(restaurant, RestaurantRes.class)));
+        .map(restaurant -> this.modelMapper.map(restaurant, RestaurantResponse.class)));
   }
   @Override
   public List<FavoriteResponse>  addRestaurantToFavorites(Long restaurantId, User user) throws Exception {

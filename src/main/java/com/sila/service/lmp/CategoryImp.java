@@ -1,4 +1,4 @@
-package com.sila.lmp;
+package com.sila.service.lmp;
 
 import com.sila.exception.BadRequestException;
 import com.sila.model.Category;

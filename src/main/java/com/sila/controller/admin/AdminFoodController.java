@@ -1,7 +1,7 @@
 package com.sila.controller.admin;
 
-import com.sila.dto.request.FoodReq;
-import com.sila.dto.response.FoodRes;
+import com.sila.dto.request.FoodRequest;
+import com.sila.dto.response.FoodResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.model.Category;
 import com.sila.model.Food;
@@ -36,7 +36,7 @@ public class AdminFoodController {
     @PostMapping
     public ResponseEntity<Food> createFood(
             @RequestHeader("Authorization") String jwt,
-            @Valid @RequestBody FoodReq req) throws Exception {
+            @Valid @RequestBody FoodRequest req) throws Exception {
 
         userService.findUserByJwtToken(jwt);
         Restaurant restaurant = restaurantService.findRestaurantById(req.getRestaurantId());
@@ -69,10 +69,10 @@ public class AdminFoodController {
     }
 
     @PutMapping("/{foodId}")
-    public ResponseEntity<FoodRes> updateFood(
+    public ResponseEntity<FoodResponse> updateFood(
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long foodId,
-            @Valid @RequestBody FoodReq req) throws Exception {
+            @Valid @RequestBody FoodRequest req) throws Exception {
 
         User user = userService.findUserByJwtToken(jwt);
         Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
@@ -83,7 +83,7 @@ public class AdminFoodController {
         }
 
         Food updatedFood = foodService.updateFood(req, foodId);
-        FoodRes response = modelMapper.map(updatedFood, FoodRes.class);
+        FoodResponse response = modelMapper.map(updatedFood, FoodResponse.class);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

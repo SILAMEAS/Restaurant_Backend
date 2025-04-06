@@ -1,9 +1,9 @@
 package com.sila.controller.admin;
 
-import com.sila.dto.response.RestaurantRes;
+import com.sila.dto.response.RestaurantResponse;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
-import com.sila.dto.request.RestaurantReq;
+import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.response.MessageResponse;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
@@ -31,13 +31,13 @@ public class AdminRestaurantController {
         return new ResponseEntity<>("Can access to /api/admin/restaurant/get",HttpStatus.OK);
     }
     @PostMapping()
-    public ResponseEntity<Restaurant> createRestaurant(@Valid @RequestBody RestaurantReq restaurantReq) throws Exception {
+    public ResponseEntity<Restaurant> createRestaurant(@Valid @RequestBody RestaurantRequest restaurantReq) throws Exception {
         return new ResponseEntity<>(restaurantService.createRestaurant(restaurantReq), HttpStatus.CREATED);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<RestaurantRes> updateRestaurant(@RequestBody RestaurantReq restaurantReq, @PathVariable Long id) throws Exception {
+    public ResponseEntity<RestaurantResponse> updateRestaurant(@RequestBody RestaurantRequest restaurantReq, @PathVariable Long id) throws Exception {
         Restaurant restaurant=restaurantService.updateRestaurant(restaurantReq,id);
-        return new ResponseEntity<>(this.modelMapper.map(restaurant,RestaurantRes.class), HttpStatus.OK);
+        return new ResponseEntity<>(this.modelMapper.map(restaurant, RestaurantResponse.class), HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> deleteRestaurant(@RequestHeader("Authorization") String jwt,@PathVariable Long id) throws Exception {

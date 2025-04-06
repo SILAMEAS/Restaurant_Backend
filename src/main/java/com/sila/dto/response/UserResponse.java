@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 @Builder
-public class UserRes implements Serializable {
+public class UserResponse implements Serializable {
     private Long id;
     private String profile;
     private String fullName;

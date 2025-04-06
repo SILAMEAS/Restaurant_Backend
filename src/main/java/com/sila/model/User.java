@@ -1,8 +1,6 @@
 package com.sila.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sila.dto.response.RestaurantFavRes;
-import com.sila.dto.response.RestaurantRes;
 import com.sila.utlis.enums.USER_ROLE;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

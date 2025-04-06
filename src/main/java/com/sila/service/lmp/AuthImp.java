@@ -1,8 +1,8 @@
-package com.sila.lmp;
+package com.sila.service.lmp;
 
 import com.sila.config.CustomerUserDetailsService;
 import com.sila.config.JwtProvider;
-import com.sila.dto.request.LoginReq;
+import com.sila.dto.request.LoginRequest;
 import com.sila.dto.response.AuthResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
@@ -22,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collection;
 
@@ -65,7 +64,7 @@ public class AuthImp implements AuthService {
 
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
-    public ResponseEntity<AuthResponse> login(LoginReq req) throws Exception {
+    public ResponseEntity<AuthResponse> login(LoginRequest req) throws Exception {
         Authentication authentication = authenticate(req.getEmail(), req.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

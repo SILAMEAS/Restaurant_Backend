@@ -1,10 +1,10 @@
-package com.sila.lmp;
+package com.sila.service.lmp;
 
 import com.sila.config.JwtProvider;
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
-import com.sila.dto.request.UserReq;
+import com.sila.dto.request.UserRequest;
 import com.sila.dto.response.FavoriteResponse;
-import com.sila.dto.response.UserRes;
+import com.sila.dto.response.UserResponse;
 import com.sila.specifcation.UserSpecification;
 import com.sila.exception.BadRequestException;
 import com.sila.model.User;
@@ -56,16 +56,16 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public EntityResponseHandler<UserRes> listUser(Pageable pageable, String search) throws Exception {
+    public EntityResponseHandler<UserResponse> listUser(Pageable pageable, String search) throws Exception {
         Specification<User> spec = Specification.where(null);
         if(search!=null){
             spec=spec.and(UserSpecification.search(search));
         }
-      return new EntityResponseHandler<>(userRepository.findAll(spec,pageable).map(re->this.modelMapper.map(re,UserRes.class)));
+      return new EntityResponseHandler<>(userRepository.findAll(spec,pageable).map(re->this.modelMapper.map(re, UserResponse.class)));
     }
 
     @Override
-    public UserRes updateProfile(User user, UserReq userReq) throws Exception {
+    public UserResponse updateProfile(User user, UserRequest userReq) throws Exception {
         if(!userReq.getProfile().isEmpty()){
             user.setProfile(userReq.getProfile());
 
@@ -76,17 +76,17 @@ public class UserServiceImp implements UserService {
         if(!userReq.getFullName().isEmpty()){
             user.setFullName(userReq.getFullName());
         }
-        return this.modelMapper.map(userRepository.save(user),UserRes.class);
+        return this.modelMapper.map(userRepository.save(user), UserResponse.class);
     }
 
     @Transactional
     @Override
-    public UserRes getUserProfile() throws Exception {
+    public UserResponse getUserProfile() throws Exception {
         User userFromContext = UserContext.getUser(); // JWT-based context
         User user = userRepository.findByIdWithFavorites(userFromContext.getId())
                 .orElseThrow(() -> new Exception("User not found"));
 
-        UserRes userRes = this.modelMapper.map(user,UserRes.class);
+        UserResponse userRes = this.modelMapper.map(user, UserResponse.class);
         userRes.setFavourites(user.getFavourites().stream()
                 .map(fav -> new FavoriteResponse(fav.getId(), fav.getName(), fav.getDescription(),user.getId(),fav.getRestaurant().getId()))
                 .collect(Collectors.toList()));

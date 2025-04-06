@@ -1,7 +1,7 @@
 package com.sila.specifcation.filterImp;
 
-import com.sila.dto.request.RestaurantReq;
-import com.sila.dto.request.SearchReq;
+import com.sila.dto.request.RestaurantRequest;
+import com.sila.dto.request.SearchRequest;
 import com.sila.specifcation.RestaurantSpecification;
 import com.sila.model.Address;
 import com.sila.model.Restaurant;
@@ -25,14 +25,14 @@ public class FilterImpRestaurant {
     private AddressRepository addressRepository;
     private UserService userService;
     private static RestaurantService restaurantService;
-    public static Specification<Restaurant> filterRestaurant(SearchReq searchReq){
+    public static Specification<Restaurant> filterRestaurant(SearchRequest searchReq){
         Specification<Restaurant> spec = Specification.where(null);
         if (Objects.nonNull(searchReq.getSearch())) {
             spec = spec.and(RestaurantSpecification.likeNameOrDescription(searchReq.getSearch()));
         }
         return spec;
     }
-    public Restaurant handleCreateRestaurant(RestaurantReq req, Long userId) throws Exception {
+    public Restaurant handleCreateRestaurant(RestaurantRequest req, Long userId) throws Exception {
         Address address = addressRepository.save(req.getAddress());
         Restaurant restaurant = new Restaurant();
         restaurant.setAddress(address);
@@ -48,7 +48,7 @@ public class FilterImpRestaurant {
         return restaurant;
     }
 
-    public static Restaurant handleUpdateRestaurant(RestaurantReq updateRestaurant) throws Exception {
+    public static Restaurant handleUpdateRestaurant(RestaurantRequest updateRestaurant) throws Exception {
         Restaurant restaurant = restaurantService.findRestaurantById(updateRestaurant.getId());
         if (!Objects.isNull(updateRestaurant.getName())) {
             restaurant.setName(updateRestaurant.getName());

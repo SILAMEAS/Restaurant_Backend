@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryReq {
+public class CategoryRequest {
     @NotEmpty
     private String name;
     private String key;

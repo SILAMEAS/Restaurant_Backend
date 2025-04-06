@@ -4,7 +4,7 @@ import com.sila.model.Address;
 import lombok.Data;
 
 @Data
-public class OrderReq {
+public class OrderRequest {
     private Long restaurantId;
     private Address deliveryAddress;
 }

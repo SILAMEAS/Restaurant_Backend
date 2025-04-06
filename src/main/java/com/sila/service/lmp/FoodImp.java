@@ -1,9 +1,9 @@
-package com.sila.lmp;
+package com.sila.service.lmp;
 
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
-import com.sila.dto.request.FoodReq;
-import com.sila.dto.request.SearchReq;
-import com.sila.dto.response.FoodRes;
+import com.sila.dto.request.FoodRequest;
+import com.sila.dto.request.SearchRequest;
+import com.sila.dto.response.FoodResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.specifcation.filterImp.FilterImpFood;
 import com.sila.model.Category;
@@ -30,7 +30,7 @@ public class FoodImp implements FoodService {
   private final ModelMapper modelMapper;
 
   @Override
-  public Food createFood(FoodReq food, Category category, Restaurant restaurant)
+  public Food createFood(FoodRequest food, Category category, Restaurant restaurant)
       throws Exception {
     Food food_create = Food.builder().category(category).name(food.getName()).
             restaurant(restaurant).description(food.getDescription()).images(food.getImages()).
@@ -43,7 +43,7 @@ public class FoodImp implements FoodService {
   }
 
   @Override
-  public Food updateFood(FoodReq foodReq,Long foodId) throws Exception {
+  public Food updateFood(FoodRequest foodReq, Long foodId) throws Exception {
     Category category= categoryRepository.findById(foodReq.getCategoryId()).orElseThrow(()->new BadRequestException("category not found"));
     Food food=findFoodById(foodId);
     food=Food.builder().name(Objects.isNull(foodReq.getName())?foodReq.getName():food.getName()).description(foodReq.getDescription()).images(foodReq.getImages()).build();
@@ -101,15 +101,15 @@ public class FoodImp implements FoodService {
   }
 
   @Override
-  public EntityResponseHandler<FoodRes> listFoods(Pageable pageable, SearchReq searchReq,String filterBy) {
+  public EntityResponseHandler<FoodResponse> listFoods(Pageable pageable, SearchRequest searchReq, String filterBy) {
     var foodPage = foodRepository.findAll(FilterImpFood.filterFood(searchReq,filterBy), pageable);
     return new EntityResponseHandler<>(foodPage
-            .map(fs->this.modelMapper.map(fs,FoodRes.class)));
+            .map(fs->this.modelMapper.map(fs, FoodResponse.class)));
   }
   @Override
-  public EntityResponseHandler<FoodRes> listFoodsByRestaurantId(Long restaurantId,Pageable pageable, SearchReq searchReq,String filterBy) {
+  public EntityResponseHandler<FoodResponse> listFoodsByRestaurantId(Long restaurantId, Pageable pageable, SearchRequest searchReq, String filterBy) {
     var foodPage = foodRepository.findAll(FilterImpFood.filterFoodByRestaurantId(restaurantId,searchReq,filterBy), pageable);
     return new EntityResponseHandler<>(foodPage
-            .map(fs->this.modelMapper.map(fs,FoodRes.class)));
+            .map(fs->this.modelMapper.map(fs, FoodResponse.class)));
   }
 }

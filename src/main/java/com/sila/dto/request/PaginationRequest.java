@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Sort;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchReq {
-  private String search;
-  private Boolean sessional;
-  private Boolean vegeterain;
-
+public class PaginationRequest {
+    Integer pageNo;
+    Integer pageSize;
+    String sortBy;
+    Sort.Direction sortOrder;
 }

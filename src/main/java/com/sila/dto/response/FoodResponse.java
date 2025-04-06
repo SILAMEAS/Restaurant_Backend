@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class FoodRes implements Serializable {
+public class FoodResponse implements Serializable {
   private Long id;
   @NotEmpty
   private String name;

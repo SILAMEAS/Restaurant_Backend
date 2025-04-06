@@ -1,6 +1,6 @@
 package com.sila.specifcation.filterImp;
 
-import com.sila.dto.request.SearchReq;
+import com.sila.dto.request.SearchRequest;
 import com.sila.specifcation.FoodSpecification;
 import com.sila.model.Food;
 import com.sila.repository.AddressRepository;
@@ -21,7 +21,7 @@ public class FilterImpFood {
     private AddressRepository addressRepository;
     private UserService userService;
 
-    public static Specification<Food> filterFood(SearchReq searchReq, String filterBy) {
+    public static Specification<Food> filterFood(SearchRequest searchReq, String filterBy) {
         Specification<Food> spec = Specification.where(null);
         if (Objects.nonNull(searchReq.getSearch())) {
             spec = spec.and(FoodSpecification.search(searchReq.getSearch()));
@@ -38,7 +38,7 @@ public class FilterImpFood {
         return spec;
     }
 
-    public static Specification<Food> filterFoodByRestaurantId(Long restaurantId, SearchReq searchReq, String filterBy) {
+    public static Specification<Food> filterFoodByRestaurantId(Long restaurantId, SearchRequest searchReq, String filterBy) {
         Specification<Food> spec = Specification.where(null);
         if (Objects.nonNull(filterBy)) {
             spec = spec.and(FoodSpecification.filterCategory(filterBy));
