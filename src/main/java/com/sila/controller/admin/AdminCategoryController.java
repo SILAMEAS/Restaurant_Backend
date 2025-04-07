@@ -1,6 +1,7 @@
 package com.sila.controller.admin;
 
 import com.sila.dto.request.CategoryRequest;
+import com.sila.dto.response.MessageResponse;
 import com.sila.exception.NotFoundException;
 import com.sila.model.Category;
 import com.sila.service.CategoryService;
@@ -23,11 +24,7 @@ public class AdminCategoryController {
         return new ResponseEntity<>(categoryService.editCategory(categoryReq.getName(),categoryId), HttpStatus.CREATED);
     }
     @DeleteMapping("{categoryId}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) throws Exception {
-        Optional<Category> category=categoryService.deleteCategoryById(categoryId);
-        if(category.isPresent()){
-            return new ResponseEntity<>("Category id : "+categoryId+" deleted", HttpStatus.CREATED);
-        }
-        throw new NotFoundException("Not Found Category with this id "+categoryId);
+    public ResponseEntity<MessageResponse> deleteCategory(@PathVariable Long categoryId) throws Exception {
+        return new ResponseEntity<>(categoryService.deleteCategoryById(categoryId), HttpStatus.CREATED);
     }
 }

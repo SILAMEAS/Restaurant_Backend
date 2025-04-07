@@ -1,5 +1,7 @@
 package com.sila.service.lmp;
 
+import com.sila.dto.response.MessageResponse;
+import com.sila.exception.AccessDeniedException;
 import com.sila.exception.BadRequestException;
 import com.sila.model.Category;
 import com.sila.model.Restaurant;
@@ -9,16 +11,13 @@ import com.sila.repository.FoodRepository;
 import com.sila.repository.RestaurantRepository;
 import com.sila.service.CategoryService;
 import com.sila.service.FoodService;
-import com.sila.service.UserService;
 import com.sila.utlis.context.UserContext;
 import com.sila.utlis.enums.USER_ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -26,49 +25,54 @@ import java.util.Optional;
 public class CategoryImp implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final RestaurantRepository restaurantRepository;
-    private final UserService userService;
     private final FoodService foodService;
     private final FoodRepository foodRepository;
 
     @Override
-    public Category createCategory(String jwt,String name) {
+    public Category createCategory(String jwt, String name) {
         User user = UserContext.getUser();
         Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
         if (categoryRepository.existsByNameAndRestaurant(name, restaurant)) {
             throw new BadRequestException("Category name already exists for this restaurant");
         }
-        Category category =Category.builder().name(name).restaurant(restaurant).build();
+        Category category = Category.builder().name(name).restaurant(restaurant).build();
         return categoryRepository.save(category);
     }
 
     @Override
-    public Category editCategory( String name, Long categoryId) {
+    public Category editCategory(String name, Long categoryId) {
         USER_ROLE user = UserContext.getUser().getRole();
-        if(user.equals(USER_ROLE.ROLE_CUSTOMER)){
+        if (user.equals(USER_ROLE.ROLE_CUSTOMER)) {
             throw new AccessDeniedException("Customer do not have permission to change category");
         }
         Category category = findCategoryById(categoryId);
-        if(!name.isEmpty()){
+        if (!name.isEmpty()) {
             category.setName(name);
         }
         return categoryRepository.save(category);
     }
-    public Category findCategoryById(Long categoryId){
-        return categoryRepository.findById(categoryId).orElseThrow(()->new BadRequestException("category not found"));
+
+    public Category findCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException("category not found"));
     }
+
     @Override
-    public List<Category> listCategoriesByRestaurantId(Long restaurant_id) {
-        return categoryRepository.findByRestaurantId(restaurant_id);
+    public List<Category> listCategoriesByRestaurantId(Long restaurantId) {
+        return categoryRepository.findByRestaurantId(restaurantId);
     }
+
     @Override
-    public Optional<Category> deleteCategoryById(Long categoryId) throws Exception {
+    public MessageResponse deleteCategoryById(Long categoryId) throws Exception {
         findCategoryById(categoryId);
-        var isExitFoodInCategory = foodRepository.findAllByCategoryId(categoryId);
-        if(!isExitFoodInCategory.isEmpty()){
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException("category not found"));
+        var foods = foodRepository.findAllByCategoryId(category.getId());
+        if (!foods.isEmpty()) {
             foodService.deleteFoodByCategoryId(categoryId);
         }
         categoryRepository.deleteById(categoryId);
-        return null;
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setMessage("Category Id : " + categoryId + " successfully!");
+        return messageResponse;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.sila.service;
 
+import com.sila.dto.response.MessageResponse;
 import com.sila.model.Category;
 
 import java.util.List;
@@ -10,5 +11,5 @@ public interface CategoryService {
     List<Category> listCategoriesByRestaurantId(Long restaurantId);
     Category editCategory( String name, Long categoryId);
     Category findCategoryById(Long categoryId);
-    Optional<Category> deleteCategoryById(Long categoryId) throws Exception;
+    MessageResponse deleteCategoryById(Long categoryId) throws Exception;
 }

@@ -5,6 +5,7 @@ import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FavoriteResponse;
 import com.sila.dto.response.RestaurantResponse;
+import com.sila.exception.AccessDeniedException;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
 import com.sila.model.Favorite;
@@ -24,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
