@@ -1,6 +1,7 @@
 package com.sila.controller.admin;
 
 import com.sila.dto.request.CategoryRequest;
+import com.sila.exception.NotFoundException;
 import com.sila.model.Category;
 import com.sila.service.CategoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Tag(name = "Admin Category Controller", description = "Admin operations related to category")
 @RestController
 @RequestMapping("api/admin/categories/")
@@ -16,12 +19,15 @@ import org.springframework.web.bind.annotation.*;
 public class AdminCategoryController {
     private final CategoryService categoryService;
     @PutMapping("{categoryId}")
-    public ResponseEntity<Category> editCategory(@RequestHeader("Authorization") String jwt, @RequestBody CategoryRequest categoryReq, @PathVariable Long categoryId) throws Exception {
-        return new ResponseEntity<>(categoryService.editCategory(jwt,categoryReq.getName(),categoryId), HttpStatus.CREATED);
+    public ResponseEntity<Category> editCategory(@RequestBody CategoryRequest categoryReq, @PathVariable Long categoryId) {
+        return new ResponseEntity<>(categoryService.editCategory(categoryReq.getName(),categoryId), HttpStatus.CREATED);
     }
-    @DeleteMapping("{category_id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long category_id) throws Exception {
-        categoryService.deleteCategoryById(category_id);
-        return new ResponseEntity<>("Category id : "+category_id+" deleted", HttpStatus.CREATED);
+    @DeleteMapping("{categoryId}")
+    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) throws Exception {
+        Optional<Category> category=categoryService.deleteCategoryById(categoryId);
+        if(category.isPresent()){
+            return new ResponseEntity<>("Category id : "+categoryId+" deleted", HttpStatus.CREATED);
+        }
+        throw new NotFoundException("Not Found Category with this id "+categoryId);
     }
 }

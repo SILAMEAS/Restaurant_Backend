@@ -11,11 +11,14 @@ import com.sila.service.CategoryService;
 import com.sila.service.FoodService;
 import com.sila.service.UserService;
 import com.sila.utlis.context.UserContext;
+import com.sila.utlis.enums.USER_ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -39,8 +42,11 @@ public class CategoryImp implements CategoryService {
     }
 
     @Override
-    public Category editCategory(String jwt, String name, Long categoryId) throws Exception {
-        userService.findUserByJwtToken(jwt);
+    public Category editCategory( String name, Long categoryId) {
+        USER_ROLE user = UserContext.getUser().getRole();
+        if(user.equals(USER_ROLE.ROLE_CUSTOMER)){
+            throw new AccessDeniedException("Customer do not have permission to change category");
+        }
         Category category = findCategoryById(categoryId);
         if(!name.isEmpty()){
             category.setName(name);
@@ -55,13 +61,14 @@ public class CategoryImp implements CategoryService {
         return categoryRepository.findByRestaurantId(restaurant_id);
     }
     @Override
-    public void deleteCategoryById(Long category_id) throws Exception {
-        findCategoryById(category_id);
-        var isExitFoodInCategory = foodRepository.findAllByCategoryId(category_id);
+    public Optional<Category> deleteCategoryById(Long categoryId) throws Exception {
+        findCategoryById(categoryId);
+        var isExitFoodInCategory = foodRepository.findAllByCategoryId(categoryId);
         if(!isExitFoodInCategory.isEmpty()){
-            foodService.deleteFoodByCategoryId(category_id);
+            foodService.deleteFoodByCategoryId(categoryId);
         }
-        categoryRepository.deleteById(category_id);
+        categoryRepository.deleteById(categoryId);
+        return null;
     }
 
 }

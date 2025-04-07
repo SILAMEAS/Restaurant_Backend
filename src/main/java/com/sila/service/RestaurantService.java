@@ -17,7 +17,7 @@ public interface RestaurantService {
     Restaurant updateRestaurant(RestaurantRequest updateRestaurant, Long restaurantId) throws Exception;
     void deleteRestaurant(Long id)throws Exception;
     Restaurant findRestaurantById(Long id) throws Exception;
-    Restaurant getRestaurantByUserId(Long userId) throws Exception;
+    Restaurant getRestaurantByUserId() throws Exception;
     List<FavoriteResponse> addRestaurantToFavorites(Long restaurantId, User user)throws Exception;
     Restaurant updateRestaurantStatus(Long restaurantId)throws Exception;
     EntityResponseHandler<RestaurantResponse>  searchRestaurant(Pageable pageable, SearchRequest searchReq);

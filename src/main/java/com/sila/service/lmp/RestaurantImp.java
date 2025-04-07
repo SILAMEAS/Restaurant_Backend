@@ -96,7 +96,8 @@ public class RestaurantImp implements RestaurantService {
   }
 
   @Override
-  public Restaurant getRestaurantByUserId(Long userId) {
+  public Restaurant getRestaurantByUserId() {
+    var userId=UserContext.getUser().getId();
     Restaurant restaurant= restaurantRepository.findByOwnerId(userId);
     if(Objects.isNull(restaurant)){
       throw new BadRequestException("user don't have restaurant");
