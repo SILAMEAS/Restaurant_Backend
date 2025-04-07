@@ -5,7 +5,7 @@ import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FoodResponse;
 import com.sila.service.FoodService;
 import com.sila.service.UserService;
-import com.sila.utlis.PaginationDefaults;
+import com.sila.utlis.contants.PaginationDefaults;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

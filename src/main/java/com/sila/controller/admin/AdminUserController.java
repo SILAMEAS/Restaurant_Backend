@@ -3,7 +3,7 @@ package com.sila.controller.admin;
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.response.UserResponse;
 import com.sila.service.UserService;
-import com.sila.utlis.PaginationDefaults;
+import com.sila.utlis.contants.PaginationDefaults;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

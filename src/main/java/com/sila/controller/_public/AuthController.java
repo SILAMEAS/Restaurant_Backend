@@ -1,4 +1,4 @@
-package com.sila.controller.auth;
+package com.sila.controller._public;
 
 import com.sila.dto.request.LoginRequest;
 import com.sila.dto.response.AuthResponse;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Tag(name = "Auth Controller", description = "Operations related to Auth")
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {

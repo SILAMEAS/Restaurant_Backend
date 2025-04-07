@@ -62,7 +62,6 @@ public class AuthImp implements AuthService {
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(newUser);
 
-        log.info("User registered with email: {}", newUser.getEmail());
 
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
@@ -74,8 +73,6 @@ public class AuthImp implements AuthService {
         String jwt = jwtProvider.generateToken(authentication); // Access token
         String refreshToken = jwtProvider.generateRefreshToken(authentication); // Generate refresh token
 
-        log.info("Generated Access Token: {}", jwt);
-        log.info("Generated Refresh Token: {}", refreshToken);
 
         User user = userService.findUserByEmail(req.getEmail());
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -88,14 +85,12 @@ public class AuthImp implements AuthService {
         response.setRole(USER_ROLE.valueOf(role));
         response.setMessage("Login successfully");
 
-        log.info("User logged in: {}", user.getEmail());
 
         return ResponseEntity.ok(response); // Return response
     }
 
 
     public ResponseEntity<AuthResponse> refreshToken(String refreshToken) {
-        log.info("Received refresh token: {}", refreshToken);
 
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             String email = jwtProvider.getEmailFromJwtToken(refreshToken);

@@ -1,4 +1,4 @@
-package com.sila.config;
+package com.sila.utlis.contants;
 
 public class JwtConstant {
     public static final String SECRET_KEY = "asdklfjaasdfasdfasdfsdlsdkfjloaiwnea,f.nczosdxc njsdl,fkjhsalksdfkhjasdkfhasdhfasdfasdfasdfasdfasdfasfasdfsdfasdfasdf";
