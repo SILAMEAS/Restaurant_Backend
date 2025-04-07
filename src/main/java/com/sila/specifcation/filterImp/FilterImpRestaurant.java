@@ -2,13 +2,13 @@ package com.sila.specifcation.filterImp;
 
 import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.request.SearchRequest;
-import com.sila.specifcation.RestaurantSpecification;
 import com.sila.model.Address;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
 import com.sila.repository.AddressRepository;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
+import com.sila.specifcation.RestaurantSpecification;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +17,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -25,13 +26,15 @@ public class FilterImpRestaurant {
     private AddressRepository addressRepository;
     private UserService userService;
     private static RestaurantService restaurantService;
-    public static Specification<Restaurant> filterRestaurant(SearchRequest searchReq){
+
+    public static Specification<Restaurant> filterRestaurant(SearchRequest searchReq) {
         Specification<Restaurant> spec = Specification.where(null);
         if (Objects.nonNull(searchReq.getSearch())) {
             spec = spec.and(RestaurantSpecification.likeNameOrDescription(searchReq.getSearch()));
         }
         return spec;
     }
+
     public Restaurant handleCreateRestaurant(RestaurantRequest req, Long userId) throws Exception {
         Address address = addressRepository.save(req.getAddress());
         Restaurant restaurant = new Restaurant();

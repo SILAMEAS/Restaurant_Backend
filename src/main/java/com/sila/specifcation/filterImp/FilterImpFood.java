@@ -1,10 +1,10 @@
 package com.sila.specifcation.filterImp;
 
 import com.sila.dto.request.SearchRequest;
-import com.sila.specifcation.FoodSpecification;
 import com.sila.model.Food;
 import com.sila.repository.AddressRepository;
 import com.sila.service.UserService;
+import com.sila.specifcation.FoodSpecification;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

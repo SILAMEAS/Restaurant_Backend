@@ -2,7 +2,12 @@ package com.sila.dto.response;
 
 import com.sila.model.Address;
 import com.sila.utlis.enums.USER_ROLE;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.List;

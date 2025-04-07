@@ -5,11 +5,11 @@ import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.request.UserRequest;
 import com.sila.dto.response.FavoriteResponse;
 import com.sila.dto.response.UserResponse;
-import com.sila.specifcation.UserSpecification;
 import com.sila.exception.BadRequestException;
 import com.sila.model.User;
 import com.sila.repository.UserRepository;
 import com.sila.service.UserService;
+import com.sila.specifcation.UserSpecification;
 import com.sila.utlis.context.UserContext;
 import com.sila.utlis.enums.USER_ROLE;
 import jakarta.transaction.Transactional;
@@ -29,6 +29,7 @@ public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final ModelMapper modelMapper;
+
     @Override
     public User findUserByJwtToken(String jwt) throws Exception {
         String email = jwtProvider.getEmailFromJwtToken(jwt);
@@ -43,37 +44,38 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User findUserByEmail(String email) throws Exception {
-        User foundUser=userRepository.findByEmail(email);;
-        if(foundUser==null){
+        User foundUser = userRepository.findByEmail(email);
+        ;
+        if (foundUser == null) {
             throw new BadRequestException("User not found");
         }
         return foundUser;
     }
 
     @Override
-    public User findUserById(Long userId){
-        return  userRepository.findById(userId).orElseThrow(()->new BadRequestException("User not found"));
+    public User findUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new BadRequestException("User not found"));
     }
 
     @Override
     public EntityResponseHandler<UserResponse> listUser(Pageable pageable, String search) throws Exception {
         Specification<User> spec = Specification.where(null);
-        if(search!=null){
-            spec=spec.and(UserSpecification.search(search));
+        if (search != null) {
+            spec = spec.and(UserSpecification.search(search));
         }
-      return new EntityResponseHandler<>(userRepository.findAll(spec,pageable).map(re->this.modelMapper.map(re, UserResponse.class)));
+        return new EntityResponseHandler<>(userRepository.findAll(spec, pageable).map(re -> this.modelMapper.map(re, UserResponse.class)));
     }
 
     @Override
     public UserResponse updateProfile(User user, UserRequest userReq) throws Exception {
-        if(!userReq.getProfile().isEmpty()){
+        if (!userReq.getProfile().isEmpty()) {
             user.setProfile(userReq.getProfile());
 
         }
 //        if(!userReq.getAddresses().isEmpty()){
 //            user.setAddresses(userReq.getAddresses());
 //        }
-        if(!userReq.getFullName().isEmpty()){
+        if (!userReq.getFullName().isEmpty()) {
             user.setFullName(userReq.getFullName());
         }
         return this.modelMapper.map(userRepository.save(user), UserResponse.class);
@@ -88,12 +90,11 @@ public class UserServiceImp implements UserService {
 
         UserResponse userRes = this.modelMapper.map(user, UserResponse.class);
         userRes.setFavourites(user.getFavourites().stream()
-                .map(fav -> new FavoriteResponse(fav.getId(), fav.getName(), fav.getDescription(),user.getId(),fav.getRestaurant().getId()))
+                .map(fav -> new FavoriteResponse(fav.getId(), fav.getName(), fav.getDescription(), user.getId(), fav.getRestaurant().getId()))
                 .collect(Collectors.toList()));
 
         return userRes;
     }
-
 
 
 }

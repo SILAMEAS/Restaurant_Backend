@@ -1,7 +1,6 @@
 package com.sila.config;
 
 import com.sila.utlis.context.UserContextFilter;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,7 +43,9 @@ public class AppConfig {
         return http.build();
     }
 
-/** Store Information fo User Login */
+    /**
+     * Store Information fo User Login
+     */
     public FilterRegistrationBean<UserContextFilter> userContextFilter(UserContextFilter filter) {
         FilterRegistrationBean<UserContextFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(filter);
@@ -54,9 +55,9 @@ public class AppConfig {
 
     private CorsConfigurationSource corsConfigrationSource() {
         return request -> {
-            CorsConfiguration cfg=new CorsConfiguration();
-            cfg.setAllowedOrigins(List.of("http://localhost:3000","https://sila-restrurant.vercel.app",
-                    "http://localhost:3030","http://192.168.1.8:3030","http://192.168.1.8:3000"));
+            CorsConfiguration cfg = new CorsConfiguration();
+            cfg.setAllowedOrigins(List.of("http://localhost:3000", "https://sila-restrurant.vercel.app",
+                    "http://localhost:3030", "http://192.168.1.8:3030", "http://192.168.1.8:3000"));
             cfg.setAllowedMethods(Collections.singletonList("*"));
             cfg.setAllowCredentials(true);
             cfg.setAllowedHeaders(Collections.singletonList("*"));
@@ -65,8 +66,9 @@ public class AppConfig {
             return cfg;
         };
     }
+
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

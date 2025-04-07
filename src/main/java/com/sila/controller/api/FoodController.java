@@ -14,7 +14,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "User Food Controller", description = "User operations related to Food")
 @RestController
@@ -22,45 +27,24 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class FoodController {
-  private final FoodService foodService;
-  private final UserService userService;
-@GetMapping
-public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoods(
-        @RequestHeader("Authorization") String jwt,
-        @RequestParam(required = false) boolean vegetarian,
-        @RequestParam(required = false) boolean seasanal,
-        @RequestParam(required = false) String filterBy,
-        @RequestParam(required = false) String search,
-        @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
-        @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
-        @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
-        @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder)
-        throws Exception {
+    private final FoodService foodService;
+    private final UserService userService;
+
+    @GetMapping
+    public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoods(@RequestHeader("Authorization") String jwt, @RequestParam(required = false) boolean vegetarian, @RequestParam(required = false) boolean seasanal, @RequestParam(required = false) String filterBy, @RequestParam(required = false) String search, @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo, @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize, @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy, @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder) throws Exception {
 
         userService.findUserByJwtToken(jwt);
-        Pageable pageable = PageRequest.of(pageNo-1, pageSize,Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()),sortBy));
-        var foodResEntityResponseHandler=foodService.listFoods(pageable, new SearchRequest(search,seasanal,vegetarian), filterBy);
-        return new ResponseEntity<>(foodResEntityResponseHandler,
-                HttpStatus.OK);
-}
-  @GetMapping("restaurant/{restaurantId}")
-  public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoodByRestaurantId(
-          @RequestHeader("Authorization") String jwt,
-          @RequestParam(required = false) boolean vegetarian,
-          @RequestParam(required = false) boolean seasanal,
-          @RequestParam(required = false) String filterBy,
-          @RequestParam(required = false) String search,
-          @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
-          @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
-          @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
-          @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder,
-          @PathVariable Long restaurantId)
-          throws Exception {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()), sortBy));
+        var foodResEntityResponseHandler = foodService.listFoods(pageable, new SearchRequest(search, seasanal, vegetarian), filterBy);
+        return new ResponseEntity<>(foodResEntityResponseHandler, HttpStatus.OK);
+    }
 
-    userService.findUserByJwtToken(jwt);
-    Pageable pageable = PageRequest.of(pageNo-1, pageSize,Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()),sortBy));
-    var foodResEntityResponseHandler=foodService.listFoodsByRestaurantId(restaurantId,pageable, new SearchRequest(search,seasanal,vegetarian),filterBy);
-    return new ResponseEntity<>(foodResEntityResponseHandler,
-            HttpStatus.OK);
-  }
+    @GetMapping("restaurant/{restaurantId}")
+    public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoodByRestaurantId(@RequestHeader("Authorization") String jwt, @RequestParam(required = false) boolean vegetarian, @RequestParam(required = false) boolean seasanal, @RequestParam(required = false) String filterBy, @RequestParam(required = false) String search, @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo, @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize, @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy, @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder, @PathVariable Long restaurantId) throws Exception {
+
+        userService.findUserByJwtToken(jwt);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()), sortBy));
+        var foodResEntityResponseHandler = foodService.listFoodsByRestaurantId(restaurantId, pageable, new SearchRequest(search, seasanal, vegetarian), filterBy);
+        return new ResponseEntity<>(foodResEntityResponseHandler, HttpStatus.OK);
+    }
 }

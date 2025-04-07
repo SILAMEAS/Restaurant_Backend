@@ -10,8 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchRequest {
-  private String search;
-  private Boolean sessional;
-  private Boolean vegeterain;
+    private String search;
+    private Boolean sessional;
+    private Boolean vegeterain;
 
 }

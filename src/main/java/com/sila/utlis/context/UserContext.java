@@ -14,7 +14,7 @@ public class UserContext {
     }
 
     public static User getUser() {
-        if( Objects.isNull(currentUser.get()) ){
+        if (Objects.isNull(currentUser.get())) {
             throw new BadRequestException("You are not logged in can't get user; note : UserContext");
         }
         return currentUser.get();

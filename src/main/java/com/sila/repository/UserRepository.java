@@ -8,8 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User,Long>, JpaSpecificationExecutor<User> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     public User findByEmail(String username);
+
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.favourites WHERE u.id = :userId")
     Optional<User> findByIdWithFavorites(@Param("userId") Long userId);
 }

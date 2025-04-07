@@ -11,22 +11,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 @Tag(name = "Admin User Controller", description = "Admin operations related to User")
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class AdminUserController {
     private final UserService userService;
+
     @GetMapping
     public ResponseEntity<EntityResponseHandler<UserResponse>> findUserRoleIsAdmin(
-            @RequestHeader("Authorization") String jwt,    @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
-                                                           @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
-                                                           @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
-                                                           @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder,
-                                                           @RequestParam(required = false) String search) throws Exception {
-        Pageable pageable = PageRequest.of(pageNo-1, pageSize, Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()),sortBy));
+            @RequestHeader("Authorization") String jwt, @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
+            @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
+            @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
+            @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder,
+            @RequestParam(required = false) String search) throws Exception {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()), sortBy));
         userService.findUserHasRoleAdmin(jwt);
-        return new ResponseEntity<>(userService.listUser(pageable,search), HttpStatus.OK);
+        return new ResponseEntity<>(userService.listUser(pageable, search), HttpStatus.OK);
     }
 }
