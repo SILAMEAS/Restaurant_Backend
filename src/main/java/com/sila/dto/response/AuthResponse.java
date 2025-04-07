@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 public class AuthResponse {
-  private String jwt;
-  private String message;
-  private USER_ROLE role;
+  private String accessToken;
+  private String refreshToken; // Make sure this is defined
   private Long userId;
+  private USER_ROLE role;
+  private String message;
 }

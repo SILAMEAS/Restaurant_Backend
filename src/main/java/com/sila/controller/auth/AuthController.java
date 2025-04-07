@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @Tag(name = "Auth Controller", description = "Operations related to Auth")
 @RestController
@@ -26,5 +28,10 @@ public class AuthController {
     @PostMapping("/sign-in")
     public ResponseEntity<AuthResponse> signIn(@RequestBody LoginRequest loginReq) throws Exception {
         return authService.login(loginReq);
+    }
+    @PostMapping("/refresh-token")
+    public ResponseEntity<AuthResponse> refreshToken(@RequestBody Map<String, String> request) throws Exception {
+        String refreshToken = request.get("refreshToken");
+        return authService.refreshToken(refreshToken);
     }
 }
