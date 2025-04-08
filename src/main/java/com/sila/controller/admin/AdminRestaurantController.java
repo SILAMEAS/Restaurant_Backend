@@ -54,14 +54,9 @@ public class AdminRestaurantController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<String> updateRestaurantStatus(@PathVariable Long id) throws Exception {
-        Restaurant restaurant = restaurantService.updateRestaurantStatus(id);
-        return new ResponseEntity<>(restaurant.isOpen() ? "Restaurant is open!" : "Restaurant is close!", HttpStatus.OK);
-    }
 
     @GetMapping("/user")
-    public ResponseEntity<Restaurant> findRestaurantByUserid() throws Exception {
+    public ResponseEntity<Restaurant> findRestaurantByUserid() {
         Restaurant restaurant = restaurantService.getRestaurantByUserId();
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
