@@ -1,4 +1,4 @@
-package com.sila.config;
+package com.sila.config.customDetail;
 
 import com.sila.model.User;
 import lombok.Getter;

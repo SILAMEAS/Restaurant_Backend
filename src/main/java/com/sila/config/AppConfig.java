@@ -1,5 +1,6 @@
 package com.sila.config;
 
+import com.sila.config.JWT.JwtTokenValidator;
 import com.sila.utlis.context.UserContextFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

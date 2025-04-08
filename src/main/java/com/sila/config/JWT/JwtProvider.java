@@ -1,4 +1,4 @@
-package com.sila.config;
+package com.sila.config.JWT;
 
 import com.sila.utlis.contants.JwtConstant;
 import io.jsonwebtoken.Claims;
