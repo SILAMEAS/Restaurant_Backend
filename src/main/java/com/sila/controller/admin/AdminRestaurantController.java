@@ -36,7 +36,7 @@ public class AdminRestaurantController {
     }
 
     @PostMapping()
-    public ResponseEntity<Restaurant> createRestaurant(@Valid @RequestBody RestaurantRequest restaurantReq) throws Exception {
+    public ResponseEntity<Restaurant> createRestaurant(@Valid @RequestBody RestaurantRequest restaurantReq)  {
         return new ResponseEntity<>(restaurantService.createRestaurant(restaurantReq), HttpStatus.CREATED);
     }
 

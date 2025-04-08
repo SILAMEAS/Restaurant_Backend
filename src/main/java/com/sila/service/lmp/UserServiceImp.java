@@ -6,6 +6,7 @@ import com.sila.dto.request.UserRequest;
 import com.sila.dto.response.FavoriteResponse;
 import com.sila.dto.response.UserResponse;
 import com.sila.exception.BadRequestException;
+import com.sila.exception.NotFoundException;
 import com.sila.model.User;
 import com.sila.repository.UserRepository;
 import com.sila.service.UserService;
@@ -20,8 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -31,23 +30,22 @@ public class UserServiceImp implements UserService {
     private final ModelMapper modelMapper;
 
     @Override
-    public User findUserByJwtToken(String jwt) throws Exception {
+    public User findUserByJwtToken(String jwt) {
         String email = jwtProvider.getEmailFromJwtToken(jwt);
         return findUserByEmail(email);
     }
 
     @Override
-    public Boolean findUserHasRoleAdmin(String jwt) throws Exception {
+    public Boolean findUserHasRoleAdmin(String jwt) {
         var user = findUserByJwtToken(jwt);
         return user.getRole().equals(USER_ROLE.ROLE_ADMIN);
     }
 
     @Override
-    public User findUserByEmail(String email) throws Exception {
+    public User findUserByEmail(String email) {
         User foundUser = userRepository.findByEmail(email);
-        ;
         if (foundUser == null) {
-            throw new BadRequestException("User not found");
+            throw new NotFoundException("User not found");
         }
         return foundUser;
     }
@@ -58,7 +56,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public EntityResponseHandler<UserResponse> listUser(Pageable pageable, String search) throws Exception {
+    public EntityResponseHandler<UserResponse> listUser(Pageable pageable, String search) {
         Specification<User> spec = Specification.where(null);
         if (search != null) {
             spec = spec.and(UserSpecification.search(search));
@@ -67,14 +65,14 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserResponse updateProfile(User user, UserRequest userReq) throws Exception {
+    public UserResponse updateProfile(User user, UserRequest userReq) {
         if (!userReq.getProfile().isEmpty()) {
             user.setProfile(userReq.getProfile());
 
         }
-//        if(!userReq.getAddresses().isEmpty()){
-//            user.setAddresses(userReq.getAddresses());
-//        }
+        if(!userReq.getAddresses().isEmpty()){
+            user.setAddresses(userReq.getAddresses());
+        }
         if (!userReq.getFullName().isEmpty()) {
             user.setFullName(userReq.getFullName());
         }
@@ -91,7 +89,7 @@ public class UserServiceImp implements UserService {
         UserResponse userRes = this.modelMapper.map(user, UserResponse.class);
         userRes.setFavourites(user.getFavourites().stream()
                 .map(fav -> new FavoriteResponse(fav.getId(), fav.getName(), fav.getDescription(), user.getId(), fav.getRestaurant().getId()))
-                .collect(Collectors.toList()));
+                .toList());
 
         return userRes;
     }

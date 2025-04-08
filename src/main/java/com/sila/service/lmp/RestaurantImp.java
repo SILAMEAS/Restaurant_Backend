@@ -13,13 +13,12 @@ import com.sila.model.Favorite;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
 import com.sila.repository.AddressRepository;
-import com.sila.repository.FavoriteRepository;
 import com.sila.repository.RestaurantRepository;
 import com.sila.repository.UserRepository;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
-import com.sila.specifcation.filterImp.FilterImpRestaurant;
-import com.sila.utlis.Util;
+import com.sila.specifcation.RestaurantSpecification;
+import com.sila.utlis.Utils;
 import com.sila.utlis.context.UserContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +41,6 @@ public class RestaurantImp implements RestaurantService {
     private final UserService userService;
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
-    private final FavoriteRepository favoriteRepository;
 
     @Override
     public Restaurant createRestaurant(RestaurantRequest restaurantReq) {
@@ -70,14 +68,14 @@ public class RestaurantImp implements RestaurantService {
         if (!isUserOwnerOfRestaurant(userId, restaurantId)) {
             throw new AccessDeniedException("You are not the owner of this restaurant.");
         }
-        Util.setIfNotNull(updateRestaurant.getName(), restaurantExit::setName);
-        Util.setIfNotNull(updateRestaurant.getDescription(), restaurantExit::setDescription);
-        Util.setIfNotNull(updateRestaurant.getCuisineType(), restaurantExit::setCuisineType);
-        Util.setIfNotNull(updateRestaurant.getImages(), restaurantExit::setImages);
-        Util.setIfNotNull(updateRestaurant.getAddress(), restaurantExit::setAddress);
-        Util.setIfNotNull(updateRestaurant.getOpeningHours(), restaurantExit::setOpeningHours);
-        Util.setIfNotNull(updateRestaurant.getContactInformation(), restaurantExit::setContactInformation);
-        Util.setIfNotNull(updateRestaurant.isOpen(), restaurantExit::setOpen);
+        Utils.setIfNotNull(updateRestaurant.getName(), restaurantExit::setName);
+        Utils.setIfNotNull(updateRestaurant.getDescription(), restaurantExit::setDescription);
+        Utils.setIfNotNull(updateRestaurant.getCuisineType(), restaurantExit::setCuisineType);
+        Utils.setIfNotNull(updateRestaurant.getImages(), restaurantExit::setImages);
+        Utils.setIfNotNull(updateRestaurant.getAddress(), restaurantExit::setAddress);
+        Utils.setIfNotNull(updateRestaurant.getOpeningHours(), restaurantExit::setOpeningHours);
+        Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurantExit::setContactInformation);
+        Utils.setIfNotNull(updateRestaurant.isOpen(), restaurantExit::setOpen);
         restaurantRepository.save(restaurantExit);
         return restaurantExit;
     }
@@ -108,7 +106,7 @@ public class RestaurantImp implements RestaurantService {
     @Override
     public EntityResponseHandler<RestaurantResponse> searchRestaurant(Pageable pageable,
                                                                       SearchRequest searchReq) {
-        var restaurantPage = restaurantRepository.findAll(FilterImpRestaurant.filterRestaurant(searchReq), pageable);
+        var restaurantPage = restaurantRepository.findAll(RestaurantSpecification.filterRestaurant(searchReq), pageable);
         return new EntityResponseHandler<>(restaurantPage
                 .map(restaurant -> this.modelMapper.map(restaurant, RestaurantResponse.class)));
     }
@@ -171,4 +169,5 @@ public class RestaurantImp implements RestaurantService {
         }
         throw new NotFoundException("Not Found Restaurant with id : " + restaurantId);
     }
+
 }

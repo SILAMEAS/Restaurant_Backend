@@ -52,9 +52,6 @@ public class CategoryImp implements CategoryService {
         return categoryRepository.save(category);
     }
 
-    public Category findCategoryById(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException("category not found"));
-    }
 
     @Override
     public List<Category> listCategoriesByRestaurantId(Long restaurantId) {
@@ -62,7 +59,7 @@ public class CategoryImp implements CategoryService {
     }
 
     @Override
-    public MessageResponse deleteCategoryById(Long categoryId) throws Exception {
+    public MessageResponse deleteCategoryById(Long categoryId) {
         findCategoryById(categoryId);
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException("category not found"));
         var foods = foodRepository.findAllByCategoryId(category.getId());
@@ -73,6 +70,10 @@ public class CategoryImp implements CategoryService {
         MessageResponse messageResponse = new MessageResponse();
         messageResponse.setMessage("Category Id : " + categoryId + " successfully!");
         return messageResponse;
+    }
+
+    public Category findCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException("category not found"));
     }
 
 }

@@ -78,14 +78,12 @@ public class AuthImp implements AuthService {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String role = authorities.isEmpty() ? null : authorities.iterator().next().getAuthority();
 
-        AuthResponse response = new AuthResponse();
-        response.setAccessToken(jwt);
-        response.setRefreshToken(refreshToken); // Include refresh token
-        response.setUserId(user.getId());
-        response.setRole(USER_ROLE.valueOf(role));
-        response.setMessage("Login successfully");
-
-
+        AuthResponse response = AuthResponse.builder().
+                accessToken(jwt).
+                refreshToken(refreshToken).
+                userId(user.getId()).
+                role(USER_ROLE.valueOf(role)).
+                message("Login successfully").build();
         return ResponseEntity.ok(response); // Return response
     }
 
@@ -101,13 +99,12 @@ public class AuthImp implements AuthService {
             String newAccessToken = jwtProvider.generateToken(auth);
             String newRefreshToken = jwtProvider.generateRefreshToken(auth); // Generate a new refresh token
 
-            AuthResponse response = new AuthResponse();
-            response.setAccessToken(newAccessToken);
-            response.setRefreshToken(newRefreshToken); // Include new refresh token in the response
-            response.setUserId(userDetails.getUser().getId()); // Get the user ID from the custom User object
-            response.setRole(USER_ROLE.valueOf(userDetails.getAuthorities().iterator().next().getAuthority()));
-            response.setMessage("Token refreshed successfully");
-
+            AuthResponse response = AuthResponse.builder().
+                    accessToken(newAccessToken).
+                    refreshToken(newRefreshToken).
+                    userId(userDetails.getUser().getId()).
+                    role(USER_ROLE.valueOf(userDetails.getAuthorities().iterator().next().getAuthority())).
+                    message("Token refreshed successfully").build();
             return ResponseEntity.ok(response);
         } else {
             log.warn("Invalid refresh token: {}", refreshToken); // Log invalid token

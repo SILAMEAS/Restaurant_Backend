@@ -1,10 +1,17 @@
 package com.sila.specifcation;
 
+import com.sila.dto.request.SearchRequest;
 import com.sila.model.Address_;
 import com.sila.model.Food_;
 import com.sila.model.Restaurant;
 import com.sila.model.Restaurant_;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+
+import java.util.Objects;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 
 public class RestaurantSpecification {
     public static Specification<Restaurant> likeNameOrDescription(String nameOrDescription) {
@@ -55,5 +62,12 @@ public class RestaurantSpecification {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get(Restaurant_.ADDRESS).get(
                 Address_.COUNTRY), "%" + country + "%");
 
+    }
+    public static Specification<Restaurant> filterRestaurant(SearchRequest searchReq) {
+        Specification<Restaurant> spec = Specification.where(null);
+        if (Objects.nonNull(searchReq.getSearch())) {
+            spec = spec.and(RestaurantSpecification.likeNameOrDescription(searchReq.getSearch()));
+        }
+        return spec;
     }
 }

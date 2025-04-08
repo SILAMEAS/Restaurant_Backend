@@ -12,5 +12,5 @@ public interface AuthService {
 
     ResponseEntity<AuthResponse> login(@RequestBody LoginRequest req) throws Exception;
 
-    ResponseEntity<AuthResponse> refreshToken(String refreshToken) throws Exception;
+    ResponseEntity<AuthResponse> refreshToken(String refreshToken);
 }
