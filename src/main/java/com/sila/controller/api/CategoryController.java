@@ -1,8 +1,10 @@
 package com.sila.controller.api;
 
+import com.sila.annotation.PreAuthorization;
 import com.sila.dto.request.CategoryRequest;
 import com.sila.model.Category;
 import com.sila.service.CategoryService;
+import com.sila.utlis.enums.USER_ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,18 +22,19 @@ import java.util.List;
 
 @Tag(name = "User Category Controller", description = "User operations related to Category")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/categories")
 @RequiredArgsConstructor
 @Slf4j
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @PostMapping("/admin/categories")
+    @PostMapping
+    @PreAuthorization({USER_ROLE.ROLE_ADMIN,USER_ROLE.ROLE_RESTAURANT_OWNER})
     public ResponseEntity<Category> createCategory(@RequestHeader("Authorization") String jwt, @RequestBody CategoryRequest categoryReq) throws Exception {
         return new ResponseEntity<>(categoryService.create(jwt, categoryReq.getName()), HttpStatus.CREATED);
     }
 
-    @GetMapping("/categories/restaurant/{restaurantId}")
+    @GetMapping("/restaurant/{restaurantId}")
     public ResponseEntity<List<Category>> getRestaurantCategory(@PathVariable Long restaurantId) {
         List<Category> categoriesInRestaurant = categoryService.getsByResId(restaurantId);
         return new ResponseEntity<>(categoriesInRestaurant, HttpStatus.OK);

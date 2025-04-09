@@ -20,6 +20,15 @@ public class HandleException {
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
 
+    // Handle AccessDeniedException
+    @ExceptionHandler(value = AccessDeniedException.class)
+    public ResponseEntity<MessageResponse> handAccessDenied(AccessDeniedException accessDeniedException) {
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setStatus(HttpStatus.FORBIDDEN.value());
+        messageResponse.setMessage(accessDeniedException.getMessage());
+        return new ResponseEntity<>(messageResponse, HttpStatus.FORBIDDEN);
+    }
+
     // Handle NotFoundException
     @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<MessageResponse> handleNotFound(NotFoundException notFoundException) {

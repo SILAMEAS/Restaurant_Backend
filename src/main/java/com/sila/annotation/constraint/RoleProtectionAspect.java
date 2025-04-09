@@ -1,6 +1,7 @@
 package com.sila.annotation.constraint;
 
 import com.sila.exception.AccessDeniedException;
+import com.sila.exception.NotFoundException;
 import com.sila.utlis.enums.USER_ROLE;
 import com.sila.annotation.PreAuthorization;
 import org.aspectj.lang.JoinPoint;
@@ -54,7 +55,7 @@ public class RoleProtectionAspect {
                 .anyMatch(allowed::contains);
 
         if (!hasRole) {
-            throw new AccessDeniedException("Access denied. Only this roles : "+allowed+" are allowed. Your role is : "+auth.getAuthorities());
+            throw new AccessDeniedException("Access denied! "+auth.getAuthorities()+" not allowed.");
         }
     }
 }
