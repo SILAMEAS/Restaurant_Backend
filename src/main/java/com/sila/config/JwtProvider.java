@@ -1,6 +1,7 @@
 package com.sila.config;
 
 import com.sila.utlis.contants.JwtConstant;
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -16,7 +17,11 @@ import java.util.Set;
 
 @Service
 public class JwtProvider {
+    private static final Dotenv dotenv = Dotenv.load(); // Load from .env
+    private static final long ACCESS_TOKEN_EXPIRATION = Long.parseLong(dotenv.get("ACCESS_TOKEN_EXPIRATION"));
+    private static final long REFRESH_TOKEN_EXPIRATION = Long.parseLong(dotenv.get("REFRESH_TOKEN_EXPIRATION"));
     private final SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
+
 
     // Existing method
     public String generateToken(Authentication auth) {
@@ -24,7 +29,7 @@ public class JwtProvider {
         String roles = populateAuthorities(authorities);
         return Jwts.builder()
                 .setIssuer(String.valueOf(new Date()))
-                .setExpiration(new Date(new Date().getTime() + 86400000)) // 1 day
+                .setExpiration(new Date(new Date().getTime() + ACCESS_TOKEN_EXPIRATION)) // 1 day
                 .claim("email", auth.getName())
                 .claim("authorities", roles)
                 .signWith(key)
@@ -35,7 +40,7 @@ public class JwtProvider {
     public String generateRefreshToken(Authentication auth) {
         return Jwts.builder()
                 .setIssuer(String.valueOf(new Date()))
-                .setExpiration(new Date(new Date().getTime() + 604800000)) // 7 days
+                .setExpiration(new Date(new Date().getTime() + REFRESH_TOKEN_EXPIRATION)) // 7 days
                 .claim("email", auth.getName())
                 .signWith(key)
                 .compact();
