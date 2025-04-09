@@ -10,20 +10,20 @@ import com.sila.model.Restaurant;
 import org.springframework.data.domain.Pageable;
 
 public interface FoodService {
-    Food createFood(FoodRequest food, Category category, Restaurant restaurant);
+    Food create(FoodRequest food, Category category, Restaurant restaurant);
 
-    Food updateFood(FoodRequest food, Long foodId);
+    Food update(FoodRequest food, Long foodId);
 
-    void deleteFoodById(Long id) ;
+    void delete(Long id) ;
 
-    String deleteFoodByCategoryId(Long categoryId) ;
+    String deleteByCategoryId(Long categoryId) ;
 
-    Food findFoodById(Long foodId);
+    Food getById(Long foodId);
 
-    Food updateAvailibilityStatus(Long id);
+    Food updateStatus(Long id);
 
-    EntityResponseHandler<FoodResponse> listFoods(Pageable pageable, SearchRequest searchReq, String filterBy);
+    EntityResponseHandler<FoodResponse> gets(Pageable pageable, SearchRequest searchReq, String filterBy);
 
-    EntityResponseHandler<FoodResponse> listFoodsByRestaurantId(Long restaurantId, Pageable pageable, SearchRequest searchReq, String filterBy);
+    EntityResponseHandler<FoodResponse> getsByResId(Long restaurantId, Pageable pageable, SearchRequest searchReq, String filterBy);
 
 }

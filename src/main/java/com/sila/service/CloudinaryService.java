@@ -9,7 +9,7 @@ import java.io.IOException;
 public interface CloudinaryService {
 
 
-    public String uploadFile(MultipartFile file) throws IOException;
+    String uploadFile(MultipartFile file) throws IOException;
 
-    public String deleteImage(String publicId) throws IOException;
+    String deleteImage(String publicId) throws IOException;
 }

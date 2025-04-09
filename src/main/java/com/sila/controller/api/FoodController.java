@@ -33,18 +33,18 @@ public class FoodController {
     @GetMapping
     public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoods(@RequestHeader("Authorization") String jwt, @RequestParam(required = false) boolean vegetarian, @RequestParam(required = false) boolean seasanal, @RequestParam(required = false) String filterBy, @RequestParam(required = false) String search, @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo, @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize, @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy, @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder) throws Exception {
 
-        userService.findUserByJwtToken(jwt);
+        userService.getByJwt(jwt);
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()), sortBy));
-        var foodResEntityResponseHandler = foodService.listFoods(pageable, new SearchRequest(search, seasanal, vegetarian), filterBy);
+        var foodResEntityResponseHandler = foodService.gets(pageable, new SearchRequest(search, seasanal, vegetarian), filterBy);
         return new ResponseEntity<>(foodResEntityResponseHandler, HttpStatus.OK);
     }
 
     @GetMapping("restaurant/{restaurantId}")
     public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoodByRestaurantId(@RequestHeader("Authorization") String jwt, @RequestParam(required = false) boolean vegetarian, @RequestParam(required = false) boolean seasanal, @RequestParam(required = false) String filterBy, @RequestParam(required = false) String search, @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo, @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize, @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy, @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder, @PathVariable Long restaurantId) throws Exception {
 
-        userService.findUserByJwtToken(jwt);
+        userService.getByJwt(jwt);
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()), sortBy));
-        var foodResEntityResponseHandler = foodService.listFoodsByRestaurantId(restaurantId, pageable, new SearchRequest(search, seasanal, vegetarian), filterBy);
+        var foodResEntityResponseHandler = foodService.getsByResId(restaurantId, pageable, new SearchRequest(search, seasanal, vegetarian), filterBy);
         return new ResponseEntity<>(foodResEntityResponseHandler, HttpStatus.OK);
     }
 }

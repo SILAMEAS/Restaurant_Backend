@@ -37,19 +37,19 @@ public class AdminRestaurantController {
 
     @PostMapping()
     public ResponseEntity<Restaurant> createRestaurant(@Valid @RequestBody RestaurantRequest restaurantReq)  {
-        return new ResponseEntity<>(restaurantService.createRestaurant(restaurantReq), HttpStatus.CREATED);
+        return new ResponseEntity<>(restaurantService.create(restaurantReq), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantResponse> updateRestaurant(@RequestBody RestaurantRequest restaurantReq, @PathVariable Long id) throws Exception {
-        Restaurant restaurant = restaurantService.updateRestaurant(restaurantReq, id);
+        Restaurant restaurant = restaurantService.update(restaurantReq, id);
         return new ResponseEntity<>(this.modelMapper.map(restaurant, RestaurantResponse.class), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> deleteRestaurant(@PathVariable Long id) throws Exception {
         MessageResponse messageResponse = new MessageResponse();
-        restaurantService.deleteRestaurant(id);
+        restaurantService.delete(id);
         messageResponse.setMessage("delete restaurant id : " + id + " successfully!");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
@@ -57,7 +57,7 @@ public class AdminRestaurantController {
 
     @GetMapping("/user")
     public ResponseEntity<Restaurant> findRestaurantByUserid() {
-        Restaurant restaurant = restaurantService.getRestaurantByUserId();
+        Restaurant restaurant = restaurantService.getByUserLogin();
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
 

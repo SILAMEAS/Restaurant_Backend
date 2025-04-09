@@ -19,7 +19,7 @@ import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import com.sila.specifcation.RestaurantSpecification;
 import com.sila.utlis.Utils;
-import com.sila.utlis.context.UserContext;
+import com.sila.config.context.UserContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -43,7 +43,7 @@ public class RestaurantImp implements RestaurantService {
     private final UserRepository userRepository;
 
     @Override
-    public Restaurant createRestaurant(RestaurantRequest restaurantReq) {
+    public Restaurant create(RestaurantRequest restaurantReq) {
         var userId = UserContext.getUser().getId();
         boolean existsByOwner = restaurantRepository.existsByOwnerId(userId);
         if (existsByOwner) {
@@ -52,7 +52,7 @@ public class RestaurantImp implements RestaurantService {
         Address address = addressRepository.save(restaurantReq.getAddress());
         Restaurant restaurant = Restaurant.builder().address(address).name(restaurantReq.getName()).openingHours(restaurantReq.getOpeningHours())
                 .description(restaurantReq.getDescription()).registrationDate(LocalDateTime.now()).build();
-        User user = userService.findUserById(userId);
+        User user = userService.getById(userId);
         restaurant.setOwner(user);
         restaurant.setCuisineType(restaurantReq.getCuisineType());
         restaurant.setContactInformation(restaurantReq.getContactInformation());
@@ -62,7 +62,7 @@ public class RestaurantImp implements RestaurantService {
     }
 
     @Override
-    public Restaurant updateRestaurant(RestaurantRequest updateRestaurant, Long restaurantId) throws Exception {
+    public Restaurant update(RestaurantRequest updateRestaurant, Long restaurantId) throws Exception {
         var userId = UserContext.getUser().getId();
         Restaurant restaurantExit = handleFindRestaurantById(restaurantId);
         if (!isUserOwnerOfRestaurant(userId, restaurantId)) {
@@ -81,20 +81,20 @@ public class RestaurantImp implements RestaurantService {
     }
 
     @Override
-    public void deleteRestaurant(Long id) throws Exception {
-        Restaurant isRestaurantExit = findRestaurantById(id);
+    public void delete(Long id) throws Exception {
+        Restaurant isRestaurantExit = getById(id);
         restaurantRepository.delete(isRestaurantExit);
     }
 
 
     @Override
-    public Restaurant findRestaurantById(Long id) throws Exception {
+    public Restaurant getById(Long id) throws Exception {
         return restaurantRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Restaurant not found with id " + id));
     }
 
     @Override
-    public Restaurant getRestaurantByUserId() {
+    public Restaurant getByUserLogin() {
         var userId = UserContext.getUser().getId();
         Restaurant restaurant = restaurantRepository.findByOwnerId(userId);
         if (Objects.isNull(restaurant)) {
@@ -104,15 +104,15 @@ public class RestaurantImp implements RestaurantService {
     }
 
     @Override
-    public EntityResponseHandler<RestaurantResponse> searchRestaurant(Pageable pageable,
-                                                                      SearchRequest searchReq) {
+    public EntityResponseHandler<RestaurantResponse> search(Pageable pageable,
+                                                            SearchRequest searchReq) {
         var restaurantPage = restaurantRepository.findAll(RestaurantSpecification.filterRestaurant(searchReq), pageable);
         return new EntityResponseHandler<>(restaurantPage
                 .map(restaurant -> this.modelMapper.map(restaurant, RestaurantResponse.class)));
     }
 
     @Override
-    public List<FavoriteResponse> addRestaurantToFavorites(Long restaurantId, User user) throws Exception {
+    public List<FavoriteResponse> addFav(Long restaurantId, User user) throws Exception {
         // Fetch the restaurant to ensure it's managed
         Restaurant findRestaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
@@ -146,19 +146,13 @@ public class RestaurantImp implements RestaurantService {
         // Save the user (this should also save the favorites if cascade is set correctly)
         userRepository.save(user);
 
-        return userService.getUserProfile().getFavourites();
+        return userService.getProfile().getFavourites();
     }
 
-    @Override
-    public Restaurant updateRestaurantStatus(Long restaurantId) throws Exception {
-        Restaurant findRestaurant = findRestaurantById(restaurantId);
-        findRestaurant.setOpen(!findRestaurant.isOpen());
-        restaurantRepository.save(findRestaurant);
-        return restaurantRepository.save(findRestaurant);
-    }
+
 
     public boolean isUserOwnerOfRestaurant(Long userId, Long restaurantId) throws Exception {
-        Restaurant restaurant = findRestaurantById(restaurantId);
+        Restaurant restaurant = getById(restaurantId);
         return restaurant.getOwner() != null && restaurant.getOwner().getId().equals(userId);
     }
 

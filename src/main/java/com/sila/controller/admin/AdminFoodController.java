@@ -45,10 +45,10 @@ public class AdminFoodController {
             @RequestHeader("Authorization") String jwt,
             @Valid @RequestBody FoodRequest req) throws Exception {
 
-        userService.findUserByJwtToken(jwt);
-        Restaurant restaurant = restaurantService.findRestaurantById(req.getRestaurantId());
-        Category category = categoryService.findCategoryById(req.getCategoryId());
-        Food food = foodService.createFood(req, category, restaurant);
+        userService.getByJwt(jwt);
+        Restaurant restaurant = restaurantService.getById(req.getRestaurantId());
+        Category category = categoryService.getById(req.getCategoryId());
+        Food food = foodService.create(req, category, restaurant);
 
         return new ResponseEntity<>(food, HttpStatus.CREATED);
     }
@@ -58,8 +58,8 @@ public class AdminFoodController {
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long id) throws Exception {
 
-        userService.findUserByJwtToken(jwt);
-        foodService.deleteFoodById(id);
+        userService.getByJwt(jwt);
+        foodService.delete(id);
 
         return new ResponseEntity<>("Successfully deleted", HttpStatus.OK);
     }
@@ -69,8 +69,8 @@ public class AdminFoodController {
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long categoryId) throws Exception {
 
-        userService.findUserByJwtToken(jwt);
-        String result = foodService.deleteFoodByCategoryId(categoryId);
+        userService.getByJwt(jwt);
+        String result = foodService.deleteByCategoryId(categoryId);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -81,15 +81,15 @@ public class AdminFoodController {
             @PathVariable Long foodId,
             @Valid @RequestBody FoodRequest req) throws Exception {
 
-        User user = userService.findUserByJwtToken(jwt);
+        User user = userService.getByJwt(jwt);
         Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
-        Food foodToUpdate = foodService.findFoodById(foodId);
+        Food foodToUpdate = foodService.getById(foodId);
 
         if (!foodToUpdate.getRestaurant().getId().equals(restaurant.getId())) {
             throw new BadRequestException("Food is not in this user's restaurant");
         }
 
-        Food updatedFood = foodService.updateFood(req, foodId);
+        Food updatedFood = foodService.update(req, foodId);
         FoodResponse response = modelMapper.map(updatedFood, FoodResponse.class);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -100,8 +100,8 @@ public class AdminFoodController {
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long id) throws Exception {
 
-        userService.findUserByJwtToken(jwt);
-        Food updatedFood = foodService.updateAvailibilityStatus(id);
+        userService.getByJwt(jwt);
+        Food updatedFood = foodService.updateStatus(id);
 
         return new ResponseEntity<>(updatedFood, HttpStatus.OK);
     }

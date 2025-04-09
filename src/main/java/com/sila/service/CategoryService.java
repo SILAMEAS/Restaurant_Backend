@@ -6,13 +6,13 @@ import com.sila.model.Category;
 import java.util.List;
 
 public interface CategoryService {
-    Category createCategory(String jwt, String name);
+    Category create(String jwt, String name);
 
-    List<Category> listCategoriesByRestaurantId(Long restaurantId);
+    List<Category> getsByResId(Long restaurantId);
 
-    Category editCategory(String name, Long categoryId);
+    Category update(String name, Long categoryId);
 
-    Category findCategoryById(Long categoryId);
+    Category getById(Long categoryId);
 
-    MessageResponse deleteCategoryById(Long categoryId);
+    MessageResponse delete(Long categoryId);
 }

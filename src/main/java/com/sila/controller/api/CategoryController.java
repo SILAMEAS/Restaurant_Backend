@@ -28,12 +28,12 @@ public class CategoryController {
 
     @PostMapping("/admin/categories")
     public ResponseEntity<Category> createCategory(@RequestHeader("Authorization") String jwt, @RequestBody CategoryRequest categoryReq) throws Exception {
-        return new ResponseEntity<>(categoryService.createCategory(jwt, categoryReq.getName()), HttpStatus.CREATED);
+        return new ResponseEntity<>(categoryService.create(jwt, categoryReq.getName()), HttpStatus.CREATED);
     }
 
     @GetMapping("/categories/restaurant/{restaurantId}")
     public ResponseEntity<List<Category>> getRestaurantCategory(@PathVariable Long restaurantId) {
-        List<Category> categoriesInRestaurant = categoryService.listCategoriesByRestaurantId(restaurantId);
+        List<Category> categoriesInRestaurant = categoryService.getsByResId(restaurantId);
         return new ResponseEntity<>(categoriesInRestaurant, HttpStatus.OK);
     }
 }

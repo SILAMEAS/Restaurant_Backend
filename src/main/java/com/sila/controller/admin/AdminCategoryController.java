@@ -24,11 +24,11 @@ public class AdminCategoryController {
 
     @PutMapping("{categoryId}")
     public ResponseEntity<Category> editCategory(@RequestBody CategoryRequest categoryReq, @PathVariable Long categoryId) {
-        return new ResponseEntity<>(categoryService.editCategory(categoryReq.getName(), categoryId), HttpStatus.CREATED);
+        return new ResponseEntity<>(categoryService.update(categoryReq.getName(), categoryId), HttpStatus.CREATED);
     }
 
     @DeleteMapping("{categoryId}")
     public ResponseEntity<MessageResponse> deleteCategory(@PathVariable Long categoryId) throws Exception {
-        return new ResponseEntity<>(categoryService.deleteCategoryById(categoryId), HttpStatus.CREATED);
+        return new ResponseEntity<>(categoryService.delete(categoryId), HttpStatus.CREATED);
     }
 }

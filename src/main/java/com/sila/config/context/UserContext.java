@@ -1,4 +1,4 @@
-package com.sila.utlis.context;
+package com.sila.config.context;
 
 import com.sila.exception.BadRequestException;
 import com.sila.model.User;

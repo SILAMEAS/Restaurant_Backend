@@ -44,7 +44,7 @@ public class AuthImp implements AuthService {
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
-    public ResponseEntity<String> register(User user) {
+    public ResponseEntity<String> signUp(User user) {
         if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new BadRequestException("Email is already used");
         }
@@ -66,7 +66,7 @@ public class AuthImp implements AuthService {
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 
-    public ResponseEntity<AuthResponse> login(LoginRequest req) throws Exception {
+    public ResponseEntity<AuthResponse> signIn(LoginRequest req) throws Exception {
         Authentication authentication = authenticate(req.getEmail(), req.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -74,7 +74,7 @@ public class AuthImp implements AuthService {
         String refreshToken = jwtProvider.generateRefreshToken(authentication); // Generate refresh token
 
 
-        User user = userService.findUserByEmail(req.getEmail());
+        User user = userService.getByEmail(req.getEmail());
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String role = authorities.isEmpty() ? null : authorities.iterator().next().getAuthority();
 

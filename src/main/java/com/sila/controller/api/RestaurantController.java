@@ -43,18 +43,18 @@ public class RestaurantController {
         searchReq.setSearch(search);
         searchReq.setSessional(sessional);
         searchReq.setVegeterain(vegetarian);
-        return new ResponseEntity<>(restaurantService.searchRestaurant(pageable,searchReq),HttpStatus.OK);
+        return new ResponseEntity<>(restaurantService.search(pageable,searchReq),HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantResponse> getRestaurantById(@RequestHeader("Authorization") String jwt, @PathVariable Long id) throws Exception {
-        userService.findUserByJwtToken(jwt);
-        var restaurant = this.modelMapper.map(restaurantService.findRestaurantById(id), RestaurantResponse.class);
+        userService.getByJwt(jwt);
+        var restaurant = this.modelMapper.map(restaurantService.getById(id), RestaurantResponse.class);
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
     @PutMapping("/{id}/add-favorites")
     public ResponseEntity<List<FavoriteResponse>> addRestaurantToFavorites(@RequestHeader("Authorization") String jwt, @PathVariable Long id) throws Exception {
-        User userLogin=userService.findUserByJwtToken(jwt);
-        return new ResponseEntity<>(restaurantService.addRestaurantToFavorites(id,userLogin), HttpStatus.OK);
+        User userLogin=userService.getByJwt(jwt);
+        return new ResponseEntity<>(restaurantService.addFav(id,userLogin), HttpStatus.OK);
     }
 }
 

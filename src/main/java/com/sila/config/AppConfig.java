@@ -1,6 +1,6 @@
 package com.sila.config;
 
-import com.sila.utlis.context.UserContextFilter;
+import com.sila.config.context.UserContextFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

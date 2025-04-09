@@ -11,8 +11,7 @@ import com.sila.model.User;
 import com.sila.repository.UserRepository;
 import com.sila.service.UserService;
 import com.sila.specifcation.UserSpecification;
-import com.sila.utlis.context.UserContext;
-import com.sila.utlis.enums.USER_ROLE;
+import com.sila.config.context.UserContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,19 +29,14 @@ public class UserServiceImp implements UserService {
     private final ModelMapper modelMapper;
 
     @Override
-    public User findUserByJwtToken(String jwt) {
+    public User getByJwt(String jwt) {
         String email = jwtProvider.getEmailFromJwtToken(jwt);
-        return findUserByEmail(email);
+        return getByEmail(email);
     }
 
-    @Override
-    public Boolean findUserHasRoleAdmin(String jwt) {
-        var user = findUserByJwtToken(jwt);
-        return user.getRole().equals(USER_ROLE.ROLE_ADMIN);
-    }
 
     @Override
-    public User findUserByEmail(String email) {
+    public User getByEmail(String email) {
         User foundUser = userRepository.findByEmail(email);
         if (foundUser == null) {
             throw new NotFoundException("User not found");
@@ -51,12 +45,12 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User findUserById(Long userId) {
+    public User getById(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new BadRequestException("User not found"));
     }
 
     @Override
-    public EntityResponseHandler<UserResponse> listUser(Pageable pageable, String search) {
+    public EntityResponseHandler<UserResponse> list(Pageable pageable, String search) {
         Specification<User> spec = Specification.where(null);
         if (search != null) {
             spec = spec.and(UserSpecification.search(search));
@@ -65,7 +59,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserResponse updateProfile(User user, UserRequest userReq) {
+    public UserResponse update(User user, UserRequest userReq) {
         if (!userReq.getProfile().isEmpty()) {
             user.setProfile(userReq.getProfile());
 
@@ -81,7 +75,7 @@ public class UserServiceImp implements UserService {
 
     @Transactional
     @Override
-    public UserResponse getUserProfile() throws Exception {
+    public UserResponse getProfile() throws Exception {
         User userFromContext = UserContext.getUser(); // JWT-based context
         User user = userRepository.findByIdWithFavorites(userFromContext.getId())
                 .orElseThrow(() -> new Exception("User not found"));

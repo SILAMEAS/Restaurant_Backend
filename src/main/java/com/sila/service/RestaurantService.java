@@ -13,19 +13,17 @@ import java.util.List;
 
 
 public interface RestaurantService {
-    Restaurant createRestaurant(RestaurantRequest req);
+    Restaurant create(RestaurantRequest req);
 
-    Restaurant updateRestaurant(RestaurantRequest updateRestaurant, Long restaurantId)throws Exception;
+    Restaurant update(RestaurantRequest updateRestaurant, Long restaurantId)throws Exception;
 
-    void deleteRestaurant(Long id) throws Exception;
+    void delete(Long id) throws Exception;
 
-    Restaurant findRestaurantById(Long id) throws Exception;
+    Restaurant getById(Long id) throws Exception;
 
-    Restaurant getRestaurantByUserId();
+    Restaurant getByUserLogin();
 
-    List<FavoriteResponse> addRestaurantToFavorites(Long restaurantId, User user) throws Exception;
-
-    Restaurant updateRestaurantStatus(Long restaurantId) throws Exception;
-
-    EntityResponseHandler<RestaurantResponse> searchRestaurant(Pageable pageable, SearchRequest searchReq);
+    List<FavoriteResponse> addFav(Long restaurantId, User user) throws Exception;
+    
+    EntityResponseHandler<RestaurantResponse> search(Pageable pageable, SearchRequest searchReq);
 }

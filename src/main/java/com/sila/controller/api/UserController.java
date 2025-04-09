@@ -25,13 +25,13 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<UserResponse> getUserByJwtToken() throws Exception {
-        return new ResponseEntity<>(userService.getUserProfile(), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getProfile(), HttpStatus.OK);
     }
 
     @PutMapping("/profile")
     public ResponseEntity<UserResponse> updateProfile(@RequestHeader("Authorization") String jwt, @Valid @RequestBody UserRequest userReq) throws Exception {
-        User user = userService.findUserByJwtToken(jwt);
-        return new ResponseEntity<>(userService.updateProfile(user, userReq), HttpStatus.OK);
+        User user = userService.getByJwt(jwt);
+        return new ResponseEntity<>(userService.update(user, userReq), HttpStatus.OK);
     }
 
 }

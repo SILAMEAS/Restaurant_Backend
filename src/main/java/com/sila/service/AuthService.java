@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 public interface AuthService {
-    ResponseEntity<String> register(User user);
+    ResponseEntity<String> signUp(User user);
 
-    ResponseEntity<AuthResponse> login(@RequestBody LoginRequest req) throws Exception;
+    ResponseEntity<AuthResponse> signIn(@RequestBody LoginRequest req) throws Exception;
 
     ResponseEntity<AuthResponse> refreshToken(String refreshToken);
 }

@@ -15,7 +15,6 @@ import com.sila.specifcation.FoodSpecification;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -31,7 +30,7 @@ public class FoodImp implements FoodService {
     private final ModelMapper modelMapper;
 
     @Override
-    public Food createFood(FoodRequest foodRequest, Category category, Restaurant restaurant) {
+    public Food create(FoodRequest foodRequest, Category category, Restaurant restaurant) {
         Food food = Food.builder().category(category).name(foodRequest.getName()).
                 restaurant(restaurant).description(foodRequest.getDescription()).images(foodRequest.getImages()).
                 name(foodRequest.getName()).price(foodRequest.getPrice()).creationDate(new Date()).isSeasonal(foodRequest.isSeasonal()).isVegetarian(foodRequest.isVegetarian())
@@ -43,9 +42,9 @@ public class FoodImp implements FoodService {
     }
 
     @Override
-    public Food updateFood(FoodRequest foodReq, Long foodId) {
+    public Food update(FoodRequest foodReq, Long foodId) {
         Category category = categoryRepository.findById(foodReq.getCategoryId()).orElseThrow(() -> new BadRequestException("category not found"));
-        Food food = findFoodById(foodId);
+        Food food = getById(foodId);
     if(!Objects.isNull(food.getName())){
         food.setName(food.getName());
     }
@@ -69,14 +68,14 @@ public class FoodImp implements FoodService {
     }
 
     @Override
-    public void deleteFoodById(Long id)  {
-        Food foodByID = findFoodById(id);
+    public void delete(Long id)  {
+        Food foodByID = getById(id);
         foodByID.setRestaurant(null);
         foodRepository.deleteById(id);
     }
 
     @Override
-    public String deleteFoodByCategoryId(Long categoryId) {
+    public String deleteByCategoryId(Long categoryId) {
         List<Food> foodsToDelete = foodRepository.findAllByCategoryId(categoryId);
         if (foodsToDelete.isEmpty()) {
             throw new BadRequestException("No food have category id : " + categoryId);
@@ -86,26 +85,26 @@ public class FoodImp implements FoodService {
     }
 
     @Override
-    public Food findFoodById(Long foodId) {
+    public Food getById(Long foodId) {
         return foodRepository.findById(foodId).orElseThrow(() -> new BadRequestException("NOT FOUND"));
     }
 
     @Override
-    public Food updateAvailibilityStatus(Long id) {
-        Food updateFood = findFoodById(id);
+    public Food updateStatus(Long id) {
+        Food updateFood = getById(id);
         updateFood.setAvailable(!updateFood.isAvailable());
         return foodRepository.save(updateFood);
     }
 
     @Override
-    public EntityResponseHandler<FoodResponse> listFoods(Pageable pageable, SearchRequest searchReq, String filterBy) {
+    public EntityResponseHandler<FoodResponse> gets(Pageable pageable, SearchRequest searchReq, String filterBy) {
         var foodPage = foodRepository.findAll(FoodSpecification.filterFood(searchReq, filterBy), pageable);
         return new EntityResponseHandler<>(foodPage
                 .map(fs -> this.modelMapper.map(fs, FoodResponse.class)));
     }
 
     @Override
-    public EntityResponseHandler<FoodResponse> listFoodsByRestaurantId(Long restaurantId, Pageable pageable, SearchRequest searchReq, String filterBy) {
+    public EntityResponseHandler<FoodResponse> getsByResId(Long restaurantId, Pageable pageable, SearchRequest searchReq, String filterBy) {
         var foodPage = foodRepository.findAll(FoodSpecification.filterFoodByRestaurantId(restaurantId, searchReq, filterBy), pageable);
         return new EntityResponseHandler<>(foodPage
                 .map(fs -> this.modelMapper.map(fs, FoodResponse.class)));

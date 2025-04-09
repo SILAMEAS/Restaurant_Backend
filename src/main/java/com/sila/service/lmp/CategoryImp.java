@@ -11,7 +11,7 @@ import com.sila.repository.FoodRepository;
 import com.sila.repository.RestaurantRepository;
 import com.sila.service.CategoryService;
 import com.sila.service.FoodService;
-import com.sila.utlis.context.UserContext;
+import com.sila.config.context.UserContext;
 import com.sila.utlis.enums.USER_ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class CategoryImp implements CategoryService {
     private final FoodRepository foodRepository;
 
     @Override
-    public Category createCategory(String jwt, String name) {
+    public Category create(String jwt, String name) {
         User user = UserContext.getUser();
         Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
         if (categoryRepository.existsByNameAndRestaurant(name, restaurant)) {
@@ -40,12 +40,12 @@ public class CategoryImp implements CategoryService {
     }
 
     @Override
-    public Category editCategory(String name, Long categoryId) {
+    public Category update(String name, Long categoryId) {
         USER_ROLE user = UserContext.getUser().getRole();
         if (user.equals(USER_ROLE.ROLE_CUSTOMER)) {
             throw new AccessDeniedException("Customer do not have permission to change category");
         }
-        Category category = findCategoryById(categoryId);
+        Category category = getById(categoryId);
         if (!name.isEmpty()) {
             category.setName(name);
         }
@@ -54,17 +54,17 @@ public class CategoryImp implements CategoryService {
 
 
     @Override
-    public List<Category> listCategoriesByRestaurantId(Long restaurantId) {
+    public List<Category> getsByResId(Long restaurantId) {
         return categoryRepository.findByRestaurantId(restaurantId);
     }
 
     @Override
-    public MessageResponse deleteCategoryById(Long categoryId) {
-        findCategoryById(categoryId);
+    public MessageResponse delete(Long categoryId) {
+        getById(categoryId);
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException("category not found"));
         var foods = foodRepository.findAllByCategoryId(category.getId());
         if (!foods.isEmpty()) {
-            foodService.deleteFoodByCategoryId(categoryId);
+            foodService.deleteByCategoryId(categoryId);
         }
         categoryRepository.deleteById(categoryId);
         MessageResponse messageResponse = new MessageResponse();
@@ -72,7 +72,7 @@ public class CategoryImp implements CategoryService {
         return messageResponse;
     }
 
-    public Category findCategoryById(Long categoryId) {
+    public Category getById(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException("category not found"));
     }
 

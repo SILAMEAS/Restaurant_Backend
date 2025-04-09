@@ -1,4 +1,4 @@
-package com.sila.utlis.context;
+package com.sila.config.context;
 
 import com.sila.model.User;
 import com.sila.service.UserService;
@@ -29,7 +29,7 @@ public class UserContextFilter extends OncePerRequestFilter {
 
         if (jwt != null && !jwt.isEmpty()) {
             try {
-                User user = userService.findUserByJwtToken(jwt);
+                User user = userService.getByJwt(jwt);
                 UserContext.setUser(user);
             } catch (Exception ex) {
                 log.error(ex.getMessage());
