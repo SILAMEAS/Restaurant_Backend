@@ -1,5 +1,6 @@
 package com.sila.controller.admin;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/admin/dashboard")
+@Tag(name = "Admin Dashboard Controller", description = "Admin operations related to dashboard")
 public class AdminDashboardController {
 
     @GetMapping

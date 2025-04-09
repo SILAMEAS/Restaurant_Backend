@@ -1,4 +1,4 @@
-package com.sila.cloudinary;
+package com.sila.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
