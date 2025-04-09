@@ -52,35 +52,57 @@ public final class FoodSpecification {
      **/
     public static Specification<Food> filterFood(SearchRequest searchReq, String filterBy) {
         Specification<Food> spec = Specification.where(null);
-        if (Objects.nonNull(searchReq.getSearch())) {
-            spec = spec.and(FoodSpecification.search(searchReq.getSearch()));
-        }
-        if (Objects.nonNull(filterBy)) {
-            spec = spec.and(FoodSpecification.filterCategory(filterBy));
-        }
-        if (Boolean.TRUE.equals(searchReq.getSessional())) {
-            spec = spec.and(FoodSpecification.bySession(true));
-        }
-        if (Boolean.TRUE.equals(searchReq.getVegeterain())) {
-            spec = spec.and(FoodSpecification.byVegetarian(true));
-        }
+        spec = addSearchSpecification(spec, searchReq);
+        spec = addFilterSpecification(spec, filterBy);
+        spec = addSessionalSpecification(spec, searchReq);
+        spec = addVegetarianSpecification(spec, searchReq);
         return spec;
     }
 
     public static Specification<Food> filterFoodByRestaurantId(Long restaurantId, SearchRequest searchReq, String filterBy) {
         Specification<Food> spec = Specification.where(null);
-        if (Objects.nonNull(filterBy)) {
-            spec = spec.and(FoodSpecification.filterCategory(filterBy));
-        }
-        if (Boolean.TRUE.equals(searchReq.getSessional())) {
-            spec = spec.and(FoodSpecification.bySession(true));
-        }
-        if (Boolean.TRUE.equals(searchReq.getVegeterain())) {
-            spec = spec.and(FoodSpecification.byVegetarian(true));
-        }
+        spec= addFilterSpecification(spec,filterBy);
+        spec = addSessionalSpecification(spec, searchReq);
+        spec = addVegetarianSpecification(spec, searchReq);
+        spec=addRestaurantIdSpecification(spec,restaurantId);
+        return spec;
+    }
+    /**
+     * ==============================  Re-usable method  ========================================================
+     **/
+    private static Specification<Food> addRestaurantIdSpecification(Specification<Food> spec, Long restaurantId) {
         if (Objects.nonNull(restaurantId)) {
-            spec = spec.and(FoodSpecification.filterByRestaurantId(restaurantId));
+            return spec.and(FoodSpecification.filterByRestaurantId(restaurantId));
         }
         return spec;
     }
+    private static Specification<Food> addSearchSpecification(Specification<Food> spec, SearchRequest searchReq) {
+        if (Objects.nonNull(searchReq.getSearch())) {
+            return spec.and(FoodSpecification.search(searchReq.getSearch()));
+        }
+        return spec;
+    }
+
+    private static Specification<Food> addFilterSpecification(Specification<Food> spec, String filterBy) {
+        if (Objects.nonNull(filterBy)) {
+            return spec.and(FoodSpecification.filterCategory(filterBy));
+        }
+        return spec;
+    }
+
+    private static Specification<Food> addSessionalSpecification(Specification<Food> spec, SearchRequest searchReq) {
+        if (Boolean.TRUE.equals(searchReq.getSessional())) {
+            return spec.and(FoodSpecification.bySession(true));
+        }
+        return spec;
+    }
+
+    private static Specification<Food> addVegetarianSpecification(Specification<Food> spec, SearchRequest searchReq) {
+        if (Boolean.TRUE.equals(searchReq.getVegeterain())) {
+            return spec.and(FoodSpecification.byVegetarian(true));
+        }
+        return spec;
+    }
+
+
 }
