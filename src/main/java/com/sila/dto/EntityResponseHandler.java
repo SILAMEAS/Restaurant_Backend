@@ -1,4 +1,4 @@
-package com.sila.dto.entityResponseHandler;
+package com.sila.dto;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

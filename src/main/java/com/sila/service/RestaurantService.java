@@ -1,6 +1,6 @@
 package com.sila.service;
 
-import com.sila.dto.entityResponseHandler.EntityResponseHandler;
+import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FavoriteResponse;

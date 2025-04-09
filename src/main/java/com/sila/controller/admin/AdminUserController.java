@@ -1,7 +1,7 @@
 package com.sila.controller.admin;
 
 import com.sila.annotation.PreAuthorization;
-import com.sila.dto.entityResponseHandler.EntityResponseHandler;
+import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.response.UserResponse;
 import com.sila.service.UserService;
 import com.sila.utlis.contants.PaginationDefaults;
