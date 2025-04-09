@@ -1,6 +1,6 @@
 package com.sila.service.lmp;
 
-import com.sila.config.JWT.JwtProvider;
+import com.sila.config.JwtProvider;
 import com.sila.dto.entityResponseHandler.EntityResponseHandler;
 import com.sila.dto.request.UserRequest;
 import com.sila.dto.response.FavoriteResponse;

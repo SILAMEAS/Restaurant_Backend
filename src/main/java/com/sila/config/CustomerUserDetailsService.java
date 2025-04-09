@@ -1,4 +1,4 @@
-package com.sila.config.customDetail;
+package com.sila.config;
 
 import com.sila.exception.NotFoundException;
 import com.sila.model.User;

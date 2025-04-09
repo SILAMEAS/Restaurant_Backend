@@ -1,7 +1,6 @@
-package com.sila.config.customDetail;
+package com.sila.config;
 
 import com.sila.model.User;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,14 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Getter
-public class CustomUserDetails implements UserDetails {
-    // Provide access to the User object
-    private final User user;
-
-    public CustomUserDetails(User user) {
-        this.user = user;
-    }
+/**
+ * @param user Provide access to the User object
+ */
+public record CustomUserDetails(User user) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

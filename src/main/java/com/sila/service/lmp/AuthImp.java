@@ -1,8 +1,8 @@
 package com.sila.service.lmp;
 
-import com.sila.config.customDetail.CustomUserDetails;
-import com.sila.config.customDetail.CustomerUserDetailsService;
-import com.sila.config.JWT.JwtProvider;
+import com.sila.config.CustomUserDetails;
+import com.sila.config.CustomerUserDetailsService;
+import com.sila.config.JwtProvider;
 import com.sila.dto.request.LoginRequest;
 import com.sila.dto.response.AuthResponse;
 import com.sila.exception.BadRequestException;
@@ -102,7 +102,7 @@ public class AuthImp implements AuthService {
             AuthResponse response = AuthResponse.builder().
                     accessToken(newAccessToken).
                     refreshToken(newRefreshToken).
-                    userId(userDetails.getUser().getId()).
+                    userId(userDetails.user().getId()).
                     role(USER_ROLE.valueOf(userDetails.getAuthorities().iterator().next().getAuthority())).
                     message("Token refreshed successfully").build();
             return ResponseEntity.ok(response);

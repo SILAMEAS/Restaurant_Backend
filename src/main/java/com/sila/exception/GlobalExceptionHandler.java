@@ -7,8 +7,10 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.NoHandlerFoundException;
-
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +47,23 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleAllOtherExceptions(Exception ex, WebRequest request) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "Something went wrong.");
     }
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<Object> handleHandlerMethodValidationException(HandlerMethodValidationException ex) {
+        Throwable cause = ex.getCause();
+
+        if (cause instanceof ConstraintViolationException violationEx) {
+            String message = violationEx.getConstraintViolations()
+                    .stream()
+                    .map(ConstraintViolation::getMessage)
+                    .findFirst()
+                    .orElse("Validation error");
+
+            return buildResponse(HttpStatus.BAD_REQUEST, "Bad Request", message);
+        }
+
+        // fallback
+        return buildResponse(HttpStatus.BAD_REQUEST, "Bad Request", "Validation failed.");
+    }
 
     // Utility method
     private ResponseEntity<Object> buildResponse(HttpStatus status, String error, String message) {
@@ -54,4 +73,5 @@ public class GlobalExceptionHandler {
         body.put("message", message);
         return new ResponseEntity<>(body, status);
     }
+
 }

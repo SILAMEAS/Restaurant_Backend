@@ -1,7 +1,8 @@
-package com.sila.utlis.protect;
+package com.sila.annotation.constraint;
 
 import com.sila.exception.AccessDeniedException;
 import com.sila.utlis.enums.USER_ROLE;
+import com.sila.annotation.PreAuthorization;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -19,7 +20,7 @@ import java.util.List;
 @Component
 public class RoleProtectionAspect {
 
-    @Before("within(@com.sila.utlis.protect.PreAuthorization *) || @annotation(com.sila.utlis.protect.PreAuthorization)")
+    @Before("within(@com.sila.annotation.PreAuthorization *) || @annotation(com.sila.annotation.PreAuthorization)")
     public void checkRole(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
