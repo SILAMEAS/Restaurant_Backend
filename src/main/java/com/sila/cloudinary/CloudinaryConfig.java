@@ -5,17 +5,25 @@ import com.cloudinary.utils.ObjectUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Map;
 
 @Configuration
 public class CloudinaryConfig {
 
+    private final CloudinaryProperties cloudinaryProperties;
+
+    public CloudinaryConfig(CloudinaryProperties cloudinaryProperties) {
+        this.cloudinaryProperties = cloudinaryProperties;
+    }
+
     @Bean
     public Cloudinary cloudinary() {
-        return new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", "ddz6bkk0m",
-                "api_key", "675499539668193",
-                "api_secret", "32PfiKAo7glmYYLM5MOoXZ6KS0Q",
+        Map<String, Object> config = ObjectUtils.asMap(
+                "cloud_name", cloudinaryProperties.getCloudName(),
+                "api_key", cloudinaryProperties.getApiKey(),
+                "api_secret", cloudinaryProperties.getApiSecret(),
                 "secure", true
-        ));
+        );
+        return new Cloudinary(config);
     }
 }

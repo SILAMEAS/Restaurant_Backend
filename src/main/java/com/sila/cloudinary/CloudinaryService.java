@@ -14,7 +14,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CloudinaryService {
 
-    final private Cloudinary cloudinary;
+    private final Cloudinary cloudinary;
 
     public String uploadFile(MultipartFile file) throws IOException {
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
