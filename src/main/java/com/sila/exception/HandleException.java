@@ -29,6 +29,15 @@ public class HandleException {
         return new ResponseEntity<>(messageResponse, HttpStatus.FORBIDDEN);
     }
 
+    // Handle ServerErrorException
+    @ExceptionHandler(value = ServerErrorException.class)
+    public ResponseEntity<MessageResponse> handleNotFound(ServerErrorException serverErrorException) {
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        messageResponse.setMessage(serverErrorException.getMessage());
+        return new ResponseEntity<>(messageResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     // Handle NotFoundException
     @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<MessageResponse> handleNotFound(NotFoundException notFoundException) {

@@ -28,7 +28,7 @@ public class AdminCategoryController {
     }
 
     @DeleteMapping("{categoryId}")
-    public ResponseEntity<MessageResponse> deleteCategory(@PathVariable Long categoryId) throws Exception {
+    public ResponseEntity<MessageResponse> deleteCategory(@PathVariable Long categoryId) {
         return new ResponseEntity<>(categoryService.delete(categoryId), HttpStatus.CREATED);
     }
 }

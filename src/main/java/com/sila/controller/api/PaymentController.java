@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Cart Controller", description = "User operations related to Cart")
+@Tag(name = "Payment Controller", description = "User operations related to Payment")
 @RestController
-@RequestMapping("/api/cart")
+@RequestMapping("/api/payment")
 @RequiredArgsConstructor
 @Slf4j
-public class CartController {
+public class PaymentController {
     @GetMapping
-    ResponseEntity<String> getCart() {
-        return new ResponseEntity<>("getCart", HttpStatus.OK);
+    ResponseEntity<String> getPayment() {
+        return new ResponseEntity<>("getPayment", HttpStatus.OK);
     }
 }

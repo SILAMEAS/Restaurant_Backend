@@ -12,7 +12,7 @@ import com.sila.repository.RestaurantRepository;
 import com.sila.service.CategoryService;
 import com.sila.service.FoodService;
 import com.sila.config.context.UserContext;
-import com.sila.utlis.enums.USER_ROLE;
+import com.sila.util.enums.USER_ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

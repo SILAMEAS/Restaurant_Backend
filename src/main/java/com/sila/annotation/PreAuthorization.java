@@ -1,6 +1,6 @@
 package com.sila.annotation;
 
-import com.sila.utlis.enums.USER_ROLE;
+import com.sila.util.enums.USER_ROLE;
 
 import java.lang.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.sila.config;
+package com.sila.config.custom;
 
 import com.sila.model.User;
 import org.springframework.security.core.GrantedAuthority;

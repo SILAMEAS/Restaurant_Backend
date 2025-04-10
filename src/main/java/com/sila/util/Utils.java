@@ -1,4 +1,4 @@
-package com.sila.utlis;
+package com.sila.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

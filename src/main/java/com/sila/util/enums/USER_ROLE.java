@@ -1,4 +1,4 @@
-package com.sila.utlis.enums;
+package com.sila.util.enums;
 
 public enum USER_ROLE {
     ROLE_CUSTOMER,

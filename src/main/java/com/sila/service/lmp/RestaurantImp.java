@@ -18,7 +18,7 @@ import com.sila.repository.UserRepository;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import com.sila.specifcation.RestaurantSpecification;
-import com.sila.utlis.Utils;
+import com.sila.util.Utils;
 import com.sila.config.context.UserContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.sila.dto.response;
 
-import com.sila.utlis.enums.USER_ROLE;
+import com.sila.util.enums.USER_ROLE;
 import lombok.Builder;
 import lombok.Data;
 

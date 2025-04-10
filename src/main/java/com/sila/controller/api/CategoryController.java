@@ -4,7 +4,7 @@ import com.sila.annotation.PreAuthorization;
 import com.sila.dto.request.CategoryRequest;
 import com.sila.model.Category;
 import com.sila.service.CategoryService;
-import com.sila.utlis.enums.USER_ROLE;
+import com.sila.util.enums.USER_ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.sila.utlis.contants;
+package com.sila.util.common;
 
 
 public class PaginationDefaults {

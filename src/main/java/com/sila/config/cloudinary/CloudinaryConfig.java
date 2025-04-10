@@ -1,4 +1,4 @@
-package com.sila.config;
+package com.sila.config.cloudinary;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

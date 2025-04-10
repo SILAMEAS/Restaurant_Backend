@@ -1,5 +1,6 @@
 package com.sila.model;
 
+import com.sila.util.enums.PAYMENT_STATUS;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,5 +34,5 @@ public class Order {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Payment payment;
 
-    private String status; // e.g., "PENDING", "CONFIRMED", "DELIVERED", "CANCELLED"
+    private PAYMENT_STATUS status;
 }

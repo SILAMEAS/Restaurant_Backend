@@ -1,7 +1,7 @@
 package com.sila.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sila.utlis.enums.USER_ROLE;
+import com.sila.util.enums.USER_ROLE;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,16 +1,15 @@
 package com.sila.model;
 
 
+import com.sila.util.enums.PAYMENT_METHOD;
+import com.sila.util.enums.PAYMENT_STATUS;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Payment {
 
     @Id
@@ -20,11 +19,11 @@ public class Payment {
     @OneToOne
     private Order order;
 
-    private String paymentMethod; // e.g., "CASH", "CARD", "ONLINE"
+    private PAYMENT_METHOD paymentMethod;
 
     private double amount;
 
     private LocalDateTime paidAt;
 
-    private String status; // e.g., "PENDING", "PAID", "FAILED"
+    private PAYMENT_STATUS status;
 }

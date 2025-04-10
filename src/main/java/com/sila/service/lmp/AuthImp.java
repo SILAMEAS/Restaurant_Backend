@@ -1,8 +1,8 @@
 package com.sila.service.lmp;
 
-import com.sila.config.CustomUserDetails;
-import com.sila.config.CustomerUserDetailsService;
-import com.sila.config.JwtProvider;
+import com.sila.config.custom.CustomUserDetails;
+import com.sila.config.custom.CustomerUserDetailsService;
+import com.sila.config.jwt.JwtProvider;
 import com.sila.dto.request.LoginRequest;
 import com.sila.dto.response.AuthResponse;
 import com.sila.exception.BadRequestException;
@@ -11,7 +11,7 @@ import com.sila.model.User;
 import com.sila.repository.UserRepository;
 import com.sila.service.AuthService;
 import com.sila.service.UserService;
-import com.sila.utlis.enums.USER_ROLE;
+import com.sila.util.enums.USER_ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

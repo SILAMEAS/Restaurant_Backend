@@ -32,4 +32,5 @@ public class Favorite {
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
+    
 }
