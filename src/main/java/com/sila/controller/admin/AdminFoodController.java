@@ -17,15 +17,21 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Tag(name = "Admin Food Controller", description = "Admin operations related to food")
 @RestController
@@ -40,15 +46,15 @@ public class AdminFoodController {
     private final CategoryService categoryService;
     private final ModelMapper modelMapper;
 
-    @PostMapping
-    public ResponseEntity<Food> createFood(
-            @RequestHeader("Authorization") String jwt,
-            @Valid @RequestBody FoodRequest req) throws Exception {
 
-        userService.getByJwt(jwt);
-        Restaurant restaurant = restaurantService.getById(req.getRestaurantId());
-        Category category = categoryService.getById(req.getCategoryId());
-        Food food = foodService.create(req, category, restaurant);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Food> createFood(
+            @Valid @ModelAttribute FoodRequest foodRequest,
+            @RequestParam("images") List<MultipartFile> imageFiles) throws Exception {
+
+        Restaurant restaurant = restaurantService.getById(foodRequest.getRestaurantId());
+        Category category = categoryService.getById(foodRequest.getCategoryId());
+        Food food = foodService.create(foodRequest, category, restaurant,imageFiles);
 
         return new ResponseEntity<>(food, HttpStatus.CREATED);
     }

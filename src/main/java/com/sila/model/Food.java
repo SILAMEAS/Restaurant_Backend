@@ -1,8 +1,12 @@
 package com.sila.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sila.model.image.ImageFood;
+import com.sila.util.annotation.StringListConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,8 +26,9 @@ public class Food {
     private Long price;
     @ManyToOne
     private Category category;
-    @Column(length = 1000)
-    private List<String> images;
+    @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ImageFood> images = new ArrayList<>();
     private boolean available;
     @ManyToOne
     private Restaurant restaurant;

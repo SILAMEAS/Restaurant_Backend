@@ -1,6 +1,6 @@
 package com.sila.controller.api;
 
-import com.sila.annotation.PreAuthorization;
+import com.sila.util.annotation.PreAuthorization;
 import com.sila.dto.request.CategoryRequest;
 import com.sila.model.Category;
 import com.sila.service.CategoryService;

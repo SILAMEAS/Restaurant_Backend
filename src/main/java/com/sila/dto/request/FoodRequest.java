@@ -3,6 +3,7 @@ package com.sila.dto.request;
 import com.sila.model.Category;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -12,8 +13,10 @@ public class FoodRequest {
     private String description;
     private Long price;
     private Category category;
-    @NotEmpty
-    private List<String> images;
+//    @NotEmpty
+//    private List<String> images;
+    // If you're uploading real image files
+    private List<MultipartFile> images;
     private Long restaurantId;
     private Long categoryId;
     private boolean vegetarian;

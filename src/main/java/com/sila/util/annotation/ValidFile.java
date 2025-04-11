@@ -1,6 +1,6 @@
-package com.sila.annotation;
+package com.sila.util.annotation;
 
-import com.sila.annotation.constraint.FileValidator;
+import com.sila.util.annotation.constraint.FileValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import org.springframework.http.MediaType;

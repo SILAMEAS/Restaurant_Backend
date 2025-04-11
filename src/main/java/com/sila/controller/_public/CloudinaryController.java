@@ -1,6 +1,6 @@
 package com.sila.controller._public;
 
-import com.sila.annotation.ValidFile;
+import com.sila.util.annotation.ValidFile;
 import com.sila.service.CloudinaryService;
 import com.sila.exception.BadRequestException;
 import io.swagger.v3.oas.annotations.tags.Tag;

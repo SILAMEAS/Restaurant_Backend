@@ -1,6 +1,6 @@
 package com.sila.controller.admin;
 
-import com.sila.annotation.PreAuthorization;
+import com.sila.util.annotation.PreAuthorization;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.response.UserResponse;
 import com.sila.service.UserService;

@@ -1,4 +1,4 @@
-package com.sila.annotation;
+package com.sila.util.annotation;
 
 import com.sila.util.enums.USER_ROLE;
 
