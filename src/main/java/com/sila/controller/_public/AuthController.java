@@ -10,7 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -29,15 +33,16 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<AuthResponse> signIn(@RequestBody LoginRequest loginReq) throws Exception {
+    public ResponseEntity<AuthResponse> signIn(@RequestBody LoginRequest loginReq) {
         return authService.signIn(loginReq);
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<AuthResponse> refreshToken(@RequestBody Map<String, String> request) throws Exception {
+    public ResponseEntity<AuthResponse> refreshToken(@RequestBody Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
         return authService.refreshToken(refreshToken);
     }
+
     @Hidden
     @GetMapping("/test-api")
     public ResponseEntity<String> getTest() {

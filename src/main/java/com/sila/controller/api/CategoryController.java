@@ -1,9 +1,9 @@
 package com.sila.controller.api;
 
-import com.sila.util.annotation.PreAuthorization;
 import com.sila.dto.request.CategoryRequest;
 import com.sila.model.Category;
 import com.sila.service.CategoryService;
+import com.sila.util.annotation.PreAuthorization;
 import com.sila.util.enums.USER_ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +29,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    @PreAuthorization({USER_ROLE.ROLE_ADMIN,USER_ROLE.ROLE_RESTAURANT_OWNER})
-    public ResponseEntity<Category> createCategory(@RequestHeader("Authorization") String jwt, @RequestBody CategoryRequest categoryReq) throws Exception {
+    @PreAuthorization({USER_ROLE.ROLE_ADMIN, USER_ROLE.ROLE_RESTAURANT_OWNER})
+    public ResponseEntity<Category> createCategory(@RequestHeader("Authorization") String jwt, @RequestBody CategoryRequest categoryReq) {
         return new ResponseEntity<>(categoryService.create(jwt, categoryReq.getName()), HttpStatus.CREATED);
     }
 

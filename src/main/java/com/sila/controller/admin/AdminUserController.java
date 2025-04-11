@@ -1,9 +1,9 @@
 package com.sila.controller.admin;
 
-import com.sila.util.annotation.PreAuthorization;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.response.UserResponse;
 import com.sila.service.UserService;
+import com.sila.util.annotation.PreAuthorization;
 import com.sila.util.common.PaginationDefaults;
 import com.sila.util.enums.USER_ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,8 +27,8 @@ public class AdminUserController {
 
     @GetMapping
     @PreAuthorization({USER_ROLE.ROLE_ADMIN})
-    public ResponseEntity<EntityResponseHandler<UserResponse>> findUserRoleIsAdmin(
-            @RequestHeader("Authorization") String jwt, @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
+    public ResponseEntity<EntityResponseHandler<UserResponse>> listUsers(
+            @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
             @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
             @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
             @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder,

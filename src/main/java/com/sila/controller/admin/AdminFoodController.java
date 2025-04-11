@@ -54,7 +54,7 @@ public class AdminFoodController {
 
         Restaurant restaurant = restaurantService.getById(foodRequest.getRestaurantId());
         Category category = categoryService.getById(foodRequest.getCategoryId());
-        Food food = foodService.create(foodRequest, category, restaurant,imageFiles);
+        Food food = foodService.create(foodRequest, category, restaurant, imageFiles);
 
         return new ResponseEntity<>(food, HttpStatus.CREATED);
     }
