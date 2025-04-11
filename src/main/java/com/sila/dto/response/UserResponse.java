@@ -24,6 +24,6 @@ public class UserResponse implements Serializable {
     private String fullName;
     private String email;
     private USER_ROLE role;
-    private List<Address> addresses;
-    private List<FavoriteResponse> favourites;
+    private transient List<Address> addresses;
+    private transient List<FavoriteResponse> favourites;
 }

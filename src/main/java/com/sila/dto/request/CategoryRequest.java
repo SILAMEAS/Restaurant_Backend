@@ -13,5 +13,6 @@ import lombok.Setter;
 public class CategoryRequest {
     @NotEmpty
     private String name;
+    @NotEmpty
     private String key;
 }

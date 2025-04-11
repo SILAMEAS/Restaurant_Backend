@@ -1,7 +1,6 @@
 package com.sila.dto.response;
 
 import com.sila.model.Category;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,20 +15,13 @@ import java.util.List;
 @Getter
 public class FoodResponse implements Serializable {
     private Long id;
-    @NotEmpty
     private String name;
-    @NotEmpty
     private Long categoryId;
-    @NotEmpty
     private String description;
-    @NotEmpty
     private Long price;
-    @NotEmpty
     private List<String> images;
-    @NotEmpty
     private Long restaurantId;
-    @NotEmpty
-    private Category foodCategory;
+    private transient Category category;
     private boolean isVegetarian;
     private boolean isSeasonal;
     private boolean available;

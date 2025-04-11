@@ -12,7 +12,6 @@ import com.sila.model.Restaurant;
 import com.sila.model.image.ImageFood;
 import com.sila.repository.CategoryRepository;
 import com.sila.repository.FoodRepository;
-import com.sila.service.CategoryService;
 import com.sila.service.CloudinaryService;
 import com.sila.service.FoodService;
 import com.sila.specifcation.FoodSpecification;
@@ -40,17 +39,7 @@ public class FoodImp implements FoodService {
     public Food create(FoodRequest foodRequest, Category category, Restaurant restaurant, List<MultipartFile> imageFiles) {
         Food food = Food.builder().name(foodRequest.getName()).description(foodRequest.getDescription()).price(foodRequest.getPrice()).available(foodRequest.isAvailable()).isVegetarian(foodRequest.isVegetarian()).isSeasonal(foodRequest.isSeasonal()).creationDate(new Date()).category(category).restaurant(restaurant).build();
 
-        List<ImageFood> imageEntities = imageFiles.stream().map(file -> {
-            try {
-                String imageUrl = cloudinaryService.uploadFile(file);
-                ImageFood image = new ImageFood();
-                image.setUrl(imageUrl);
-                image.setFood(food);
-                return image;
-            } catch (IOException e) {
-                throw new ImageUploadException("Failed to upload image to Cloudinary", e);
-            }
-        }).toList();
+        List<ImageFood> imageEntities = uploadFoodImageToCloudinary(imageFiles, food);
 
         food.setImages(imageEntities);
         Food savedFood = foodRepository.save(food);
@@ -116,5 +105,21 @@ public class FoodImp implements FoodService {
         return new EntityResponseHandler<>(foodPage.map(fs -> this.modelMapper.map(fs, FoodResponse.class)));
     }
 
+    /**
+     * Method : use to upload image to cloudinary before saving to food
+     **/
+    public List<ImageFood> uploadFoodImageToCloudinary(List<MultipartFile> imageFiles, Food food) {
+        return imageFiles.stream().map(file -> {
+            try {
+                String imageUrl = cloudinaryService.uploadFile(file);
+                ImageFood image = new ImageFood();
+                image.setUrl(imageUrl);
+                image.setFood(food);
+                return image;
+            } catch (IOException e) {
+                throw new ImageUploadException("Failed to upload image to Cloudinary", e);
+            }
+        }).toList();
+    }
 
 }

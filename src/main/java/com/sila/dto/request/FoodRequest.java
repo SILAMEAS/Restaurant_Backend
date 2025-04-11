@@ -13,9 +13,7 @@ public class FoodRequest {
     private String description;
     private Long price;
     private Category category;
-//    @NotEmpty
-//    private List<String> images;
-    // If you're uploading real image files
+    @NotEmpty
     private List<MultipartFile> images;
     private Long restaurantId;
     private Long categoryId;
