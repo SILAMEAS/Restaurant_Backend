@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface AuthService {
     ResponseEntity<String> signUp(User user);
 
-    ResponseEntity<AuthResponse> signIn(@RequestBody LoginRequest req) throws Exception;
+    ResponseEntity<AuthResponse> signIn(@RequestBody LoginRequest req);
 
     ResponseEntity<AuthResponse> refreshToken(String refreshToken);
 }

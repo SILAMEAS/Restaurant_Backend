@@ -12,9 +12,11 @@ import com.sila.model.Restaurant;
 import com.sila.model.image.ImageFood;
 import com.sila.repository.CategoryRepository;
 import com.sila.repository.FoodRepository;
+import com.sila.service.CategoryService;
 import com.sila.service.CloudinaryService;
 import com.sila.service.FoodService;
 import com.sila.specifcation.FoodSpecification;
+import com.sila.util.Utils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -61,24 +62,15 @@ public class FoodImp implements FoodService {
     public Food update(FoodRequest foodReq, Long foodId) {
         Category category = categoryRepository.findById(foodReq.getCategoryId()).orElseThrow(() -> new BadRequestException("category not found"));
         Food food = getById(foodId);
-        if (!Objects.isNull(food.getName())) {
-            food.setName(food.getName());
-        }
-        if (!Objects.isNull(food.getImages())) {
-            food.setImages(food.getImages());
-        }
-        if (!Objects.isNull(food.getCategory())) {
-            food.setCategory(category);
-        }
-        if (!Objects.isNull(food.getPrice())) {
-            food.setPrice(food.getPrice());
-        }
-        if (!Objects.isNull(food.getDescription())) {
-            food.setDescription(food.getDescription());
-        }
-        food.setVegetarian(food.isVegetarian());
-        food.setSeasonal(food.isSeasonal());
-        food.setAvailable(food.isAvailable());
+
+        Utils.setIfNotNull(food.getName(), food::setName);
+        Utils.setIfNotNull(food.getImages(), food::setImages);
+        Utils.setIfNotNull(category, food::setCategory);
+        Utils.setIfNotNull(food.getPrice(), food::setPrice);
+        Utils.setIfNotNull(food.getDescription(), food::setDescription);
+        Utils.setIfNotNull(food.isVegetarian(), food::setVegetarian);
+        Utils.setIfNotNull(food.isSeasonal(), food::setSeasonal);
+        Utils.setIfNotNull(food.isAvailable(), food::setAvailable);
 
         return foodRepository.save(food);
     }

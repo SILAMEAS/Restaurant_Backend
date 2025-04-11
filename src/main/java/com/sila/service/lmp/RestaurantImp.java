@@ -1,5 +1,6 @@
 package com.sila.service.lmp;
 
+import com.sila.config.context.UserContext;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.request.SearchRequest;
@@ -19,7 +20,6 @@ import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import com.sila.specifcation.RestaurantSpecification;
 import com.sila.util.Utils;
-import com.sila.config.context.UserContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -50,8 +50,7 @@ public class RestaurantImp implements RestaurantService {
             throw new BadRequestException("User have restaurant ready!");
         }
         Address address = addressRepository.save(restaurantReq.getAddress());
-        Restaurant restaurant = Restaurant.builder().address(address).name(restaurantReq.getName()).openingHours(restaurantReq.getOpeningHours())
-                .description(restaurantReq.getDescription()).registrationDate(LocalDateTime.now()).build();
+        Restaurant restaurant = Restaurant.builder().address(address).name(restaurantReq.getName()).openingHours(restaurantReq.getOpeningHours()).description(restaurantReq.getDescription()).registrationDate(LocalDateTime.now()).build();
         User user = userService.getById(userId);
         restaurant.setOwner(user);
         restaurant.setCuisineType(restaurantReq.getCuisineType());
@@ -89,8 +88,7 @@ public class RestaurantImp implements RestaurantService {
 
     @Override
     public Restaurant getById(Long id) throws Exception {
-        return restaurantRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("Restaurant not found with id " + id));
+        return restaurantRepository.findById(id).orElseThrow(() -> new BadRequestException("Restaurant not found with id " + id));
     }
 
     @Override
@@ -104,26 +102,18 @@ public class RestaurantImp implements RestaurantService {
     }
 
     @Override
-    public EntityResponseHandler<RestaurantResponse> search(Pageable pageable,
-                                                            SearchRequest searchReq) {
+    public EntityResponseHandler<RestaurantResponse> search(Pageable pageable, SearchRequest searchReq) {
         var restaurantPage = restaurantRepository.findAll(RestaurantSpecification.filterRestaurant(searchReq), pageable);
-        return new EntityResponseHandler<>(restaurantPage
-                .map(restaurant -> this.modelMapper.map(restaurant, RestaurantResponse.class)));
+        return new EntityResponseHandler<>(restaurantPage.map(restaurant -> this.modelMapper.map(restaurant, RestaurantResponse.class)));
     }
 
     @Override
     public List<FavoriteResponse> addFav(Long restaurantId, User user) throws Exception {
         // Fetch the restaurant to ensure it's managed
-        Restaurant findRestaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
         // Create a new Favorite instance
-        Favorite fav = new Favorite();
-        fav.setName(findRestaurant.getName());
-        fav.setDescription(findRestaurant.getDescription());
-        fav.setRestaurant(findRestaurant); // Set the restaurant
-        fav.setOwner(user); // Set the owner
-
+        Favorite fav = Favorite.builder().name(restaurant.getName()).description(restaurant.getDescription()).restaurant(restaurant).build();
         boolean isFavorite = false;
         List<Favorite> favorites = user.getFavourites();
 
@@ -150,18 +140,17 @@ public class RestaurantImp implements RestaurantService {
     }
 
 
-
     public boolean isUserOwnerOfRestaurant(Long userId, Long restaurantId) throws Exception {
         Restaurant restaurant = getById(restaurantId);
         return restaurant.getOwner() != null && restaurant.getOwner().getId().equals(userId);
     }
 
-    public Restaurant handleFindRestaurantById(Long restaurantId) throws Exception {
+    public Restaurant handleFindRestaurantById(Long restaurantId) {
         Optional<Restaurant> restaurantExit = restaurantRepository.findById(restaurantId);
-        if (restaurantExit.isPresent()) {
-            return restaurantExit.get();
+        if (restaurantExit.isEmpty()) {
+            throw new NotFoundException("Not Found Restaurant with id : " + restaurantId);
         }
-        throw new NotFoundException("Not Found Restaurant with id : " + restaurantId);
+        return restaurantExit.get();
     }
 
 }

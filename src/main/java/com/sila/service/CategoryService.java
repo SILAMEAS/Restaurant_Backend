@@ -15,4 +15,5 @@ public interface CategoryService {
     Category getById(Long categoryId);
 
     MessageResponse delete(Long categoryId);
+
 }

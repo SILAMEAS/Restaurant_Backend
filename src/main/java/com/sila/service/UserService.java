@@ -10,7 +10,7 @@ public interface UserService {
 
     User getByJwt(String jwt) throws Exception;
 
-    User getByEmail(String email) throws Exception;
+    User getByEmail(String email);
 
     User getById(Long userId);
 

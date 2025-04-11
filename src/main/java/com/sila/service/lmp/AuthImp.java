@@ -66,7 +66,7 @@ public class AuthImp implements AuthService {
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 
-    public ResponseEntity<AuthResponse> signIn(LoginRequest req) throws Exception {
+    public ResponseEntity<AuthResponse> signIn(LoginRequest req) {
         Authentication authentication = authenticate(req.getEmail(), req.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
