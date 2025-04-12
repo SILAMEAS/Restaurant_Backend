@@ -5,7 +5,6 @@ import com.cloudinary.utils.ObjectUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Map;
 
 @Configuration
 public class CloudinaryConfig {
@@ -18,7 +17,7 @@ public class CloudinaryConfig {
 
     @Bean
     public Cloudinary cloudinary() {
-        Map<String, Object> config = ObjectUtils.asMap(
+        var config = ObjectUtils.asMap(
                 "cloud_name", cloudinaryProperties.getCloudName(),
                 "api_key", cloudinaryProperties.getApiKey(),
                 "api_secret", cloudinaryProperties.getApiSecret(),
