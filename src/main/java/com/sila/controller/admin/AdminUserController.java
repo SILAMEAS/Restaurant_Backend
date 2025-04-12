@@ -5,7 +5,7 @@ import com.sila.dto.response.UserResponse;
 import com.sila.service.UserService;
 import com.sila.util.annotation.PreAuthorization;
 import com.sila.util.common.PaginationDefaults;
-import com.sila.util.enums.USER_ROLE;
+import com.sila.util.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ public class AdminUserController {
     private final UserService userService;
 
     @GetMapping
-    @PreAuthorization({USER_ROLE.ROLE_ADMIN})
+    @PreAuthorization({ROLE.ADMIN})
     public ResponseEntity<EntityResponseHandler<UserResponse>> listUsers(
             @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
             @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,

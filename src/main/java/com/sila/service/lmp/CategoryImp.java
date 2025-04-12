@@ -12,7 +12,7 @@ import com.sila.repository.RestaurantRepository;
 import com.sila.service.CategoryService;
 import com.sila.service.FoodService;
 import com.sila.config.context.UserContext;
-import com.sila.util.enums.USER_ROLE;
+import com.sila.util.enums.ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,8 +41,8 @@ public class CategoryImp implements CategoryService {
 
     @Override
     public Category update(String name, Long categoryId) {
-        USER_ROLE user = UserContext.getUser().getRole();
-        if (user.equals(USER_ROLE.ROLE_CUSTOMER)) {
+        ROLE user = UserContext.getUser().getRole();
+        if (user.equals(ROLE.USER)) {
             throw new AccessDeniedException("Customer do not have permission to change category");
         }
         Category category = getById(categoryId);

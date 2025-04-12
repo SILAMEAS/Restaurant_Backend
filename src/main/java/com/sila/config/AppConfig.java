@@ -35,7 +35,7 @@ public class AppConfig {
                                 "/swagger-ui.html",
                                 "/api/auth/**" // allow login/register
                         ).permitAll()
-                        .requestMatchers("/api/admin/**").hasAnyRole("RESTAURANT_OWNER", "ADMIN")
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("OWNER", "ADMIN")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )

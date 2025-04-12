@@ -1,7 +1,7 @@
 package com.sila.util.annotation.constraint;
 
 import com.sila.exception.AccessDeniedException;
-import com.sila.util.enums.USER_ROLE;
+import com.sila.util.enums.ROLE;
 import com.sila.util.annotation.PreAuthorization;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -36,11 +36,11 @@ public class RoleProtectionAspect {
         }
     }
 
-    private void validateRoles(USER_ROLE[] allowedRoles) {
+    private void validateRoles(ROLE[] allowedRoles) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         List<String> allowed = Arrays.stream(allowedRoles)
-                .map(USER_ROLE::name)
+                .map(ROLE::name)
                 .toList();
 
         if (auth == null || auth.getAuthorities() == null) {

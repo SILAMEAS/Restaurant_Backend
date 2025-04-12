@@ -1,7 +1,7 @@
 package com.sila.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sila.util.enums.USER_ROLE;
+import com.sila.util.enums.ROLE;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +24,7 @@ public class User {
     private String profile;
     private String email;
     private String password;
-    private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
+    private ROLE role = ROLE.USER;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "owner")
     private List<Favorite> favourites = new ArrayList<>();

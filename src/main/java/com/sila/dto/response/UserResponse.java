@@ -1,7 +1,7 @@
 package com.sila.dto.response;
 
 import com.sila.model.Address;
-import com.sila.util.enums.USER_ROLE;
+import com.sila.util.enums.ROLE;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class UserResponse implements Serializable {
     private String profile;
     private String fullName;
     private String email;
-    private USER_ROLE role;
+    private ROLE role;
     private transient List<Address> addresses;
     private transient List<FavoriteResponse> favourites;
 }

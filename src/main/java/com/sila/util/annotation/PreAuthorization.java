@@ -1,6 +1,6 @@
 package com.sila.util.annotation;
 
-import com.sila.util.enums.USER_ROLE;
+import com.sila.util.enums.ROLE;
 
 import java.lang.annotation.*;
 
@@ -8,5 +8,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface PreAuthorization {
-    USER_ROLE[] value(); // Accepts enum values now
+    ROLE[] value(); // Accepts enum values now
 }

@@ -11,7 +11,7 @@ import com.sila.model.User;
 import com.sila.repository.UserRepository;
 import com.sila.service.AuthService;
 import com.sila.service.UserService;
-import com.sila.util.enums.USER_ROLE;
+import com.sila.util.enums.ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -82,7 +82,7 @@ public class AuthImp implements AuthService {
                 accessToken(jwt).
                 refreshToken(refreshToken).
                 userId(user.getId()).
-                role(USER_ROLE.valueOf(role)).
+                role(ROLE.valueOf(role)).
                 message("Login successfully").build();
         return ResponseEntity.ok(response); // Return response
     }
@@ -103,7 +103,7 @@ public class AuthImp implements AuthService {
                     accessToken(newAccessToken).
                     refreshToken(newRefreshToken).
                     userId(userDetails.user().getId()).
-                    role(USER_ROLE.valueOf(userDetails.getAuthorities().iterator().next().getAuthority())).
+                    role(ROLE.valueOf(userDetails.getAuthorities().iterator().next().getAuthority())).
                     message("Token refreshed successfully").build();
             return ResponseEntity.ok(response);
         } else {
