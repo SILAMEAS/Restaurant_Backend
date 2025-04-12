@@ -1,14 +1,20 @@
-package com.sila.controller.api;
+package com.sila.controller;
 
 import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FavoriteResponse;
+import com.sila.dto.response.MessageResponse;
 import com.sila.dto.response.RestaurantResponse;
+import com.sila.model.Restaurant;
 import com.sila.model.User;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
+import com.sila.util.annotation.PreAuthorization;
 import com.sila.util.common.PaginationDefaults;
+import com.sila.util.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
@@ -55,6 +61,32 @@ public class RestaurantController {
     public ResponseEntity<List<FavoriteResponse>> addRestaurantToFavorites(@RequestHeader("Authorization") String jwt, @PathVariable Long id) throws Exception {
         User userLogin=userService.getByJwt(jwt);
         return new ResponseEntity<>(restaurantService.addFav(id,userLogin), HttpStatus.OK);
+    }
+    @PreAuthorization({ROLE.ADMIN})
+    @PostMapping()
+    public ResponseEntity<Restaurant> createRestaurant(@Valid @RequestBody RestaurantRequest restaurantReq) {
+        return new ResponseEntity<>(restaurantService.create(restaurantReq), HttpStatus.CREATED);
+    }
+    @PreAuthorization({ROLE.OWNER})
+    @PutMapping("/{id}")
+    public ResponseEntity<RestaurantResponse> updateRestaurant(@RequestBody RestaurantRequest restaurantReq, @PathVariable Long id) throws Exception {
+        Restaurant restaurant = restaurantService.update(restaurantReq, id);
+        return new ResponseEntity<>(this.modelMapper.map(restaurant, RestaurantResponse.class), HttpStatus.OK);
+    }
+    @PreAuthorization({ROLE.ADMIN})
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MessageResponse> deleteRestaurant(@PathVariable @Valid Long id) throws Exception {
+        MessageResponse messageResponse = new MessageResponse();
+        restaurantService.delete(id);
+        messageResponse.setMessage("delete restaurant id : " + id + " successfully!");
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
+
+@PreAuthorization({ROLE.ADMIN,ROLE.OWNER})
+    @GetMapping("/owner")
+    public ResponseEntity<Restaurant> findRestaurantByOwnerLogin() {
+        Restaurant restaurant = restaurantService.getByUserLogin();
+        return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
 }
 

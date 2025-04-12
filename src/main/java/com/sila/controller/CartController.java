@@ -1,4 +1,4 @@
-package com.sila.controller.api;
+package com.sila.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

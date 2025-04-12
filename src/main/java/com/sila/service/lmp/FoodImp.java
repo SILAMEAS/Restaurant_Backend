@@ -1,5 +1,6 @@
 package com.sila.service.lmp;
 
+import com.sila.config.context.UserContext;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.FoodRequest;
 import com.sila.dto.request.SearchRequest;
@@ -12,6 +13,7 @@ import com.sila.model.Restaurant;
 import com.sila.model.image.ImageFood;
 import com.sila.repository.CategoryRepository;
 import com.sila.repository.FoodRepository;
+import com.sila.repository.RestaurantRepository;
 import com.sila.service.CloudinaryService;
 import com.sila.service.FoodService;
 import com.sila.specifcation.FoodSpecification;
@@ -32,6 +34,7 @@ public class FoodImp implements FoodService {
 
     private final FoodRepository foodRepository;
     private final CategoryRepository categoryRepository;
+    private final RestaurantRepository restaurantRepository;
     private final ModelMapper modelMapper;
     private final CloudinaryService cloudinaryService;
 
@@ -49,6 +52,12 @@ public class FoodImp implements FoodService {
 
     @Override
     public Food update(FoodRequest foodReq, Long foodId) {
+        var user = UserContext.getUser();
+        Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
+        Food foodToUpdate = getById(foodId);
+        if (!foodToUpdate.getRestaurant().getId().equals(restaurant.getId())) {
+            throw new BadRequestException("Food is not in this user's restaurant");
+        }
         Category category = categoryRepository.findById(foodReq.getCategoryId()).orElseThrow(() -> new BadRequestException("category not found"));
         Food food = getById(foodId);
 

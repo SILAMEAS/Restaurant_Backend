@@ -1,4 +1,4 @@
-package com.sila.controller._public;
+package com.sila.controller;
 
 import com.sila.dto.request.LoginRequest;
 import com.sila.dto.response.AuthResponse;

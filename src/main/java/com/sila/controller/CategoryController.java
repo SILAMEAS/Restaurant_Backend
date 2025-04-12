@@ -1,6 +1,7 @@
-package com.sila.controller.api;
+package com.sila.controller;
 
 import com.sila.dto.request.CategoryRequest;
+import com.sila.dto.response.MessageResponse;
 import com.sila.model.Category;
 import com.sila.service.CategoryService;
 import com.sila.util.annotation.PreAuthorization;
@@ -10,13 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,5 +33,15 @@ public class CategoryController {
     public ResponseEntity<List<Category>> getRestaurantCategory(@PathVariable Long restaurantId) {
         List<Category> categoriesInRestaurant = categoryService.getsByResId(restaurantId);
         return new ResponseEntity<>(categoriesInRestaurant, HttpStatus.OK);
+    }
+    @PreAuthorization({ROLE.ADMIN, ROLE.OWNER})
+    @PutMapping("{categoryId}")
+    public ResponseEntity<Category> editCategory(@RequestBody CategoryRequest categoryReq, @PathVariable Long categoryId) {
+        return new ResponseEntity<>(categoryService.update(categoryReq.getName(), categoryId), HttpStatus.CREATED);
+    }
+    @PreAuthorization({ROLE.ADMIN, ROLE.OWNER})
+    @DeleteMapping("{categoryId}")
+    public ResponseEntity<MessageResponse> deleteCategory(@PathVariable Long categoryId) {
+        return new ResponseEntity<>(categoryService.delete(categoryId), HttpStatus.CREATED);
     }
 }

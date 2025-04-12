@@ -1,4 +1,4 @@
-package com.sila.controller._public;
+package com.sila.controller;
 
 import com.sila.exception.BadRequestException;
 import com.sila.service.CloudinaryService;
