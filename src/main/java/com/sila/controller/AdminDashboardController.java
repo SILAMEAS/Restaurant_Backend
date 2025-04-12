@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/admin/dashboard")
-@Tag(name = "Admin Dashboard Controller", description = "Admin operations related to dashboard")
+@RequestMapping("/api/dashboard")
+@Tag(name = "Dashboard")
 public class AdminDashboardController {
 
     @GetMapping

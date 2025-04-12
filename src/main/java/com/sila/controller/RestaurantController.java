@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "User Restaurant Controller", description = "User operations related to Restaurant")
+@Tag(name = "Restaurant Controller")
 @RestController
 @RequestMapping("/api/restaurants")
 @RequiredArgsConstructor

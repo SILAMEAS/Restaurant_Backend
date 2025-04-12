@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Tag(name = "User Food Controller", description = "User operations related to Food")
+@Tag(name = "Food Controller")
 @RestController
 @RequestMapping("api/foods")
 @RequiredArgsConstructor

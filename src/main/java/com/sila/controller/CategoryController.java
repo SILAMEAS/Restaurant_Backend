@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "User Category Controller", description = "User operations related to Category")
+@Tag(name = "Category Controller")
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
