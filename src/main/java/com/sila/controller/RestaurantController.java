@@ -1,6 +1,8 @@
 package com.sila.controller;
 
 import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.method.OnCreate;
+import com.sila.dto.request.FoodRequest;
 import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FavoriteResponse;
@@ -23,7 +25,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -36,14 +40,14 @@ public class RestaurantController {
     private final UserService userService;
     private final ModelMapper modelMapper;
     @GetMapping
-    public ResponseEntity<EntityResponseHandler<RestaurantResponse>> searchRestaurants(@RequestHeader("Authorization") String jwt,
-                                                                                       @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
-                                                                                       @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
-                                                                                       @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
-                                                                                       @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder,
-                                                                                       @RequestParam(required = false) String search,
-                                                                                       @RequestParam(required = false,defaultValue = "true") Boolean sessional,
-                                                                                       @RequestParam(required = false,defaultValue = "true") Boolean vegetarian) {
+    public ResponseEntity<EntityResponseHandler<RestaurantResponse>> searchRestaurants(
+            @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
+            @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
+            @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
+            @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false,defaultValue = "true") Boolean sessional,
+            @RequestParam(required = false,defaultValue = "true") Boolean vegetarian) {
         Pageable pageable = PageRequest.of(pageNo-1, pageSize,Sort.by(Direction.valueOf(sortOrder.toUpperCase()),sortBy));
         SearchRequest searchReq=new SearchRequest();
         searchReq.setSearch(search);
@@ -62,15 +66,20 @@ public class RestaurantController {
         User userLogin=userService.getByJwt(jwt);
         return new ResponseEntity<>(restaurantService.addFav(id,userLogin), HttpStatus.OK);
     }
-    @PreAuthorization({ROLE.ADMIN})
+    @PreAuthorization({ROLE.OWNER})
     @PostMapping()
-    public ResponseEntity<Restaurant> createRestaurant(@Valid @RequestBody RestaurantRequest restaurantReq) {
-        return new ResponseEntity<>(restaurantService.create(restaurantReq), HttpStatus.CREATED);
+    public ResponseEntity<Restaurant> createRestaurant(
+            @Valid @ModelAttribute RestaurantRequest restaurantReq,
+            @RequestParam("images") List<MultipartFile> imageFiles) {
+        return new ResponseEntity<>(restaurantService.create(restaurantReq,imageFiles), HttpStatus.CREATED);
     }
     @PreAuthorization({ROLE.OWNER})
     @PutMapping("/{id}")
-    public ResponseEntity<RestaurantResponse> updateRestaurant(@RequestBody RestaurantRequest restaurantReq, @PathVariable Long id) throws Exception {
-        Restaurant restaurant = restaurantService.update(restaurantReq, id);
+    public ResponseEntity<RestaurantResponse> updateRestaurant(
+            @RequestBody RestaurantRequest restaurantReq,
+            @PathVariable Long id,
+            @RequestParam("images") List<MultipartFile> imageFiles) throws Exception {
+        Restaurant restaurant = restaurantService.update(restaurantReq, id,imageFiles);
         return new ResponseEntity<>(this.modelMapper.map(restaurant, RestaurantResponse.class), HttpStatus.OK);
     }
     @PreAuthorization({ROLE.ADMIN})
@@ -82,7 +91,7 @@ public class RestaurantController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-@PreAuthorization({ROLE.ADMIN,ROLE.OWNER})
+    @PreAuthorization({ROLE.ADMIN,ROLE.OWNER})
     @GetMapping("/owner")
     public ResponseEntity<Restaurant> findRestaurantByOwnerLogin() {
         Restaurant restaurant = restaurantService.getByUserLogin();

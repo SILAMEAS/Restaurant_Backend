@@ -15,7 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/dashboard")
 @Tag(name = "Dashboard")
-public class AdminDashboardController {
+public class DashboardController {
 
     @GetMapping
     public ResponseEntity<Object> getAdminDashboard() {

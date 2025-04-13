@@ -26,9 +26,13 @@ public class Address {
     private Long id;
     @NotEmpty(message = "streetAddress can't empty")
     private String streetAddress;
+    @NotEmpty(message = "city can't empty")
     private String city;
+    @NotEmpty(message = "stateProvince can't empty")
     private String stateProvince;
+    @NotEmpty(message = "postalCode can't empty")
     private String postalCode;
+    @NotEmpty(message = "country can't empty")
     private String country;
     @ManyToOne
     private User user;

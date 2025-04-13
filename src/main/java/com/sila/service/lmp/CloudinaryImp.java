@@ -3,6 +3,10 @@ package com.sila.service.lmp;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.sila.exception.BadRequestException;
+import com.sila.model.Food;
+import com.sila.model.Restaurant;
+import com.sila.model.image.ImageFood;
+import com.sila.model.image.ImageRestaurant;
 import com.sila.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -11,13 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CloudinaryImp implements CloudinaryService {
 
-    private final Cloudinary cloudinary;
     private static final Logger logger = LoggerFactory.getLogger(CloudinaryImp.class);
+    private final Cloudinary cloudinary;
 
     @Override
     public String uploadFile(MultipartFile file) {
@@ -57,4 +62,31 @@ public class CloudinaryImp implements CloudinaryService {
             throw new BadRequestException(errorMessage + e);
         }
     }
+
+    /**
+     * Method : use to upload image to cloudinary before saving to food
+     **/
+    @Override
+    public List<ImageFood> uploadFoodImageToCloudinary(List<MultipartFile> imageFiles, Food food) {
+        return imageFiles.stream().map(file -> {
+            String imageUrl = uploadFile(file);
+            ImageFood image = new ImageFood();
+            image.setUrl(imageUrl);
+            image.setFood(food);
+            return image;
+        }).toList();
+    }
+
+    /**
+     * Method : use to upload image to cloudinary before saving to food
+     **/
+    @Override
+    public List<ImageRestaurant> uploadRestaurantImageToCloudinary(List<MultipartFile> imageFiles, Restaurant restaurant) {
+        return imageFiles.stream().map(file -> {
+            String imageUrl = uploadFile(file);
+            return ImageRestaurant.builder().url(imageUrl).restaurant(restaurant).build();
+        }).toList();
+    }
+
+
 }

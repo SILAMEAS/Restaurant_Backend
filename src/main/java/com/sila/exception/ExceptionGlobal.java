@@ -54,23 +54,6 @@ public class ExceptionGlobal {
         return new ResponseEntity<>(MessageResponse.builder().message(ex.getMessage()).status(HttpStatus.BAD_REQUEST.value()).build(), HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * Handle MethodArgumentNotValidException
-     */
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<MessageResponse> handleValidationException(MethodArgumentNotValidException exception) {
-        MessageResponse messageResponse = new MessageResponse();
-        messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-
-        StringBuilder str = new StringBuilder();
-        var fieldErrors = exception.getBindingResult().getFieldErrors();
-        if (!fieldErrors.isEmpty()) {
-            str.append(fieldErrors.get(0).getField()).append(": ").append(fieldErrors.get(0).getDefaultMessage());
-        } else {
-            str.append("Validation failed.");
-        }
-        return new ResponseEntity<>(MessageResponse.builder().message(str.toString()).status(HttpStatus.BAD_REQUEST.value()).build(), HttpStatus.BAD_REQUEST);
-    }
 
     /**
      * HttpMediaTypeNotSupportedException
@@ -101,6 +84,23 @@ public class ExceptionGlobal {
                 MessageResponse.builder().message(message).status(HttpStatus.BAD_REQUEST.value()).build(),
                 HttpStatus.BAD_REQUEST
         );
+    }
+    /**
+     * Handle MethodArgumentNotValidException
+     */
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<MessageResponse> handleValidationException(MethodArgumentNotValidException exception) {
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+
+        StringBuilder str = new StringBuilder();
+        var fieldErrors = exception.getBindingResult().getFieldErrors();
+        if (!fieldErrors.isEmpty()) {
+            str.append(fieldErrors.get(0).getField()).append(": ").append(fieldErrors.get(0).getDefaultMessage());
+        } else {
+            str.append("Validation failed.");
+        }
+        return new ResponseEntity<>(MessageResponse.builder().message(str.toString()).status(HttpStatus.BAD_REQUEST.value()).build(), HttpStatus.BAD_REQUEST);
     }
 
 }

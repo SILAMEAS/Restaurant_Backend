@@ -10,5 +10,4 @@ public class ContactInformation {
     private String phone;
     private String twitter;
     private String instagram;
-
 }

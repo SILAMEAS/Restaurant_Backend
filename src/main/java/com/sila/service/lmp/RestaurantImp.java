@@ -14,8 +14,10 @@ import com.sila.model.Favorite;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
 import com.sila.repository.AddressRepository;
+import com.sila.repository.FavoriteRepository;
 import com.sila.repository.RestaurantRepository;
 import com.sila.repository.UserRepository;
+import com.sila.service.CloudinaryService;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import com.sila.specifcation.RestaurantSpecification;
@@ -25,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,9 +44,11 @@ public class RestaurantImp implements RestaurantService {
     private final UserService userService;
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final CloudinaryService cloudinaryService;
 
     @Override
-    public Restaurant create(RestaurantRequest restaurantReq) {
+    public Restaurant create(RestaurantRequest restaurantReq, List<MultipartFile> imageRestaurants) {
         var userId = UserContext.getUser().getId();
         boolean existsByOwner = restaurantRepository.existsByOwnerId(userId);
         if (existsByOwner) {
@@ -52,31 +57,33 @@ public class RestaurantImp implements RestaurantService {
         Address address = addressRepository.save(restaurantReq.getAddress());
         Restaurant restaurant = Restaurant.builder().address(address).name(restaurantReq.getName()).openingHours(restaurantReq.getOpeningHours()).description(restaurantReq.getDescription()).registrationDate(LocalDateTime.now()).build();
         User user = userService.getById(userId);
+        var imageEntities = cloudinaryService.uploadRestaurantImageToCloudinary(imageRestaurants, restaurant);
         restaurant.setOwner(user);
         restaurant.setCuisineType(restaurantReq.getCuisineType());
         restaurant.setContactInformation(restaurantReq.getContactInformation());
-        restaurant.setImages(restaurantReq.getImages());
+        restaurant.setImages(imageEntities);
         restaurantRepository.save(restaurant);
         return restaurant;
     }
 
     @Override
-    public Restaurant update(RestaurantRequest updateRestaurant, Long restaurantId) throws Exception {
+    public Restaurant update(RestaurantRequest updateRestaurant, Long restaurantId, List<MultipartFile> imageRestaurants) throws Exception {
         var userId = UserContext.getUser().getId();
-        Restaurant restaurantExit = handleFindRestaurantById(restaurantId);
+        Restaurant restaurant = handleFindRestaurantById(restaurantId);
         if (!isUserOwnerOfRestaurant(userId, restaurantId)) {
             throw new AccessDeniedException("You are not the owner of this restaurant.");
         }
-        Utils.setIfNotNull(updateRestaurant.getName(), restaurantExit::setName);
-        Utils.setIfNotNull(updateRestaurant.getDescription(), restaurantExit::setDescription);
-        Utils.setIfNotNull(updateRestaurant.getCuisineType(), restaurantExit::setCuisineType);
-        Utils.setIfNotNull(updateRestaurant.getImages(), restaurantExit::setImages);
-        Utils.setIfNotNull(updateRestaurant.getAddress(), restaurantExit::setAddress);
-        Utils.setIfNotNull(updateRestaurant.getOpeningHours(), restaurantExit::setOpeningHours);
-        Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurantExit::setContactInformation);
-        Utils.setIfNotNull(updateRestaurant.isOpen(), restaurantExit::setOpen);
-        restaurantRepository.save(restaurantExit);
-        return restaurantExit;
+        var imageEntities = cloudinaryService.uploadRestaurantImageToCloudinary(imageRestaurants, restaurant);
+        Utils.setIfNotNull(updateRestaurant.getName(), restaurant::setName);
+        Utils.setIfNotNull(updateRestaurant.getDescription(), restaurant::setDescription);
+        Utils.setIfNotNull(updateRestaurant.getCuisineType(), restaurant::setCuisineType);
+        restaurant.setImages(imageEntities);
+        Utils.setIfNotNull(updateRestaurant.getAddress(), restaurant::setAddress);
+        Utils.setIfNotNull(updateRestaurant.getOpeningHours(), restaurant::setOpeningHours);
+        Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurant::setContactInformation);
+        Utils.setIfNotNull(updateRestaurant.isOpen(), restaurant::setOpen);
+        restaurantRepository.save(restaurant);
+        return restaurant;
     }
 
     @Override
@@ -113,7 +120,7 @@ public class RestaurantImp implements RestaurantService {
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
         // Create a new Favorite instance
-        Favorite fav = Favorite.builder().name(restaurant.getName()).description(restaurant.getDescription()).restaurant(restaurant).build();
+        Favorite fav = Favorite.builder().name(restaurant.getName()).description(restaurant.getDescription()).restaurant(restaurant).owner(user).build();
         boolean isFavorite = false;
         List<Favorite> favorites = user.getFavourites();
 
@@ -132,8 +139,9 @@ public class RestaurantImp implements RestaurantService {
             // Add the new favorite
             favorites.add(fav);
         }
-
         // Save the user (this should also save the favorites if cascade is set correctly)
+        favoriteRepository.saveAll(favorites);
+        user.setFavourites(favorites);
         userRepository.save(user);
 
         return userService.getProfile().getFavourites();
@@ -152,5 +160,4 @@ public class RestaurantImp implements RestaurantService {
         }
         return restaurantExit.get();
     }
-
 }

@@ -1,6 +1,9 @@
 package com.sila.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sila.model.image.ImageFood;
+import com.sila.model.image.ImageRestaurant;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -41,12 +44,13 @@ public class Restaurant {
     @Embedded
     private ContactInformation contactInformation;
     private String openingHours;
-    @Column(length = 1000)
-    private List<String> images;
     private LocalDateTime registrationDate;
     private boolean open;
     @JsonIgnore
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Food> foods = new ArrayList<>();
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ImageRestaurant> images = new ArrayList<>();
 
 }
