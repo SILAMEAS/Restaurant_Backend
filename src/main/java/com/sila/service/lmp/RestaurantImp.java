@@ -4,9 +4,7 @@ import com.sila.config.context.UserContext;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.request.SearchRequest;
-import com.sila.dto.response.FavoriteResponse;
-import com.sila.dto.response.MessageResponse;
-import com.sila.dto.response.RestaurantResponse;
+import com.sila.dto.response.*;
 import com.sila.exception.AccessDeniedException;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
@@ -14,6 +12,7 @@ import com.sila.model.Address;
 import com.sila.model.Favorite;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
+import com.sila.model.image.ImageRestaurant;
 import com.sila.repository.*;
 import com.sila.service.CloudinaryService;
 import com.sila.service.RestaurantService;
@@ -24,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,56 +48,73 @@ public class RestaurantImp implements RestaurantService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Restaurant create(RestaurantRequest restaurantReq, List<MultipartFile> imageRestaurants) {
-        var userId = UserContext.getUser().getId();
-        boolean existsByOwner = restaurantRepository.existsByOwnerId(userId);
-        if (existsByOwner) {
-            throw new BadRequestException("User have restaurant ready!");
+    public RestaurantResponse create(RestaurantRequest restaurantReq) {
+        var user = UserContext.getUser();
+        if (restaurantRepository.existsByOwnerId(user.getId())) {
+            throw new BadRequestException("User already owns a restaurant!");
         }
-//        Address address = addressRepository.save(restaurantReq.getAddress());
-        Restaurant restaurant = Restaurant.builder().name(restaurantReq.getName()).openingHours(restaurantReq.getOpeningHours()).description(restaurantReq.getDescription()).registrationDate(LocalDateTime.now()).build();
-        User user = userService.getById(userId);
-        var imageEntities = cloudinaryService.uploadRestaurantImageToCloudinary(imageRestaurants, restaurant);
-        restaurant.setOwner(user);
-        restaurant.setCuisineType(restaurantReq.getCuisineType());
-//        restaurant.setContactInformation(restaurantReq.getContactInformation());
+
+        Address address = addressRepository.save(Address.builder()
+                .streetAddress(restaurantReq.getAddress().getStreetAddress())
+                .city(restaurantReq.getAddress().getCity())
+                .country(restaurantReq.getAddress().getCountry())
+                .stateProvince(restaurantReq.getAddress().getStateProvince())
+                .postalCode(restaurantReq.getAddress().getPostalCode())
+                .user(user)
+                .build());
+
+        Restaurant restaurant = Restaurant.builder()
+                .name(restaurantReq.getName())
+                .openingHours(restaurantReq.getOpeningHours())
+                .description(restaurantReq.getDescription())
+                .registrationDate(LocalDateTime.now())
+                .owner(user)
+                .cuisineType(restaurantReq.getCuisineType())
+                .address(address)
+                .contactInformation(restaurantReq.getContactInformation())
+                .open(restaurantReq.getOpen()) // don't forget this!
+                .build();
+
+        var imageEntities = cloudinaryService.uploadRestaurantImageToCloudinary(restaurantReq.getImages(), restaurant);
         restaurant.setImages(imageEntities);
-        restaurantRepository.save(restaurant);
-        return restaurant;
+
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+        return mapToResponse(savedRestaurant);
     }
 
+
     @Override
-    public Restaurant update(RestaurantRequest updateRestaurant, Long restaurantId, List<MultipartFile> imageRestaurants) throws Exception {
+    public Restaurant update(RestaurantRequest updateRestaurant, Long restaurantId) throws Exception {
         var userId = UserContext.getUser().getId();
         Restaurant restaurant = handleFindRestaurantById(restaurantId);
         if (!isUserOwnerOfRestaurant(userId, restaurantId)) {
             throw new AccessDeniedException("You are not the owner of this restaurant.");
         }
-        var imageEntities = cloudinaryService.uploadRestaurantImageToCloudinary(imageRestaurants, restaurant);
+        if(updateRestaurant.getImages()!=null) {
+            var imageEntities = cloudinaryService.uploadRestaurantImageToCloudinary(updateRestaurant.getImages(), restaurant);
+            restaurant.setImages(imageEntities);
+        }
         Utils.setIfNotNull(updateRestaurant.getName(), restaurant::setName);
         Utils.setIfNotNull(updateRestaurant.getDescription(), restaurant::setDescription);
         Utils.setIfNotNull(updateRestaurant.getCuisineType(), restaurant::setCuisineType);
-        restaurant.setImages(imageEntities);
-//        Utils.setIfNotNull(updateRestaurant.getAddress(), restaurant::setAddress);
+        Utils.setIfNotNull(updateRestaurant.getAddress(), restaurant::setAddress);
         Utils.setIfNotNull(updateRestaurant.getOpeningHours(), restaurant::setOpeningHours);
-//        Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurant::setContactInformation);
-        Utils.setIfNotNull(updateRestaurant.isOpen(), restaurant::setOpen);
-        restaurantRepository.save(restaurant);
-        return restaurant;
+        Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurant::setContactInformation);
+        Utils.setIfNotNull(updateRestaurant.getOpen(), restaurant::setOpen);
+        return restaurantRepository.save(restaurant);
     }
 
     @Override
     @Transactional
     public MessageResponse delete(Long id) throws Exception {
+        getById(id);
         // First delete categories related to the restaurant
         categoryRepository.deleteByRestaurantId(id); // custom method you'll need
 
         // Now delete the restaurant
         restaurantRepository.deleteById(id);
 
-        MessageResponse messageResponse = new MessageResponse();
-        messageResponse.setMessage("Deleted restaurant id: " + id + " successfully!");
-        return messageResponse;
+        return MessageResponse.builder().message("Deleted restaurant id: " + id + " successfully!").status(HttpStatus.OK.value()).build();
     }
 
 
@@ -158,7 +175,10 @@ public class RestaurantImp implements RestaurantService {
 
     public boolean isUserOwnerOfRestaurant(Long userId, Long restaurantId) throws Exception {
         Restaurant restaurant = getById(restaurantId);
-        return restaurant.getOwner() != null && restaurant.getOwner().getId().equals(userId);
+        if (!restaurant.getOwner().getId().equals(userId)) {
+            throw new AccessDeniedException("You are not the owner of this restaurant.");
+        }
+        return true;
     }
 
     public Restaurant handleFindRestaurantById(Long restaurantId) {
@@ -167,5 +187,32 @@ public class RestaurantImp implements RestaurantService {
             throw new NotFoundException("Not Found Restaurant with id : " + restaurantId);
         }
         return restaurantExit.get();
+    }
+    private RestaurantResponse mapToResponse(Restaurant restaurant) {
+        List<String> imageUrls = restaurant.getImages().stream()
+                .map(ImageRestaurant::getUrl)
+                .toList();
+
+        return RestaurantResponse.builder()
+                .id(restaurant.getId())
+                .name(restaurant.getName())
+                .description(restaurant.getDescription())
+                .cuisineType(restaurant.getCuisineType())
+                .open(restaurant.isOpen())
+                .openingHours(restaurant.getOpeningHours())
+                .registrationDate(restaurant.getRegistrationDate())
+                .address(AddressResponse.builder()
+                        .streetAddress(restaurant.getAddress().getStreetAddress())
+                        .city(restaurant.getAddress().getCity())
+                        .country(restaurant.getAddress().getCountry())
+                        .postalCode(restaurant.getAddress().getPostalCode())
+                        .stateProvince(restaurant.getAddress().getStateProvince())
+                        .build())
+                .contactInformation(ContactInformationResponse.builder()
+                        .email(restaurant.getContactInformation().getEmail())
+                        .phone(restaurant.getContactInformation().getPhone())
+                        .build())
+                .imageUrls(imageUrls)
+                .build();
     }
 }

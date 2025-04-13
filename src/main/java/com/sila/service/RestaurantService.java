@@ -15,9 +15,9 @@ import java.util.List;
 
 
 public interface RestaurantService {
-    Restaurant create(RestaurantRequest restaurantRequest, List<MultipartFile> imageRestaurants);
+    RestaurantResponse create(RestaurantRequest restaurantRequest);
 
-    Restaurant update(RestaurantRequest updateRestaurant, Long restaurantId,List<MultipartFile> imageRestaurants)throws Exception;
+    Restaurant update(RestaurantRequest updateRestaurant, Long restaurantId)throws Exception;
 
     MessageResponse delete(Long id) throws Exception;
 

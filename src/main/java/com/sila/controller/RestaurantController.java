@@ -2,6 +2,7 @@ package com.sila.controller;
 
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.method.OnCreate;
+import com.sila.dto.method.OnUpdate;
 import com.sila.dto.request.FoodRequest;
 import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.request.SearchRequest;
@@ -68,19 +69,16 @@ public class RestaurantController {
     }
     @PreAuthorization({ROLE.OWNER})
     @PostMapping()
-    public ResponseEntity<Restaurant> createRestaurant(
-            @Valid @ModelAttribute RestaurantRequest restaurantReq) {
-        var imageFiles=restaurantReq.getImages();
-        return new ResponseEntity<>(restaurantService.create(restaurantReq,imageFiles), HttpStatus.CREATED);
+    public ResponseEntity<RestaurantResponse> createRestaurant(
+            @Validated(OnCreate.class) @ModelAttribute RestaurantRequest restaurantReq) {
+        return new ResponseEntity<>(restaurantService.create(restaurantReq), HttpStatus.CREATED);
     }
     @PreAuthorization({ROLE.OWNER})
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantResponse> updateRestaurant(
-            @RequestBody RestaurantRequest restaurantReq,
-            @PathVariable Long id,
-            @RequestParam("images") List<MultipartFile> imageFiles) throws Exception {
-        Restaurant restaurant = restaurantService.update(restaurantReq, id,imageFiles);
-        return new ResponseEntity<>(this.modelMapper.map(restaurant, RestaurantResponse.class), HttpStatus.OK);
+            @Validated(OnUpdate.class) @ModelAttribute RestaurantRequest restaurantReq,
+            @PathVariable Long id) throws Exception {
+        return new ResponseEntity<>(this.modelMapper.map(restaurantService.update(restaurantReq, id), RestaurantResponse.class), HttpStatus.OK);
     }
     @PreAuthorization({ROLE.ADMIN})
     @DeleteMapping("/{id}")

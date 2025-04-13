@@ -1,5 +1,6 @@
 package com.sila.dto.request;
 
+import com.sila.dto.method.OnCreate;
 import com.sila.model.Category;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -13,7 +14,7 @@ public class FoodRequest {
     private String description;
     private Long price;
     private Category category;
-    @NotEmpty
+    @NotEmpty(groups = OnCreate.class)
     private List<MultipartFile> images;
     private Long restaurantId;
     private Long categoryId;

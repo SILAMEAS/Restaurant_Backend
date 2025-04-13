@@ -1,7 +1,10 @@
 package com.sila.dto.request;
 
+import com.sila.dto.method.OnCreate;
+import com.sila.dto.method.OnUpdate;
 import com.sila.model.Address;
 import com.sila.model.ContactInformation;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -14,17 +17,26 @@ import java.util.List;
 public class RestaurantRequest {
     @NotEmpty(message = "name is required")
     private String name;
+
     @NotEmpty(message = "description is required")
     private String description;
+
     private String cuisineType;
-//    private Address address;
-//    private ContactInformation contactInformation;
+
+    @Valid
+    @NotNull(groups = OnCreate.class)
+    private Address address;
+
+    @Valid
+    @NotNull(groups = OnCreate.class)
+    private ContactInformation contactInformation;
+
     @NotEmpty(message = "openingHours is required")
     private String openingHours;
-    @NotEmpty(message = "images is required")
+
+    @NotEmpty(groups = OnCreate.class, message = "images is required")
     private List<MultipartFile> images;
+
     @NotNull
-    private boolean open;
-
+    private Boolean open; // use Boolean to allow null-check validation
 }
-
