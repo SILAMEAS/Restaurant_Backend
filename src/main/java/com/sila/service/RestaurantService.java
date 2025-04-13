@@ -4,6 +4,7 @@ import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FavoriteResponse;
+import com.sila.dto.response.MessageResponse;
 import com.sila.dto.response.RestaurantResponse;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
@@ -18,7 +19,7 @@ public interface RestaurantService {
 
     Restaurant update(RestaurantRequest updateRestaurant, Long restaurantId,List<MultipartFile> imageRestaurants)throws Exception;
 
-    void delete(Long id) throws Exception;
+    MessageResponse delete(Long id) throws Exception;
 
     Restaurant getById(Long id) throws Exception;
 

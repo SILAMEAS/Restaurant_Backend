@@ -2,6 +2,7 @@ package com.sila.dto.request;
 
 import com.sila.model.Address;
 import com.sila.model.ContactInformation;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -11,19 +12,18 @@ import java.util.List;
 
 @Data
 public class RestaurantRequest {
-    @NotNull(message = "name is required")
+    @NotEmpty(message = "name is required")
     private String name;
-    @NotNull(message = "description is required")
+    @NotEmpty(message = "description is required")
     private String description;
     private String cuisineType;
-    @NotNull(message = "address is required")
-    private Address address;
-    private ContactInformation contactInformation;
-    @NotNull(message = "openingHours is required")
+//    private Address address;
+//    private ContactInformation contactInformation;
+    @NotEmpty(message = "openingHours is required")
     private String openingHours;
-    @NotNull(message = "images is required")
+    @NotEmpty(message = "images is required")
     private List<MultipartFile> images;
-    @NotNull(message = "open is required")
+    @NotNull
     private boolean open;
 
 }

@@ -10,4 +10,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     public List<Category> findByRestaurantId(Long restaurant_id);
 
     boolean existsByNameAndRestaurant(String name, Restaurant restaurant);
+    void deleteByRestaurantId(Long restaurant_id);
 }

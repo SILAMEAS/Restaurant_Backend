@@ -5,6 +5,7 @@ import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FavoriteResponse;
+import com.sila.dto.response.MessageResponse;
 import com.sila.dto.response.RestaurantResponse;
 import com.sila.exception.AccessDeniedException;
 import com.sila.exception.BadRequestException;
@@ -13,10 +14,7 @@ import com.sila.model.Address;
 import com.sila.model.Favorite;
 import com.sila.model.Restaurant;
 import com.sila.model.User;
-import com.sila.repository.AddressRepository;
-import com.sila.repository.FavoriteRepository;
-import com.sila.repository.RestaurantRepository;
-import com.sila.repository.UserRepository;
+import com.sila.repository.*;
 import com.sila.service.CloudinaryService;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
@@ -27,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -46,6 +45,7 @@ public class RestaurantImp implements RestaurantService {
     private final UserRepository userRepository;
     private final FavoriteRepository favoriteRepository;
     private final CloudinaryService cloudinaryService;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public Restaurant create(RestaurantRequest restaurantReq, List<MultipartFile> imageRestaurants) {
@@ -54,13 +54,13 @@ public class RestaurantImp implements RestaurantService {
         if (existsByOwner) {
             throw new BadRequestException("User have restaurant ready!");
         }
-        Address address = addressRepository.save(restaurantReq.getAddress());
-        Restaurant restaurant = Restaurant.builder().address(address).name(restaurantReq.getName()).openingHours(restaurantReq.getOpeningHours()).description(restaurantReq.getDescription()).registrationDate(LocalDateTime.now()).build();
+//        Address address = addressRepository.save(restaurantReq.getAddress());
+        Restaurant restaurant = Restaurant.builder().name(restaurantReq.getName()).openingHours(restaurantReq.getOpeningHours()).description(restaurantReq.getDescription()).registrationDate(LocalDateTime.now()).build();
         User user = userService.getById(userId);
         var imageEntities = cloudinaryService.uploadRestaurantImageToCloudinary(imageRestaurants, restaurant);
         restaurant.setOwner(user);
         restaurant.setCuisineType(restaurantReq.getCuisineType());
-        restaurant.setContactInformation(restaurantReq.getContactInformation());
+//        restaurant.setContactInformation(restaurantReq.getContactInformation());
         restaurant.setImages(imageEntities);
         restaurantRepository.save(restaurant);
         return restaurant;
@@ -78,18 +78,26 @@ public class RestaurantImp implements RestaurantService {
         Utils.setIfNotNull(updateRestaurant.getDescription(), restaurant::setDescription);
         Utils.setIfNotNull(updateRestaurant.getCuisineType(), restaurant::setCuisineType);
         restaurant.setImages(imageEntities);
-        Utils.setIfNotNull(updateRestaurant.getAddress(), restaurant::setAddress);
+//        Utils.setIfNotNull(updateRestaurant.getAddress(), restaurant::setAddress);
         Utils.setIfNotNull(updateRestaurant.getOpeningHours(), restaurant::setOpeningHours);
-        Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurant::setContactInformation);
+//        Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurant::setContactInformation);
         Utils.setIfNotNull(updateRestaurant.isOpen(), restaurant::setOpen);
         restaurantRepository.save(restaurant);
         return restaurant;
     }
 
     @Override
-    public void delete(Long id) throws Exception {
-        Restaurant isRestaurantExit = getById(id);
-        restaurantRepository.delete(isRestaurantExit);
+    @Transactional
+    public MessageResponse delete(Long id) throws Exception {
+        // First delete categories related to the restaurant
+        categoryRepository.deleteByRestaurantId(id); // custom method you'll need
+
+        // Now delete the restaurant
+        restaurantRepository.deleteById(id);
+
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setMessage("Deleted restaurant id: " + id + " successfully!");
+        return messageResponse;
     }
 
 

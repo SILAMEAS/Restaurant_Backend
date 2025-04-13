@@ -69,8 +69,8 @@ public class RestaurantController {
     @PreAuthorization({ROLE.OWNER})
     @PostMapping()
     public ResponseEntity<Restaurant> createRestaurant(
-            @Valid @ModelAttribute RestaurantRequest restaurantReq,
-            @RequestParam("images") List<MultipartFile> imageFiles) {
+            @Valid @ModelAttribute RestaurantRequest restaurantReq) {
+        var imageFiles=restaurantReq.getImages();
         return new ResponseEntity<>(restaurantService.create(restaurantReq,imageFiles), HttpStatus.CREATED);
     }
     @PreAuthorization({ROLE.OWNER})
@@ -85,10 +85,7 @@ public class RestaurantController {
     @PreAuthorization({ROLE.ADMIN})
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> deleteRestaurant(@PathVariable @Valid Long id) throws Exception {
-        MessageResponse messageResponse = new MessageResponse();
-        restaurantService.delete(id);
-        messageResponse.setMessage("delete restaurant id : " + id + " successfully!");
-        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+        return new ResponseEntity<>(restaurantService.delete(id), HttpStatus.OK);
     }
 
     @PreAuthorization({ROLE.ADMIN,ROLE.OWNER})
