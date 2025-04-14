@@ -53,16 +53,29 @@ public class AppConfig {
         registrationBean.setOrder(1); // early in the chain
         return registrationBean;
     }
+//    CorsConfiguration cfg = new CorsConfiguration();
+//            cfg.setAllowedOrigins(List.of("http://localhost:3000", "https://sila-restrurant.vercel.app",
+//                    "http://localhost:3030", "http://192.168.1.8:3030", "http://192.168.1.8:3000"));
+//            cfg.setAllowedMethods(Collections.singletonList("*"));
+//            cfg.setAllowCredentials(true);
+//            cfg.setAllowedHeaders(Collections.singletonList("*"));
+//            cfg.setExposedHeaders(List.of("Authorization"));
+//            cfg.setMaxAge(3600L);
 
     private CorsConfigurationSource corsConfigrationSource() {
         return request -> {
             CorsConfiguration cfg = new CorsConfiguration();
-            cfg.setAllowedOrigins(List.of("http://localhost:3000", "https://sila-restrurant.vercel.app",
-                    "http://localhost:3030", "http://192.168.1.8:3030", "http://192.168.1.8:3000"));
+            // Allow all origins using wildcard
+            cfg.setAllowedOrigins(Collections.singletonList("*"));
+            // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
             cfg.setAllowedMethods(Collections.singletonList("*"));
-            cfg.setAllowCredentials(true);
+            // Allow credentials (e.g., cookies, authorization headers)
+//            cfg.setAllowCredentials(true);
+            // Allow all headers
             cfg.setAllowedHeaders(Collections.singletonList("*"));
+            // Expose specific headers to the client
             cfg.setExposedHeaders(List.of("Authorization"));
+            // Set the max age for preflight requests
             cfg.setMaxAge(3600L);
             return cfg;
         };
