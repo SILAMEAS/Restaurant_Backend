@@ -88,9 +88,8 @@ public class RestaurantController {
 
     @PreAuthorization({ROLE.ADMIN,ROLE.OWNER})
     @GetMapping("/owner")
-    public ResponseEntity<Restaurant> findRestaurantByOwnerLogin() {
-        Restaurant restaurant = restaurantService.getByUserLogin();
-        return new ResponseEntity<>(restaurant, HttpStatus.OK);
+    public ResponseEntity<RestaurantResponse> findRestaurantByOwnerLogin() {
+        return new ResponseEntity<>(this.modelMapper.map(restaurantService.getByUserLogin(), RestaurantResponse.class), HttpStatus.OK);
     }
 }
 

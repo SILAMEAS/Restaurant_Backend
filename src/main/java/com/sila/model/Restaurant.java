@@ -33,6 +33,7 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
+    @JsonIgnore
     private User owner;
     @NotEmpty(message = "name can't be empty")
     private String name;
@@ -52,5 +53,6 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<ImageRestaurant> images = new ArrayList<>();
+    private int rating=0;
 
 }

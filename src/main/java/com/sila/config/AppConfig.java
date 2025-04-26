@@ -5,6 +5,7 @@ import com.sila.config.jwt.JwtTokenValidator;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -35,6 +36,7 @@ public class AppConfig {
                                 "/swagger-ui.html",
                                 "/api/auth/**" // allow login/register
                         ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll() // Allow GET requests to /api/**
                         .requestMatchers("/api/admin/**").hasAnyAuthority("OWNER", "ADMIN")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()

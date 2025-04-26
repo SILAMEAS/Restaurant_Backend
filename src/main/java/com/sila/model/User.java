@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-@ToString
+@ToString(exclude = {"favourites", "addresses", "cart"}) // exclude fields that can loop
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

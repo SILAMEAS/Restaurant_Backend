@@ -24,5 +24,7 @@ public class RestaurantResponse implements Serializable {
     private AddressResponse address;
     private ContactInformationResponse contactInformation;
     private List<String> imageUrls;
+    private int rating;
+    private String ownerName;
 
 }
