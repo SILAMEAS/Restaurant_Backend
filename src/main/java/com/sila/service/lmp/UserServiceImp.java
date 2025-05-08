@@ -88,5 +88,10 @@ public class UserServiceImp implements UserService {
         return userRes;
     }
 
+    @Override
+    public Long all() {
+        return userRepository.count();
+    }
+
 
 }

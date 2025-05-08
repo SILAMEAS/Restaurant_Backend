@@ -73,6 +73,11 @@ public class CategoryImp implements CategoryService {
         return messageResponse;
     }
 
+    @Override
+    public Long all() {
+      return categoryRepository.count();
+    }
+
     public Category getById(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException("category not found"));
     }

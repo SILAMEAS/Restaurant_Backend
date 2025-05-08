@@ -19,4 +19,5 @@ public interface UserService {
     UserResponse update(User user, UserRequest userReq) throws Exception;
 
     UserResponse getProfile() throws Exception;
+    Long all();
 }
