@@ -78,7 +78,7 @@ public class RestaurantController {
     public ResponseEntity<RestaurantResponse> updateRestaurant(
             @Validated(OnUpdate.class) @ModelAttribute RestaurantRequest restaurantReq,
             @PathVariable Long id) throws Exception {
-        return new ResponseEntity<>(this.modelMapper.map(restaurantService.update(restaurantReq, id), RestaurantResponse.class), HttpStatus.OK);
+        return new ResponseEntity<>(restaurantService.update(restaurantReq, id), HttpStatus.OK);
     }
     @PreAuthorization({ROLE.ADMIN})
     @DeleteMapping("/{id}")

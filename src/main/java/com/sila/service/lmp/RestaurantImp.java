@@ -84,7 +84,7 @@ public class RestaurantImp implements RestaurantService {
 
 
     @Override
-    public Restaurant update(RestaurantRequest updateRestaurant, Long restaurantId) throws Exception {
+    public RestaurantResponse update(RestaurantRequest updateRestaurant, Long restaurantId) throws Exception {
         var userId = UserContext.getUser().getId();
         Restaurant restaurant = handleFindRestaurantById(restaurantId);
         if (!isUserOwnerOfRestaurant(userId, restaurantId)) {
@@ -92,7 +92,7 @@ public class RestaurantImp implements RestaurantService {
         }
         if(updateRestaurant.getImages()!=null) {
             var imageEntities = cloudinaryService.uploadRestaurantImageToCloudinary(updateRestaurant.getImages(), restaurant);
-            restaurant.setImages(imageEntities);
+            imageEntities.forEach(restaurant::addImage);
         }
         Utils.setIfNotNull(updateRestaurant.getName(), restaurant::setName);
         Utils.setIfNotNull(updateRestaurant.getDescription(), restaurant::setDescription);
@@ -101,7 +101,8 @@ public class RestaurantImp implements RestaurantService {
         Utils.setIfNotNull(updateRestaurant.getOpeningHours(), restaurant::setOpeningHours);
         Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurant::setContactInformation);
         Utils.setIfNotNull(updateRestaurant.getOpen(), restaurant::setOpen);
-        return restaurantRepository.save(restaurant);
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+        return mapToResponse(savedRestaurant);
     }
 
     @Override

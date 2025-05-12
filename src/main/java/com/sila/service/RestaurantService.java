@@ -17,7 +17,7 @@ import java.util.List;
 public interface RestaurantService {
     RestaurantResponse create(RestaurantRequest restaurantRequest);
 
-    Restaurant update(RestaurantRequest updateRestaurant, Long restaurantId)throws Exception;
+    RestaurantResponse update(RestaurantRequest updateRestaurant, Long restaurantId)throws Exception;
 
     MessageResponse delete(Long id) throws Exception;
 

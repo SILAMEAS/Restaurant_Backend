@@ -55,4 +55,7 @@ public class Restaurant {
     private List<ImageRestaurant> images = new ArrayList<>();
     private int rating=0;
 
+    public void addImage(ImageRestaurant restaurant) {
+        this.images.add(restaurant);
+    }
 }
