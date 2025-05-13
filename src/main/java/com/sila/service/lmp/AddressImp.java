@@ -44,6 +44,7 @@ public class AddressImp implements AddressService {
                 .postalCode(req.getPostalCode())
                 .stateProvince(req.getStateProvince())
                 .user(UserContext.getUser())
+                .name(req.getName())
                 .build();
 
             addressRepository.save(address);

@@ -47,7 +47,9 @@ public class RestaurantImp implements RestaurantService {
     private final CloudinaryService cloudinaryService;
     private final CategoryRepository categoryRepository;
 
+
     @Override
+    @Transactional
     public RestaurantResponse create(RestaurantRequest restaurantReq) {
         var user = UserContext.getUser();
         if (restaurantRepository.existsByOwnerId(user.getId())) {
@@ -55,6 +57,7 @@ public class RestaurantImp implements RestaurantService {
         }
 
         Address address = addressRepository.save(Address.builder()
+                .name(restaurantReq.getAddress().getName()) // ✅ Add this line
                 .streetAddress(restaurantReq.getAddress().getStreetAddress())
                 .city(restaurantReq.getAddress().getCity())
                 .country(restaurantReq.getAddress().getCountry())
@@ -111,6 +114,8 @@ public class RestaurantImp implements RestaurantService {
         getById(id);
         // First delete categories related to the restaurant
         categoryRepository.deleteByRestaurantId(id); // custom method you'll need
+
+        favoriteRepository.deleteByRestaurantId(id);
 
         // Now delete the restaurant
         restaurantRepository.deleteById(id);

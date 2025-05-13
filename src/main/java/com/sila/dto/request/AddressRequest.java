@@ -7,6 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddressRequest {
+    @NotEmpty(message = "name is required")
+    private String name;
     @NotEmpty(message = "stressAddress is required")
     private String streetAddress;
     @NotEmpty(message = "city is required")

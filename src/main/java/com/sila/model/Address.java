@@ -1,5 +1,6 @@
 package com.sila.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +29,8 @@ public class Address {
     private Long id;
     @NotEmpty(message = "streetAddress can't empty")
     private String streetAddress;
+    @NotEmpty(message = "name can't empty")
+    private String name;
     @NotEmpty(message = "city can't empty")
     private String city;
     @NotEmpty(message = "stateProvince can't empty")
