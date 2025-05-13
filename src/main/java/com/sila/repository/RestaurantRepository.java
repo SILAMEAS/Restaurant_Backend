@@ -1,5 +1,6 @@
 package com.sila.repository;
 
+import com.sila.model.Address;
 import com.sila.model.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -17,4 +18,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long>,
     Restaurant findByOwnerId(Long ownerId);
 
     boolean existsByOwnerId(Long ownerId);
+
+    List<Restaurant> findAllByAddressId(Long addressId);
+
+
 }

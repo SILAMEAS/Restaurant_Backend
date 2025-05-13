@@ -1,9 +1,11 @@
 package com.sila.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -34,6 +36,7 @@ public class Address {
     private String postalCode;
     @NotEmpty(message = "country can't empty")
     private String country;
+    @JoinColumn(name ="user_id",referencedColumnName = "id",foreignKey = @ForeignKey(name = "fk_user_address"))
     @ManyToOne
     private User user;
 

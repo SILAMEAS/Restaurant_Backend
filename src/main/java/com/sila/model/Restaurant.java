@@ -11,6 +11,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotEmpty;
@@ -39,8 +41,8 @@ public class Restaurant {
     private String name;
     private String description;
     private String cuisineType;
-    @OneToOne(orphanRemoval = true,
-            cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "address_id", nullable = true)
     private Address address;
     @Embedded
     private ContactInformation contactInformation;
