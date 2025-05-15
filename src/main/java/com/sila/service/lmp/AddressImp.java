@@ -3,12 +3,10 @@ package com.sila.service.lmp;
 import com.sila.config.context.UserContext;
 import com.sila.dto.request.AddressRequest;
 import com.sila.dto.response.AddressResponse;
-import com.sila.dto.response.UserResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.model.Address;
 import com.sila.model.Favorite;
 import com.sila.model.Restaurant;
-import com.sila.model.User;
 import com.sila.repository.AddressRepository;
 import com.sila.repository.RestaurantRepository;
 import com.sila.repository.UserRepository;
@@ -45,6 +43,7 @@ public class AddressImp implements AddressService {
                 .stateProvince(req.getStateProvince())
                 .user(UserContext.getUser())
                 .name(req.getName())
+                .currentUsage(Boolean.TRUE.equals(req.getCurrentUsage()))
                 .build();
 
             addressRepository.save(address);
@@ -94,6 +93,15 @@ public class AddressImp implements AddressService {
 
         return new ResponseEntity<>(addressRes, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<List<AddressResponse>> update(AddressRequest addressRequest,Long addressId) throws Exception {
+        final var user = userRepository.findById(UserContext.getUser().getId()).orElseThrow(() -> new BadRequestException("User not found"));
+        addressRepository.updateAddressCurrentUsageMisMatch(user.getId(), false);
+        addressRepository.updateAddressCurrentUsageMatch(addressId, true);
+        return new ResponseEntity<>(user.getAddresses().stream().map(a->this.modelMapper.map(a,AddressResponse.class)).toList(),HttpStatus.OK);
+    }
+
     private AddressResponse findByIdWithException(Long addressId){
         Optional<Address> address = addressRepository.findById(addressId);
         if(address.isEmpty()){

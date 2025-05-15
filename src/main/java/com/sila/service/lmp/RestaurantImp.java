@@ -146,36 +146,17 @@ public class RestaurantImp implements RestaurantService {
     }
 
     @Override
-    public List<FavoriteResponse> addFav(Long restaurantId, User user) throws Exception {
-        // Fetch the restaurant to ensure it's managed
+    public List<FavoriteResponse> addFav(Long restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new RuntimeException("Restaurant not found"));
-
-        // Create a new Favorite instance
-        Favorite fav = Favorite.builder().name(restaurant.getName()).description(restaurant.getDescription()).restaurant(restaurant).owner(user).build();
-        boolean isFavorite = false;
-        List<Favorite> favorites = user.getFavourites();
-
-        // Check if the restaurant is already in the favorites
-        for (Favorite favorite : favorites) {
-            if (favorite.getRestaurant().getId().equals(restaurantId)) {
-                isFavorite = true;
-                break;
-            }
-        }
-
-        if (isFavorite) {
-            // Remove the favorite if it already exists
-            favorites.removeIf(f -> f.getRestaurant().getId().equals(restaurantId));
+        Favorite fav = Favorite.builder().name(restaurant.getName()).description(restaurant.getDescription()).restaurant(restaurant).owner(UserContext.getUser()).build();
+        if (favoriteRepository.existsFavoriteByRestaurantId(restaurantId)) {
+            favoriteRepository.deleteByRestaurantId(restaurantId);
         } else {
-            // Add the new favorite
-            favorites.add(fav);
+            restaurant.setFavorites(List.of(fav));
+            favoriteRepository.save(fav);
         }
-        // Save the user (this should also save the favorites if cascade is set correctly)
-        favoriteRepository.saveAll(favorites);
-        user.setFavourites(favorites);
-        userRepository.save(user);
 
-        return userService.getProfile().getFavourites();
+        return restaurant.getFavorites().stream().map(favorite -> modelMapper.map(favorite, FavoriteResponse.class)).toList();
     }
 
 

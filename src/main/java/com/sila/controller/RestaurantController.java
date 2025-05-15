@@ -63,9 +63,8 @@ public class RestaurantController {
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
     @PutMapping("/{id}/add-favorites")
-    public ResponseEntity<List<FavoriteResponse>> addRestaurantToFavorites(@RequestHeader("Authorization") String jwt, @PathVariable Long id) throws Exception {
-        User userLogin=userService.getByJwt(jwt);
-        return new ResponseEntity<>(restaurantService.addFav(id,userLogin), HttpStatus.OK);
+    public ResponseEntity<List<FavoriteResponse>> addRestaurantToFavorites( @PathVariable Long id) throws Exception {
+        return new ResponseEntity<>(restaurantService.addFav(id), HttpStatus.OK);
     }
     @PreAuthorization({ROLE.OWNER})
     @PostMapping()

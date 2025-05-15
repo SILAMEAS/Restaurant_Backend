@@ -2,6 +2,7 @@ package com.sila.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sila.dto.response.FavoriteResponse;
 import com.sila.model.image.ImageFood;
 import com.sila.model.image.ImageRestaurant;
 import jakarta.persistence.CascadeType;
@@ -55,6 +56,10 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<ImageRestaurant> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    private List<Favorite> favorites;
+
     private int rating=0;
 
     public void addImage(ImageRestaurant restaurant) {

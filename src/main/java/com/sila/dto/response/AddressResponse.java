@@ -17,4 +17,5 @@ public class AddressResponse {
     private String country;
     private String stateProvince;
     private String postalCode;
+    private Boolean currentUsage;
 }

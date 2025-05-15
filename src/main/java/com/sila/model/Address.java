@@ -39,8 +39,10 @@ public class Address {
     private String postalCode;
     @NotEmpty(message = "country can't empty")
     private String country;
+    private Boolean currentUsage = false;
     @JoinColumn(name ="user_id",referencedColumnName = "id",foreignKey = @ForeignKey(name = "fk_user_address"))
     @ManyToOne
     private User user;
+
 
 }

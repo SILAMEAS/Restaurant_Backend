@@ -11,4 +11,5 @@ public interface AddressService {
     ResponseEntity<String> delete(Long addressId) throws Exception;
     ResponseEntity<AddressResponse> byId(Long addressId);
     ResponseEntity<List<AddressResponse>> gets();
+    ResponseEntity<List<AddressResponse>> update(AddressRequest addressRequest,Long addressId) throws Exception;
 }

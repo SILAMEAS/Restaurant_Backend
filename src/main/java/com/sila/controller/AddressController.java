@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +31,13 @@ public class AddressController {
             @ModelAttribute @Valid AddressRequest addressRequest
             ) throws Exception {
         return addressService.add(addressRequest);
+    }
+    @PutMapping("/{id}")
+    ResponseEntity<List<AddressResponse>> updateAddress(
+            @ModelAttribute @Valid AddressRequest addressRequest,
+            @PathVariable Long id
+    ) throws Exception {
+        return addressService.update(addressRequest,id);
     }
     @DeleteMapping("/{id}")
     ResponseEntity<String> deleteAddress(

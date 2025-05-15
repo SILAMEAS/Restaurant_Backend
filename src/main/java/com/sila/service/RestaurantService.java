@@ -25,7 +25,7 @@ public interface RestaurantService {
 
     Restaurant getByUserLogin();
 
-    List<FavoriteResponse> addFav(Long restaurantId, User user) throws Exception;
+    List<FavoriteResponse> addFav(Long restaurantId);
     
     EntityResponseHandler<RestaurantResponse> search(Pageable pageable, SearchRequest searchReq);
 }

@@ -84,7 +84,12 @@ public class UserServiceImp implements UserService {
         userRes.setFavourites(user.getFavourites().stream()
                 .map(fav -> new FavoriteResponse(fav.getId(), fav.getName(), fav.getDescription(), user.getId(), fav.getRestaurant().getId()))
                 .toList());
-
+        /** I try to currentUsage from null to false */
+        userRes.getAddresses().forEach(address -> {
+            if (address.getCurrentUsage() == null) {
+                address.setCurrentUsage(false);
+            }
+        });
         return userRes;
     }
 
