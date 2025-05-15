@@ -28,15 +28,15 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotEmpty(message = "streetAddress can't empty")
-    private String streetAddress;
+    private String street;
     @NotEmpty(message = "name can't empty")
     private String name;
     @NotEmpty(message = "city can't empty")
     private String city;
-    @NotEmpty(message = "stateProvince can't empty")
-    private String stateProvince;
-    @NotEmpty(message = "postalCode can't empty")
-    private String postalCode;
+    @NotEmpty(message = "state can't empty")
+    private String state;
+    @NotEmpty(message = "zip can't empty")
+    private String zip;
     @NotEmpty(message = "country can't empty")
     private String country;
     private Boolean currentUsage = false;

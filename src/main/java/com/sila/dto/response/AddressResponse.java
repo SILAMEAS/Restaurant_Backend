@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 public class AddressResponse {
     private String name;
     private Long id;
-    private String streetAddress;
+    private String street;
     private String city;
     private String country;
-    private String stateProvince;
-    private String postalCode;
+    private String state;
+    private String zip;
     private Boolean currentUsage;
 }

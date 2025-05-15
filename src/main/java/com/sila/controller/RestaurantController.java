@@ -62,8 +62,8 @@ public class RestaurantController {
         var restaurant = this.modelMapper.map(restaurantService.getById(id), RestaurantResponse.class);
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
-    @PutMapping("/{id}/add-favorites")
-    public ResponseEntity<List<FavoriteResponse>> addRestaurantToFavorites( @PathVariable Long id) throws Exception {
+    @PutMapping("/{id}/favorites")
+    public ResponseEntity<List<FavoriteResponse>> addRestaurantToFavorites( @PathVariable Long id) {
         return new ResponseEntity<>(restaurantService.addFav(id), HttpStatus.OK);
     }
     @PreAuthorization({ROLE.OWNER})

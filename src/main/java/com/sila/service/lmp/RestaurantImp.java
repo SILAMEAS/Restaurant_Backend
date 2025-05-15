@@ -58,11 +58,11 @@ public class RestaurantImp implements RestaurantService {
 
         Address address = addressRepository.save(Address.builder()
                 .name(restaurantReq.getAddress().getName()) // ✅ Add this line
-                .streetAddress(restaurantReq.getAddress().getStreetAddress())
+                .street(restaurantReq.getAddress().getStreet())
                 .city(restaurantReq.getAddress().getCity())
                 .country(restaurantReq.getAddress().getCountry())
-                .stateProvince(restaurantReq.getAddress().getStateProvince())
-                .postalCode(restaurantReq.getAddress().getPostalCode())
+                .state(restaurantReq.getAddress().getState())
+                .zip(restaurantReq.getAddress().getZip())
                 .user(user)
                 .build());
 
@@ -189,11 +189,11 @@ public class RestaurantImp implements RestaurantService {
                 .openingHours(restaurant.getOpeningHours())
                 .registrationDate(restaurant.getRegistrationDate())
                 .address(AddressResponse.builder()
-                        .streetAddress(restaurant.getAddress().getStreetAddress())
+                        .street(restaurant.getAddress().getStreet())
                         .city(restaurant.getAddress().getCity())
                         .country(restaurant.getAddress().getCountry())
-                        .postalCode(restaurant.getAddress().getPostalCode())
-                        .stateProvince(restaurant.getAddress().getStateProvince())
+                        .zip(restaurant.getAddress().getZip())
+                        .state(restaurant.getAddress().getState())
                         .build())
                 .contactInformation(ContactInformationResponse.builder()
                         .email(restaurant.getContactInformation().getEmail())

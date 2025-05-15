@@ -36,11 +36,11 @@ public class AddressImp implements AddressService {
     @Override
     public ResponseEntity<AddressResponse> add(AddressRequest req) throws Exception {
         var address = Address.builder()
-                .streetAddress(req.getStreetAddress())
+                .street(req.getStreet())
                 .city(req.getCity())
                 .country(req.getCountry())
-                .postalCode(req.getPostalCode())
-                .stateProvince(req.getStateProvince())
+                .zip(req.getZip())
+                .state(req.getState())
                 .user(UserContext.getUser())
                 .name(req.getName())
                 .currentUsage(Boolean.TRUE.equals(req.getCurrentUsage()))

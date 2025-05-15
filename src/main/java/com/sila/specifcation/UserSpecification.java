@@ -16,7 +16,7 @@ public class UserSpecification {
         return (root, query, criteriaBuilder) -> criteriaBuilder.or(
                 criteriaBuilder.like(root.get(User_.fullName), search + "%"),
                 criteriaBuilder.like(root.get(User_.email), search + "%"),
-                criteriaBuilder.like(root.get(User_.ADDRESSES).get(Address_.STREET_ADDRESS), search + "%")
+                criteriaBuilder.like(root.get(User_.ADDRESSES).get(Address_.STREET), search + "%")
         );
 
     }

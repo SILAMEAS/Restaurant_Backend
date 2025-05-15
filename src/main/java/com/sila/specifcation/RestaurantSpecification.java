@@ -22,8 +22,8 @@ public class RestaurantSpecification {
                 criteriaBuilder.or(
                         criteriaBuilder.like(root.get(Restaurant_.NAME), nameOrDescription + "%"),
                         criteriaBuilder.like(root.get(Restaurant_.DESCRIPTION), nameOrDescription + "%"),
-                        criteriaBuilder.like(root.get(Restaurant_.ADDRESS).get(Address_.STREET_ADDRESS), nameOrDescription + "%"),
-                        criteriaBuilder.like(root.get(Restaurant_.ADDRESS).get(Address_.POSTAL_CODE), nameOrDescription + "%"));
+                        criteriaBuilder.like(root.get(Restaurant_.ADDRESS).get(Address_.STREET), nameOrDescription + "%"),
+                        criteriaBuilder.like(root.get(Restaurant_.ADDRESS).get(Address_.ZIP), nameOrDescription + "%"));
 
     }
 

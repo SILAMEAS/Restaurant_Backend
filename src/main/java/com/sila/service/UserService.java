@@ -16,7 +16,7 @@ public interface UserService {
 
     EntityResponseHandler<UserResponse> list(Pageable pageable, String search) throws Exception;
 
-    UserResponse update(User user, UserRequest userReq) throws Exception;
+    UserResponse update( UserRequest userReq) throws Exception;
 
     UserResponse getProfile() throws Exception;
     Long all();

@@ -12,6 +12,7 @@ import com.sila.repository.UserRepository;
 import com.sila.service.UserService;
 import com.sila.specifcation.UserSpecification;
 import com.sila.config.context.UserContext;
+import com.sila.util.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,17 +60,23 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserResponse update(User user, UserRequest userReq) {
-        if (!userReq.getProfile().isEmpty()) {
-            user.setProfile(userReq.getProfile());
+    public UserResponse update( UserRequest userReq) {
+        var user = UserContext.getUser();
 
-        }
-        if(!userReq.getAddresses().isEmpty()){
-            user.setAddresses(userReq.getAddresses());
-        }
-        if (!userReq.getFullName().isEmpty()) {
-            user.setFullName(userReq.getFullName());
-        }
+        Utils.setIfNotNull(userReq.getProfile(), user::setProfile);
+        Utils.setIfNotNull(userReq.getAddresses(), user::setAddresses);
+        Utils.setIfNotNull(userReq.getFullName(), user::setFullName);
+
+//        if (!userReq.getProfile().isEmpty()) {
+//            user.setProfile(userReq.getProfile());
+//
+//        }
+//        if(!userReq.getAddresses().isEmpty()){
+//            user.setAddresses(userReq.getAddresses());
+//        }
+//        if (!userReq.getFullName().isEmpty()) {
+//            user.setFullName(userReq.getFullName());
+//        }
         return this.modelMapper.map(userRepository.save(user), UserResponse.class);
     }
 

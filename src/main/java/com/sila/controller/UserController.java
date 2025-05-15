@@ -31,9 +31,8 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<UserResponse> updateProfile(@RequestHeader("Authorization") String jwt, @Valid @RequestBody UserRequest userReq) throws Exception {
-        User user = userService.getByJwt(jwt);
-        return new ResponseEntity<>(userService.update(user, userReq), HttpStatus.OK);
+    public ResponseEntity<UserResponse> updateProfile(@ModelAttribute @Valid UserRequest userReq) throws Exception {
+        return new ResponseEntity<>(userService.update(userReq), HttpStatus.OK);
     }
     @PreAuthorization({ROLE.ADMIN})
     @GetMapping
