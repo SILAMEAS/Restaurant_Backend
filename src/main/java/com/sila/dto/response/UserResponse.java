@@ -8,8 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -26,4 +29,6 @@ public class UserResponse implements Serializable {
     private ROLE role;
     private transient List<AddressResponse> addresses;
     private transient List<FavoriteResponse> favourites;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

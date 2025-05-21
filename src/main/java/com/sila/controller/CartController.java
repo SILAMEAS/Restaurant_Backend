@@ -1,5 +1,7 @@
 package com.sila.controller;
 
+import com.sila.dto.response.CartResponse;
+import com.sila.service.CartService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,14 +11,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Tag(name = "Cart Controller", description = "User operations related to Cart")
 @RestController
 @RequestMapping("/api/cart")
 @RequiredArgsConstructor
 @Slf4j
 public class CartController {
+    final CartService cartService;
     @GetMapping
-    ResponseEntity<String> getCart() {
-        return new ResponseEntity<>("getCart", HttpStatus.OK);
+    ResponseEntity<List<CartResponse>> getCart() {
+        return new ResponseEntity<>(cartService.getAll(), HttpStatus.OK);
     }
 }

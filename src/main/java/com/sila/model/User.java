@@ -4,7 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sila.util.enums.ROLE;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +19,7 @@ import java.util.List;
 @Data
 @Builder
 @ToString(exclude = {"favourites", "addresses", "cart"}) // exclude fields that can loop
+@EntityListeners(AuditingEntityListener.class) // 👈 required for auditing
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +36,10 @@ public class User {
     private List<Address> addresses = new ArrayList<>();
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
+
+    @CreationTimestamp // 👈 auto-set on insert
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @UpdateTimestamp // 👈 auto-set on update
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }
