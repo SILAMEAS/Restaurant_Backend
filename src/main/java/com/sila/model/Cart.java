@@ -30,8 +30,7 @@ public class Cart {
         this.items.add(item);
     }
 
-    public void removeItem(CartItem item) {
-        item.setCart(null);
-        this.items.remove(item);
+    public void removeItemById(Long cartItemId) {
+        items.removeIf(item -> item.getId().equals(cartItemId));
     }
 }

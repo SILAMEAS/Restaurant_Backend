@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @Tag(name = "Cart Controller", description = "User operations related to Cart")
 @RestController
 @RequestMapping("/api/cart")
@@ -21,7 +19,7 @@ import java.util.List;
 public class CartController {
     final CartService cartService;
     @GetMapping
-    ResponseEntity<List<CartResponse>> getCart() throws Exception {
+    ResponseEntity<CartResponse> getCart() throws Exception {
         return new ResponseEntity<>(cartService.getAll(), HttpStatus.OK);
     }
 }

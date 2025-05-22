@@ -1,8 +1,10 @@
 package com.sila.service.lmp;
 
 import com.sila.dto.response.CartResponse;
+import com.sila.exception.BadRequestException;
 import com.sila.model.Cart;
 import com.sila.model.CartItem;
+import com.sila.repository.CartItemRepository;
 import com.sila.repository.CartRepository;
 import com.sila.service.CartService;
 import com.sila.service.FoodService;
@@ -11,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,31 +22,54 @@ public class CartImp implements CartService {
     final FoodService foodService;
     final CartRepository cartRepository;
     final ModelMapper modelMapper;
+    private final CartItemRepository cartItemRepository;
+
     @Override
-    public List<CartResponse> getAll() throws Exception {
-        var categories = cartRepository.findAllByUserId(userService.getProfile().getId()).stream().toList();
-        return categories.stream()
-                .map(ca -> this.modelMapper.map(ca, CartResponse.class))
-                .toList();
+    public CartResponse getAll() throws Exception {
+        var categories = cartRepository.findAllByUserId(userService.getProfile().getId());
+        return this.modelMapper.map(categories, CartResponse.class);
     }
 
     @Override
     public void addItemToCart( Long foodId, int quantity) throws Exception {
-        var user = userService.getById(userService.getProfile().getId());
+        Cart cart = findCartByUser();
         var food = foodService.getById(foodId);
-        Cart cart = cartRepository.findByUser(user).orElseGet(()->{
+        // Check if the item already exists in the cart
+        Optional<CartItem> existingItemOpt = cart.getItems().stream()
+                .filter(item -> item.getFood().getId().equals(foodId))
+                .findFirst();
+
+
+        if (existingItemOpt.isPresent()) {
+            CartItem existingItem = existingItemOpt.get();
+            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+        } else {
+            CartItem newItem = new CartItem();
+            newItem.setCart(cart);
+            newItem.setFood(food);
+            newItem.setQuantity(quantity);
+            cart.getItems().add(newItem);
+        }
+
+        cartRepository.save(cart); // Cascade should handle CartItem persistence
+    }
+
+    @Override
+    public void removeItemFromCart(Long cartItemId) throws Exception {
+        Cart cart = findCartByUser();
+        var exited = cartItemRepository.findById(cartItemId).isPresent();
+        if(!exited){
+            throw new BadRequestException("Not found item cart with this id");
+        }
+        cart.removeItemById(cartItemId);
+        cartRepository.save(cart);
+    }
+    private Cart findCartByUser() throws Exception {
+        var user = userService.getById(userService.getProfile().getId());
+        return cartRepository.findByUser(user).orElseGet(()->{
             Cart newCart = new Cart();
             newCart.setUser(user);
             return cartRepository.save(newCart);
         });
-
-        CartItem item = new CartItem();
-        item.setCart(cart);
-        item.setFood(food);
-        item.setQuantity(quantity);
-
-        cart.getItems().add(item);
-        cartRepository.save(cart);
     }
-
 }

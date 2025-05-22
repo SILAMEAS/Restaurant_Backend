@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface CartService {
 
-    List<CartResponse> getAll() throws Exception;
+    CartResponse getAll() throws Exception;
 
     void addItemToCart( Long foodId, int quantity) throws Exception;
+
+    void removeItemFromCart(Long cartItemId) throws Exception;
 }

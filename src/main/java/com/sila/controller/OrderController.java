@@ -16,8 +16,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,11 +50,19 @@ public class OrderController {
         return ResponseEntity.ok("Item added to cart");
     }
 
+
     @GetMapping("/carts")
-    public ResponseEntity<List<CartResponse>> addToCart() throws Exception {
+    public ResponseEntity<CartResponse> addToCart() throws Exception {
         return new ResponseEntity<>(cartService.getAll(), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCartItem(
+            @PathVariable Long id) throws Exception {
+
+        cartService.removeItemFromCart(id);
+        return ResponseEntity.ok("Item remove from cart");
+    }
     @PostMapping("/place-order")
     public ResponseEntity<OrderResponse> placeOrder(@RequestParam Long userId) {
         return ResponseEntity.ok(orderService.placeOrder(userId));

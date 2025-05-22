@@ -103,11 +103,9 @@ public class FoodImp implements FoodService {
 
     @Override
     public EntityResponseHandler<FoodResponse> gets(Pageable pageable, SearchRequest searchReq, String filterBy) {
-        var foods = foodRepository.findAll(FoodSpecification.filterFood(searchReq, filterBy), pageable);
-        var foodAfterResponse=foods.stream()
+        return new EntityResponseHandler<>(foodRepository.findAll(FoodSpecification.filterFood(searchReq, filterBy), pageable).stream()
                 .map(FoodResponse::toResponse)
-                .collect(Collectors.toList());
-        return new EntityResponseHandler<>(foodAfterResponse);
+                .toList());
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.sila.dto.response;
 
-import com.sila.model.Category;
 import com.sila.model.Food;
+import com.sila.model.image.ImageFood;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +11,6 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -50,7 +49,7 @@ public class FoodResponse implements Serializable {
                         food.getCategory().getId(),
                         food.getCategory().getName()))
                 .images(food.getImages().stream()
-                        .map(img -> img.getUrl()) // assuming `getUrl()` exists in ImageFood
+                        .map(ImageFood::getUrl) // assuming `getUrl()` exists in ImageFood
                         .toList())
                 .available(food.isAvailable())
                 .restaurantId(food.getRestaurant().getId()) // optional simplification
