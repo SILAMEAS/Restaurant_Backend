@@ -8,4 +8,6 @@ import java.util.List;
 public interface OrderService {
 
     List<OrderResponse> getAll();
+
+    OrderResponse placeOrder(Long userId);
 }

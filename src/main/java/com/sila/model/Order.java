@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,8 +25,8 @@ public class Order {
     private User user;
 
     // List of items (snapshot of what was in the cart at the time)
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<CartItem> items;
+//    @OneToMany(cascade = CascadeType.ALL)
+//    private List<CartItem> items;
 
     private double totalAmount;
 
@@ -35,4 +36,7 @@ public class Order {
     private Payment payment;
 
     private PAYMENT_STATUS status;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> items = new ArrayList<>();
 }

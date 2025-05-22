@@ -21,7 +21,7 @@ import java.util.List;
 public class CartController {
     final CartService cartService;
     @GetMapping
-    ResponseEntity<List<CartResponse>> getCart() {
+    ResponseEntity<List<CartResponse>> getCart() throws Exception {
         return new ResponseEntity<>(cartService.getAll(), HttpStatus.OK);
     }
 }

@@ -15,4 +15,9 @@ public class OrderImp implements OrderService {
     public List<OrderResponse> getAll() {
         return List.of();
     }
+
+    @Override
+    public OrderResponse placeOrder(Long userId) {
+        return null;
+    }
 }

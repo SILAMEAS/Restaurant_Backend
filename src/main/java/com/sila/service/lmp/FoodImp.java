@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -102,8 +103,11 @@ public class FoodImp implements FoodService {
 
     @Override
     public EntityResponseHandler<FoodResponse> gets(Pageable pageable, SearchRequest searchReq, String filterBy) {
-        var foodPage = foodRepository.findAll(FoodSpecification.filterFood(searchReq, filterBy), pageable);
-        return new EntityResponseHandler<>(foodPage.map(fs -> this.modelMapper.map(fs, FoodResponse.class)));
+        var foods = foodRepository.findAll(FoodSpecification.filterFood(searchReq, filterBy), pageable);
+        var foodAfterResponse=foods.stream()
+                .map(FoodResponse::toResponse)
+                .collect(Collectors.toList());
+        return new EntityResponseHandler<>(foodAfterResponse);
     }
 
     @Override

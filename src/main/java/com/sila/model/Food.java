@@ -1,5 +1,6 @@
 package com.sila.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sila.model.image.ImageFood;
 import jakarta.persistence.*;
