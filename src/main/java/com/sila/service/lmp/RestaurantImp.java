@@ -19,6 +19,7 @@ import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import com.sila.specifcation.RestaurantSpecification;
 import com.sila.util.Utils;
+import com.sila.util.enums.ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,10 +29,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.management.relation.Role;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -111,12 +116,14 @@ public class RestaurantImp implements RestaurantService {
     @Override
     @Transactional
     public MessageResponse delete(Long id) throws Exception {
-        getById(id);
+        var restaurant = getById(id);
+        var images = restaurant.getImages().stream().map(ImageRestaurant::getPublicId).collect(Collectors.toList());
         // First delete categories related to the restaurant
+        cloudinaryService.deleteImages(images);
+
         categoryRepository.deleteByRestaurantId(id); // custom method you'll need
 
         favoriteRepository.deleteByRestaurantId(id);
-
         // Now delete the restaurant
         restaurantRepository.deleteById(id);
 
@@ -130,13 +137,16 @@ public class RestaurantImp implements RestaurantService {
     }
 
     @Override
-    public Restaurant getByUserLogin() {
-        var userId = UserContext.getUser().getId();
-        Restaurant restaurant = restaurantRepository.findByOwnerId(userId);
+    public RestaurantResponse getByUserLogin() {
+        var user = UserContext.getUser();
+        Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
         if (Objects.isNull(restaurant)) {
-            throw new BadRequestException("user don't have restaurant");
+            if(user.getRole() == ROLE.OWNER){
+                throw new BadRequestException("user don't have restaurant");
+            }else
+                throw new BadRequestException("this role can't have restaurant");
         }
-        return restaurant;
+        return mapToResponse(restaurant);
     }
 
     @Override
@@ -176,9 +186,20 @@ public class RestaurantImp implements RestaurantService {
         return restaurantExit.get();
     }
     private RestaurantResponse mapToResponse(Restaurant restaurant) {
-        List<String> imageUrls = restaurant.getImages().stream()
-                .map(ImageRestaurant::getUrl)
+        List<ImageDetailsResponse> imageDetails = restaurant.getImages().stream()
+                .map(image -> new ImageDetailsResponse(image.getUrl(), image.getPublicId()))
                 .toList();
+
+        AddressResponse response = null;
+        if (restaurant.getAddress() != null) {
+            response = AddressResponse.builder()
+                    .street(restaurant.getAddress().getStreet())
+                    .city(restaurant.getAddress().getCity())
+                    .country(restaurant.getAddress().getCountry())
+                    .zip(restaurant.getAddress().getZip())
+                    .state(restaurant.getAddress().getState())
+                    .build();
+        }
 
         return RestaurantResponse.builder()
                 .id(restaurant.getId())
@@ -188,18 +209,12 @@ public class RestaurantImp implements RestaurantService {
                 .open(restaurant.isOpen())
                 .openingHours(restaurant.getOpeningHours())
                 .registrationDate(restaurant.getRegistrationDate())
-                .address(AddressResponse.builder()
-                        .street(restaurant.getAddress().getStreet())
-                        .city(restaurant.getAddress().getCity())
-                        .country(restaurant.getAddress().getCountry())
-                        .zip(restaurant.getAddress().getZip())
-                        .state(restaurant.getAddress().getState())
-                        .build())
+                .address(response)
                 .contactInformation(ContactInformationResponse.builder()
                         .email(restaurant.getContactInformation().getEmail())
                         .phone(restaurant.getContactInformation().getPhone())
                         .build())
-                .imageUrls(imageUrls)
+                .imageUrls(imageDetails)
                 .build();
     }
 }

@@ -23,7 +23,7 @@ public interface RestaurantService {
 
     Restaurant getById(Long id) throws Exception;
 
-    Restaurant getByUserLogin();
+    RestaurantResponse getByUserLogin();
 
     List<FavoriteResponse> addFav(Long restaurantId);
     

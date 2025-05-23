@@ -2,6 +2,7 @@ package com.sila.controller;
 
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.method.OnCreate;
+import com.sila.dto.method.OnUpdate;
 import com.sila.dto.request.FoodRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FoodResponse;
@@ -12,9 +13,10 @@ import com.sila.service.CategoryService;
 import com.sila.service.FoodService;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
+import com.sila.util.annotation.PreAuthorization;
 import com.sila.util.common.PaginationDefaults;
+import com.sila.util.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -25,7 +27,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -50,9 +61,11 @@ public class FoodController {
         var foodResEntityResponseHandler = foodService.gets(pageable, new SearchRequest(search, seasanal, vegetarian), filterBy);
         return new ResponseEntity<>(foodResEntityResponseHandler, HttpStatus.OK);
     }
+
+    @PreAuthorization({ROLE.OWNER})
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Food> createFood(
-            @Valid @ModelAttribute FoodRequest foodRequest,
+            @Validated(OnCreate.class) @ModelAttribute FoodRequest foodRequest,
             @RequestParam("images") List<MultipartFile> imageFiles) throws Exception {
 
         Restaurant restaurant = restaurantService.getById(foodRequest.getRestaurantId());
@@ -61,7 +74,7 @@ public class FoodController {
 
         return new ResponseEntity<>(food, HttpStatus.CREATED);
     }
-
+    @PreAuthorization({ROLE.OWNER})
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteFood(
             @RequestHeader("Authorization") String jwt,
@@ -81,22 +94,21 @@ public class FoodController {
         var foodResEntityResponseHandler = foodService.getsByResId(restaurantId, pageable, new SearchRequest(search, seasanal, vegetarian), filterBy);
         return new ResponseEntity<>(foodResEntityResponseHandler, HttpStatus.OK);
     }
+    @PreAuthorization({ROLE.OWNER,ROLE.ADMIN})
     @PutMapping("/{foodId}")
     public ResponseEntity<FoodResponse> updateFood(
             @PathVariable Long foodId,
-            @Validated(OnCreate.class) @ModelAttribute FoodRequest foodRequest)  {
+            @Validated(OnUpdate.class) @ModelAttribute FoodRequest foodRequest)  {
 
         Food updatedFood = foodService.update(foodRequest, foodId);
 
         return new ResponseEntity<>(modelMapper.map(updatedFood, FoodResponse.class), HttpStatus.OK);
     }
 
+    @PreAuthorization({ROLE.ADMIN,ROLE.OWNER})
     @PutMapping("/{id}/availability-status")
     public ResponseEntity<Food> updateAvailabilityStatus(
-            @RequestHeader("Authorization") String jwt,
-            @PathVariable Long id) throws Exception {
-
-        userService.getByJwt(jwt);
+            @PathVariable Long id)  {
         Food updatedFood = foodService.updateStatus(id);
 
         return new ResponseEntity<>(updatedFood, HttpStatus.OK);

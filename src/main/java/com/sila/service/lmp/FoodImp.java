@@ -55,7 +55,7 @@ public class FoodImp implements FoodService {
         Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
         Food foodToUpdate = getById(foodId);
         if (!foodToUpdate.getRestaurant().getId().equals(restaurant.getId())) {
-            throw new BadRequestException("Food is not in this user's restaurant");
+            throw new BadRequestException("Food isn't belong to restaurant");
         }
         Category category = categoryRepository.findById(foodReq.getCategoryId()).orElseThrow(() -> new BadRequestException("category not found"));
         Food food = getById(foodId);
@@ -91,7 +91,7 @@ public class FoodImp implements FoodService {
 
     @Override
     public Food getById(Long foodId) {
-        return foodRepository.findById(foodId).orElseThrow(() -> new BadRequestException("NOT FOUND"));
+        return foodRepository.findById(foodId).orElseThrow(() -> new BadRequestException("Not found food with this id"));
     }
 
     @Override

@@ -14,7 +14,7 @@ public class FoodRequest {
     private String description;
     private Long price;
     private Category category;
-    @NotEmpty(groups = OnCreate.class)
+    @NotEmpty(groups = OnCreate.class,message = "images must not be empty during creation")
     private List<MultipartFile> images;
     private Long restaurantId;
     private Long categoryId;

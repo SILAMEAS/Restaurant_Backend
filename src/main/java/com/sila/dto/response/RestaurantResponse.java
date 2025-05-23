@@ -1,8 +1,10 @@
 package com.sila.dto.response;
 
-import com.sila.model.Address;
-import com.sila.model.ContactInformation;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -13,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RestaurantResponse implements Serializable {
+public class RestaurantResponse{
     private Long id;
     private String name;
     private String description;
@@ -23,8 +25,7 @@ public class RestaurantResponse implements Serializable {
     private LocalDateTime registrationDate;
     private AddressResponse address;
     private ContactInformationResponse contactInformation;
-    private List<String> imageUrls;
+    private List<ImageDetailsResponse> imageUrls;
     private int rating;
     private String ownerName;
-
 }

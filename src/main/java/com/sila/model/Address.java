@@ -27,7 +27,7 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty(message = "streetAddress can't empty")
+    @NotEmpty(message = "street can't empty")
     private String street;
     @NotEmpty(message = "name can't empty")
     private String name;

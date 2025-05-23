@@ -64,7 +64,7 @@ public final class FoodSpecification {
         spec= addFilterSpecification(spec,filterBy);
         spec = addSessionalSpecification(spec, searchReq);
         spec = addVegetarianSpecification(spec, searchReq);
-        spec=addRestaurantIdSpecification(spec,restaurantId);
+        spec = addRestaurantIdSpecification(spec,restaurantId);
         return spec;
     }
     /**

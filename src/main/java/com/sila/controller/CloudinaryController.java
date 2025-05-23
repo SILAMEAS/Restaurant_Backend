@@ -1,5 +1,6 @@
 package com.sila.controller;
 
+import com.sila.dto.response.UploadResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.service.CloudinaryService;
 import com.sila.util.annotation.ValidFile;
@@ -10,26 +11,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/upload")
 @Tag(name = "Cloudinary Controller", description = "Operations related to cloudinary")
 @RequiredArgsConstructor
-
 public class CloudinaryController {
 
     private final CloudinaryService cloudinaryService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadImage(@RequestParam("file") @ValidFile(
+    public ResponseEntity<UploadResponse> uploadImage(@RequestParam("file") @ValidFile(
             allowedTypes = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE}) MultipartFile file) {
         try {
-            String url = cloudinaryService.uploadFile(file);
-            return ResponseEntity.ok(url);
+            Map<String, String> uploadResult = cloudinaryService.uploadFile(file);
+            UploadResponse response = new UploadResponse(
+                    uploadResult.get("publicId"),
+                    uploadResult.get("secureUrl")
+            );
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -42,6 +50,16 @@ public class CloudinaryController {
             return ResponseEntity.ok("✅ Image deleted: " + result);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("❌ Error deleting image: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/bulk")
+    public ResponseEntity<List<String>> deleteImages(@RequestBody List<String> publicIds) {
+        try {
+            List<String> results = cloudinaryService.deleteImages(publicIds);
+            return ResponseEntity.ok(results);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(List.of("❌ Error deleting images: " + e.getMessage()));
         }
     }
 }

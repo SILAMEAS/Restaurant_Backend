@@ -24,11 +24,11 @@ public class RestaurantRequest {
     private String cuisineType;
 
     @Valid
-    @NotNull(groups = OnCreate.class)
+    @NotNull(groups = OnCreate.class,message = "address is required during create")
     private Address address;
 
     @Valid
-    @NotNull(groups = OnCreate.class)
+    @NotNull(groups = OnCreate.class,message = "contactInformation is required")
     private ContactInformation contactInformation;
 
     @NotEmpty(message = "openingHours is required")
