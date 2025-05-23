@@ -68,7 +68,7 @@ public class RestaurantImp implements RestaurantService {
                 .country(restaurantReq.getAddress().getCountry())
                 .state(restaurantReq.getAddress().getState())
                 .zip(restaurantReq.getAddress().getZip())
-                .user(user)
+                .user(user).currentUsage(restaurantReq.getAddress().getCurrentUsage())
                 .build());
 
         Restaurant restaurant = Restaurant.builder()
@@ -87,7 +87,7 @@ public class RestaurantImp implements RestaurantService {
         restaurant.setImages(imageEntities);
 
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
-        return mapToResponse(savedRestaurant);
+        return mapToRestaurantResponse(savedRestaurant);
     }
 
 
@@ -110,7 +110,7 @@ public class RestaurantImp implements RestaurantService {
         Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurant::setContactInformation);
         Utils.setIfNotNull(updateRestaurant.getOpen(), restaurant::setOpen);
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
-        return mapToResponse(savedRestaurant);
+        return mapToRestaurantResponse(savedRestaurant);
     }
 
     @Override
@@ -146,13 +146,13 @@ public class RestaurantImp implements RestaurantService {
             }else
                 throw new BadRequestException("this role can't have restaurant");
         }
-        return mapToResponse(restaurant);
+        return mapToRestaurantResponse(restaurant);
     }
 
     @Override
     public EntityResponseHandler<RestaurantResponse> search(Pageable pageable, SearchRequest searchReq) {
         var restaurantPage = restaurantRepository.findAll(RestaurantSpecification.filterRestaurant(searchReq), pageable);
-        return new EntityResponseHandler<>(restaurantPage.map(restaurant -> this.modelMapper.map(restaurant, RestaurantResponse.class)));
+        return new EntityResponseHandler<>(restaurantPage.map(RestaurantImp::mapToRestaurantResponse));
     }
 
     @Override
@@ -185,7 +185,7 @@ public class RestaurantImp implements RestaurantService {
         }
         return restaurantExit.get();
     }
-    private RestaurantResponse mapToResponse(Restaurant restaurant) {
+    public static RestaurantResponse mapToRestaurantResponse(Restaurant restaurant) {
         List<ImageDetailsResponse> imageDetails = restaurant.getImages().stream()
                 .map(image -> new ImageDetailsResponse(image.getUrl(), image.getPublicId()))
                 .toList();
@@ -193,11 +193,14 @@ public class RestaurantImp implements RestaurantService {
         AddressResponse response = null;
         if (restaurant.getAddress() != null) {
             response = AddressResponse.builder()
+                    .name(restaurant.getAddress().getName())
+                    .id(restaurant.getAddress().getId())
                     .street(restaurant.getAddress().getStreet())
                     .city(restaurant.getAddress().getCity())
                     .country(restaurant.getAddress().getCountry())
                     .zip(restaurant.getAddress().getZip())
                     .state(restaurant.getAddress().getState())
+                    .currentUsage(restaurant.getAddress().getCurrentUsage())
                     .build();
         }
 
@@ -215,6 +218,7 @@ public class RestaurantImp implements RestaurantService {
                         .phone(restaurant.getContactInformation().getPhone())
                         .build())
                 .imageUrls(imageDetails)
+                .ownerName(restaurant.getOwner().getFullName())
                 .build();
     }
 }
