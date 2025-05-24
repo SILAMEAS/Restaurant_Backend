@@ -1,5 +1,7 @@
 package com.sila.controller;
 
+import com.sila.dto.method.OnCreate;
+import com.sila.dto.method.OnUpdate;
 import com.sila.dto.request.AddressRequest;
 import com.sila.dto.response.AddressResponse;
 import com.sila.service.AddressService;
@@ -7,7 +9,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,11 +37,12 @@ public class AddressController {
         return addressService.add(addressRequest);
     }
     @PutMapping("/{id}")
-    ResponseEntity<List<AddressResponse>> updateAddress(
-            @ModelAttribute @Valid AddressRequest addressRequest,
+    ResponseEntity<AddressResponse> updateAddress(
+            @Validated(OnUpdate.class)
+            @ModelAttribute AddressRequest addressRequest,
             @PathVariable Long id
     ) throws Exception {
-        return addressService.update(addressRequest,id);
+        return new ResponseEntity<>(addressService.update(addressRequest,id), HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     ResponseEntity<String> deleteAddress(

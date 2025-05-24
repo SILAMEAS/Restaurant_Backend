@@ -5,13 +5,12 @@ import com.sila.dto.request.AddressRequest;
 import com.sila.dto.response.AddressResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.model.Address;
-import com.sila.model.Favorite;
 import com.sila.model.Restaurant;
 import com.sila.repository.AddressRepository;
 import com.sila.repository.RestaurantRepository;
 import com.sila.repository.UserRepository;
 import com.sila.service.AddressService;
-import com.sila.service.UserService;
+import com.sila.util.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,7 +27,6 @@ import java.util.Optional;
 @Slf4j
 public class AddressImp implements AddressService {
     private final ModelMapper modelMapper;
-    private final UserService userService;
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final RestaurantRepository restaurantRepository;
@@ -95,11 +93,21 @@ public class AddressImp implements AddressService {
     }
 
     @Override
-    public ResponseEntity<List<AddressResponse>> update(AddressRequest addressRequest,Long addressId) throws Exception {
+    public AddressResponse update(AddressRequest addressRequest,Long addressId) throws Exception {
         final var user = userRepository.findById(UserContext.getUser().getId()).orElseThrow(() -> new BadRequestException("User not found"));
+        final var address = addressRepository.findById(addressId).orElseThrow(() -> new BadRequestException("Address not found"));
+
+        Utils.setIfNotNull(addressRequest.getName(), address::setName);
+        Utils.setIfNotNull(addressRequest.getCity(), address::setCity);
+        Utils.setIfNotNull(addressRequest.getCountry(), address::setCountry);
+        Utils.setIfNotNull(addressRequest.getState(), address::setState);
+        Utils.setIfNotNull(addressRequest.getStreet(), address::setStreet);
+
         addressRepository.updateAddressCurrentUsageMisMatch(user.getId(), false);
         addressRepository.updateAddressCurrentUsageMatch(addressId, true);
-        return new ResponseEntity<>(user.getAddresses().stream().map(a->this.modelMapper.map(a,AddressResponse.class)).toList(),HttpStatus.OK);
+
+
+        return this.modelMapper.map(address,AddressResponse.class);
     }
 
     private AddressResponse findByIdWithException(Long addressId){
