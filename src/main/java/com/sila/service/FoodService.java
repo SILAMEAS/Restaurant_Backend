@@ -2,6 +2,7 @@ package com.sila.service;
 
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.FoodRequest;
+import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FoodResponse;
 import com.sila.model.Category;
@@ -26,7 +27,7 @@ public interface FoodService {
 
     Food updateStatus(Long id);
 
-    EntityResponseHandler<FoodResponse> gets(Pageable pageable, SearchRequest searchReq, String filterBy);
+    EntityResponseHandler<FoodResponse> gets(PaginationRequest request);
 
     EntityResponseHandler<FoodResponse> getsByResId(Long restaurantId, Pageable pageable, SearchRequest searchReq, String filterBy);
 

@@ -3,7 +3,9 @@ package com.sila.service.lmp;
 import com.sila.config.context.UserContext;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.FoodRequest;
+import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.request.SearchRequest;
+import com.sila.dto.response.CategoryResponse;
 import com.sila.dto.response.FoodResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.model.Category;
@@ -16,6 +18,7 @@ import com.sila.repository.RestaurantRepository;
 import com.sila.service.CloudinaryService;
 import com.sila.service.FoodService;
 import com.sila.specifcation.FoodSpecification;
+import com.sila.util.PageableUtil;
 import com.sila.util.Utils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -103,11 +106,12 @@ public class FoodImp implements FoodService {
     }
 
     @Override
-    public EntityResponseHandler<FoodResponse> gets(Pageable pageable, SearchRequest searchReq, String filterBy) {
+    public EntityResponseHandler<FoodResponse> gets(PaginationRequest request) {
+        SearchRequest searchRequest = SearchRequest.from(request);
+        Pageable pageable = PageableUtil.fromRequest(request);
         Page<FoodResponse> page = foodRepository
-                .findAll(FoodSpecification.filterFood(searchReq, filterBy), pageable)
+                .findAll(FoodSpecification.filterFood(searchRequest, request.getFilterBy()), pageable)
                 .map(FoodResponse::toResponse); // keeps pagination metadata
-
         return new EntityResponseHandler<>(page);
     }
 

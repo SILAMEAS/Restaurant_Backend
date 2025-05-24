@@ -1,5 +1,6 @@
 package com.sila.controller;
 
+import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.CategoryRequest;
 import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.request.SearchRequest;
@@ -33,13 +34,8 @@ public class CategoryController {
     private final FoodService foodService;
 
     @GetMapping()
-    public ResponseEntity<List<CategoryResponse>> getCategories(@ModelAttribute PaginationRequest request) {
-
-        Pageable pageable = PageableUtil.fromRequest(request);
-        SearchRequest searchRequest = SearchRequest.from(request);
-
-        var result = foodService.gets(pageable, searchRequest, request.getFilterBy());
-        return new ResponseEntity<>(categoryService.all(), HttpStatus.OK);
+    public ResponseEntity<EntityResponseHandler<CategoryResponse>> getCategories(@ModelAttribute PaginationRequest request) {
+        return ResponseEntity.ok(categoryService.gets(request));
     }
 
     @PostMapping

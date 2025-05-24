@@ -12,6 +12,6 @@ public class PaginationRequest {
     private String sortBy = PaginationDefaults.SORT_BY;
     private String sortOrder = PaginationDefaults.SORT_ORDER;
 
-    private Boolean vegetarian; // Optional Boolean instead of primitive boolean
-    private Boolean seasonal;   // Optional Boolean instead of primitive boolean
+    private Boolean vegetarian=false; // Optional Boolean instead of primitive boolean
+    private Boolean seasonal=false;   // Optional Boolean instead of primitive boolean
 }

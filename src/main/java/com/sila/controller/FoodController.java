@@ -51,16 +51,13 @@ import java.util.List;
 @Slf4j
 public class FoodController {
     private final FoodService foodService;
-    private final UserService userService;
     private final ModelMapper modelMapper;
     private final RestaurantService restaurantService;
     private final CategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoods(@ModelAttribute PaginationRequest request) {
-        Pageable pageable = PageableUtil.fromRequest(request);
-        SearchRequest searchRequest = SearchRequest.from(request);
-        return ResponseEntity.ok(foodService.gets(pageable, searchRequest, request.getFilterBy()));
+        return ResponseEntity.ok(foodService.gets(request));
     }
 
     @PreAuthorization({ROLE.OWNER})
@@ -78,19 +75,16 @@ public class FoodController {
     @PreAuthorization({ROLE.OWNER})
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteFood(
-            @RequestHeader("Authorization") String jwt,
-            @PathVariable Long id) throws Exception {
+            @PathVariable Long id) {
 
-        userService.getByJwt(jwt);
         foodService.delete(id);
 
         return new ResponseEntity<>("Successfully deleted", HttpStatus.OK);
     }
 
     @GetMapping("restaurant/{restaurantId}")
-    public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoodByRestaurantId(@RequestHeader("Authorization") String jwt, @RequestParam(required = false) boolean vegetarian, @RequestParam(required = false) boolean seasanal, @RequestParam(required = false) String filterBy, @RequestParam(required = false) String search, @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo, @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize, @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy, @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder, @PathVariable Long restaurantId) throws Exception {
+    public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoodByRestaurantId( @RequestParam(required = false) boolean vegetarian, @RequestParam(required = false) boolean seasanal, @RequestParam(required = false) String filterBy, @RequestParam(required = false) String search, @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo, @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize, @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy, @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder, @PathVariable Long restaurantId) throws Exception {
 
-        userService.getByJwt(jwt);
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()), sortBy));
         var foodResEntityResponseHandler = foodService.getsByResId(restaurantId, pageable, new SearchRequest(search, seasanal, vegetarian), filterBy);
         return new ResponseEntity<>(foodResEntityResponseHandler, HttpStatus.OK);
