@@ -4,6 +4,7 @@ import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.method.OnCreate;
 import com.sila.dto.method.OnUpdate;
 import com.sila.dto.request.FoodRequest;
+import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FoodResponse;
 import com.sila.model.Category;
@@ -13,6 +14,7 @@ import com.sila.service.CategoryService;
 import com.sila.service.FoodService;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
+import com.sila.util.PageableUtil;
 import com.sila.util.annotation.PreAuthorization;
 import com.sila.util.common.PaginationDefaults;
 import com.sila.util.enums.ROLE;
@@ -20,6 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -54,25 +57,23 @@ public class FoodController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoods(@RequestHeader("Authorization") String jwt, @RequestParam(required = false) boolean vegetarian, @RequestParam(required = false) boolean seasanal, @RequestParam(required = false) String filterBy, @RequestParam(required = false) String search, @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo, @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize, @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy, @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder) throws Exception {
-
-        userService.getByJwt(jwt);
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()), sortBy));
-        var foodResEntityResponseHandler = foodService.gets(pageable, new SearchRequest(search, seasanal, vegetarian), filterBy);
-        return new ResponseEntity<>(foodResEntityResponseHandler, HttpStatus.OK);
+    public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoods(@ModelAttribute PaginationRequest request) {
+        Pageable pageable = PageableUtil.fromRequest(request);
+        SearchRequest searchRequest = SearchRequest.from(request);
+        return ResponseEntity.ok(foodService.gets(pageable, searchRequest, request.getFilterBy()));
     }
 
     @PreAuthorization({ROLE.OWNER})
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Food> createFood(
+    public ResponseEntity<String> createFood(
             @Validated(OnCreate.class) @ModelAttribute FoodRequest foodRequest,
             @RequestParam("images") List<MultipartFile> imageFiles) throws Exception {
 
         Restaurant restaurant = restaurantService.getById(foodRequest.getRestaurantId());
         Category category = categoryService.getById(foodRequest.getCategoryId());
-        Food food = foodService.create(foodRequest, category, restaurant, imageFiles);
+        foodService.create(foodRequest, category, restaurant, imageFiles);
 
-        return new ResponseEntity<>(food, HttpStatus.CREATED);
+        return new ResponseEntity<>("Food Created", HttpStatus.CREATED);
     }
     @PreAuthorization({ROLE.OWNER})
     @DeleteMapping("/{id}")

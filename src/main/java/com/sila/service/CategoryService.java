@@ -1,5 +1,6 @@
 package com.sila.service;
 
+import com.sila.dto.response.CategoryResponse;
 import com.sila.dto.response.MessageResponse;
 import com.sila.model.Category;
 
@@ -16,7 +17,7 @@ public interface CategoryService {
 
     MessageResponse delete(Long categoryId);
 
-    Long all();
+    List<CategoryResponse> all();
 
 
 }

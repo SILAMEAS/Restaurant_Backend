@@ -1,14 +1,22 @@
 package com.sila.controller;
 
 import com.sila.dto.request.CategoryRequest;
+import com.sila.dto.request.PaginationRequest;
+import com.sila.dto.request.SearchRequest;
+import com.sila.dto.response.CategoryResponse;
 import com.sila.dto.response.MessageResponse;
 import com.sila.model.Category;
 import com.sila.service.CategoryService;
+import com.sila.service.FoodService;
+import com.sila.util.PageableUtil;
 import com.sila.util.annotation.PreAuthorization;
 import com.sila.util.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +30,17 @@ import java.util.List;
 @Slf4j
 public class CategoryController {
     private final CategoryService categoryService;
+    private final FoodService foodService;
+
+    @GetMapping()
+    public ResponseEntity<List<CategoryResponse>> getCategories(@ModelAttribute PaginationRequest request) {
+
+        Pageable pageable = PageableUtil.fromRequest(request);
+        SearchRequest searchRequest = SearchRequest.from(request);
+
+        var result = foodService.gets(pageable, searchRequest, request.getFilterBy());
+        return new ResponseEntity<>(categoryService.all(), HttpStatus.OK);
+    }
 
     @PostMapping
     @PreAuthorization({ROLE.ADMIN, ROLE.OWNER})
@@ -44,4 +63,6 @@ public class CategoryController {
     public ResponseEntity<MessageResponse> deleteCategory(@PathVariable Long categoryId) {
         return new ResponseEntity<>(categoryService.delete(categoryId), HttpStatus.CREATED);
     }
+
+
 }

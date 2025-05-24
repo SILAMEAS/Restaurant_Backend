@@ -1,19 +1,15 @@
-package com.sila.dto.request;
+package com.sila.util.helper;
 
+import com.sila.dto.request.PaginationRequest;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class SearchRequest {
     private String search;
-    private Boolean sessional;
-    private Boolean vegeterain;
-
+    private Boolean seasonal;
+    private Boolean vegetarian;
     public static SearchRequest from(PaginationRequest request) {
         return new SearchRequest(
                 request.getSearch(),
@@ -21,5 +17,4 @@ public class SearchRequest {
                 request.getVegetarian()
         );
     }
-
 }

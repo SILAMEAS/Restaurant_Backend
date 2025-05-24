@@ -19,6 +19,7 @@ import com.sila.specifcation.FoodSpecification;
 import com.sila.util.Utils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -103,9 +104,11 @@ public class FoodImp implements FoodService {
 
     @Override
     public EntityResponseHandler<FoodResponse> gets(Pageable pageable, SearchRequest searchReq, String filterBy) {
-        return new EntityResponseHandler<>(foodRepository.findAll(FoodSpecification.filterFood(searchReq, filterBy), pageable).stream()
-                .map(FoodResponse::toResponse)
-                .toList());
+        Page<FoodResponse> page = foodRepository
+                .findAll(FoodSpecification.filterFood(searchReq, filterBy), pageable)
+                .map(FoodResponse::toResponse); // keeps pagination metadata
+
+        return new EntityResponseHandler<>(page);
     }
 
     @Override
@@ -113,4 +116,5 @@ public class FoodImp implements FoodService {
         var foodPage = foodRepository.findAll(FoodSpecification.filterFoodByRestaurantId(restaurantId, searchReq, filterBy), pageable);
         return new EntityResponseHandler<>(foodPage.map(fs -> this.modelMapper.map(fs, FoodResponse.class)));
     }
+
 }

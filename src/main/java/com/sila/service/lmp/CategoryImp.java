@@ -1,5 +1,6 @@
 package com.sila.service.lmp;
 
+import com.sila.dto.response.CategoryResponse;
 import com.sila.dto.response.MessageResponse;
 import com.sila.exception.AccessDeniedException;
 import com.sila.exception.BadRequestException;
@@ -15,6 +16,7 @@ import com.sila.config.context.UserContext;
 import com.sila.util.enums.ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,7 @@ public class CategoryImp implements CategoryService {
     private final RestaurantRepository restaurantRepository;
     private final FoodService foodService;
     private final FoodRepository foodRepository;
-
+    final ModelMapper modelMapper;
     @Override
     public Category create(String jwt, String name) {
         User user = UserContext.getUser();
@@ -74,8 +76,9 @@ public class CategoryImp implements CategoryService {
     }
 
     @Override
-    public Long all() {
-      return categoryRepository.count();
+    public List<CategoryResponse> all() {
+        var categories = categoryRepository.findAll();
+      return categories.stream().map(c->modelMapper.map(c,CategoryResponse.class)).toList();
     }
 
     public Category getById(Long categoryId) {
