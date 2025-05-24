@@ -4,10 +4,10 @@ import com.sila.config.context.UserContext;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 
 @Slf4j
@@ -20,24 +20,30 @@ public class IpLoggingFilter implements Filter {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String ip = getClientIp(httpServletRequest);
+        String path = httpServletRequest.getRequestURI();
 
-        final var roles = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-                .stream()
+        var authorities = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getAuthorities();
+
+        boolean isAnonymous = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
-                .toList();
-        if (roles.contains("ROLE_ANONYMOUS")) {
-            System.out.println(" =====>  Login As [ROLE_ANONYMOUS]  Request IP: " + ip + " - " + httpServletRequest.getRequestURI());
-        } else {
-            var user =UserContext.getUser();
-            System.out.println(" =====>  Login As ["+user.getRole()+"] Request IP: " + ip + " - " + httpServletRequest.getRequestURI());
-        }
+                .anyMatch(role -> role.equals("ROLE_ANONYMOUS"));
 
+        if (isAnonymous) {
+            System.out.println("=====> Login As [ROLE_ANONYMOUS] Request IP: " + ip + " - " + path);
+        } else {
+            UserContext.findUser().ifPresentOrElse(
+                    user -> System.out.println("=====> Login As [" + user.getRole() + "] Request IP: " + ip + " - " + path),
+                    () -> System.out.println("=====> Login As [UNKNOWN ROLE] Request IP: " + ip + " - " + path)
+            );
+        }
 
         chain.doFilter(request, response);
     }
 
     private String getClientIp(HttpServletRequest request) {
         String xfHeader = request.getHeader("X-Forwarded-For");
-        return xfHeader == null ? request.getRemoteAddr() : xfHeader.split(",")[0];
+        return (xfHeader == null || xfHeader.isEmpty()) ? request.getRemoteAddr() : xfHeader.split(",")[0].trim();
     }
 }

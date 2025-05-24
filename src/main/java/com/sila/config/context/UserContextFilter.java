@@ -20,7 +20,6 @@ public class UserContextFilter extends OncePerRequestFilter {
 
     private final UserService userService;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -32,8 +31,7 @@ public class UserContextFilter extends OncePerRequestFilter {
                 User user = userService.getByJwt(jwt);
                 UserContext.setUser(user);
             } catch (Exception ex) {
-                log.error(ex.getMessage());
-                // Optionally log or handle invalid token
+                log.error("JWT processing error: {}", ex.getMessage());
             }
         }
 

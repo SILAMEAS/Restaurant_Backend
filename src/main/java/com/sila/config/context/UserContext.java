@@ -4,6 +4,7 @@ import com.sila.exception.BadRequestException;
 import com.sila.model.User;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class UserContext {
 
@@ -18,6 +19,10 @@ public class UserContext {
             throw new BadRequestException("You are not logged in can't get user; note : UserContext");
         }
         return currentUser.get();
+    }
+
+    public static Optional<User> findUser() {
+        return Optional.ofNullable(currentUser.get());
     }
 
     public static void clear() {
