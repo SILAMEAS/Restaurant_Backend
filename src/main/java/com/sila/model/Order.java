@@ -20,13 +20,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Link to user who placed the order
     @ManyToOne
     private User user;
-
-    // List of items (snapshot of what was in the cart at the time)
-//    @OneToMany(cascade = CascadeType.ALL)
-//    private List<CartItem> items;
 
     private double totalAmount;
 
