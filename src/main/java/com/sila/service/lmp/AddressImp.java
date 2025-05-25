@@ -33,6 +33,12 @@ public class AddressImp implements AddressService {
 
     @Override
     public ResponseEntity<AddressResponse> add(AddressRequest req) throws Exception {
+        if(UserContext.getUser().getRole() == com.sila.util.enums.ROLE.OWNER){
+            var addressOwner = addressRepository.existsAddressByUser(UserContext.getUser());
+            if(addressOwner){
+                throw new BadRequestException("You can't add address more than One for owner");
+            }
+        }
         var address = Address.builder()
                 .street(req.getStreet())
                 .city(req.getCity())

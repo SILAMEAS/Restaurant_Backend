@@ -5,6 +5,8 @@ import com.sila.dto.method.OnUpdate;
 import com.sila.dto.request.AddressRequest;
 import com.sila.dto.response.AddressResponse;
 import com.sila.service.AddressService;
+import com.sila.util.annotation.PreAuthorization;
+import com.sila.util.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ import java.util.List;
 @Slf4j
 public class AddressController {
     private final AddressService addressService;
+    @PreAuthorization({ROLE.USER})
     @PostMapping()
     ResponseEntity<AddressResponse> addAddress(
             @ModelAttribute @Valid AddressRequest addressRequest

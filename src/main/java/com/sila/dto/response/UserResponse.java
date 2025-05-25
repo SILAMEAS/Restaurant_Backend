@@ -1,6 +1,7 @@
 package com.sila.dto.response;
 
 import com.sila.model.Address;
+import com.sila.model.Order;
 import com.sila.util.enums.ROLE;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,4 +32,5 @@ public class UserResponse implements Serializable {
     private transient List<FavoriteResponse> favourites;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private List<OrderResponse> orders;
 }

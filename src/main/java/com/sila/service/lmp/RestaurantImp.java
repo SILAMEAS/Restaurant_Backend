@@ -20,6 +20,7 @@ import com.sila.service.UserService;
 import com.sila.specifcation.RestaurantSpecification;
 import com.sila.util.Utils;
 import com.sila.util.enums.ROLE;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -51,6 +52,7 @@ public class RestaurantImp implements RestaurantService {
     private final FavoriteRepository favoriteRepository;
     private final CloudinaryService cloudinaryService;
     private final CategoryRepository categoryRepository;
+    private final EntityManager entityManager; // Add EntityManager
 
 
     @Override
@@ -92,23 +94,34 @@ public class RestaurantImp implements RestaurantService {
 
 
     @Override
+    @Transactional
     public RestaurantResponse update(RestaurantRequest updateRestaurant, Long restaurantId) throws Exception {
         var userId = UserContext.getUser().getId();
         Restaurant restaurant = handleFindRestaurantById(restaurantId);
         if (!isUserOwnerOfRestaurant(userId, restaurantId)) {
             throw new AccessDeniedException("You are not the owner of this restaurant.");
         }
-        if(updateRestaurant.getImages()!=null) {
+
+        if (updateRestaurant.getImages() != null) {
             var imageEntities = cloudinaryService.uploadRestaurantImageToCloudinary(updateRestaurant.getImages(), restaurant);
             imageEntities.forEach(restaurant::addImage);
         }
+
         Utils.setIfNotNull(updateRestaurant.getName(), restaurant::setName);
         Utils.setIfNotNull(updateRestaurant.getDescription(), restaurant::setDescription);
         Utils.setIfNotNull(updateRestaurant.getCuisineType(), restaurant::setCuisineType);
-        Utils.setIfNotNull(updateRestaurant.getAddress(), restaurant::setAddress);
         Utils.setIfNotNull(updateRestaurant.getOpeningHours(), restaurant::setOpeningHours);
         Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurant::setContactInformation);
         Utils.setIfNotNull(updateRestaurant.getOpen(), restaurant::setOpen);
+
+        // Handle Address
+        if (updateRestaurant.getAddress() != null) {
+            Address address = updateRestaurant.getAddress();
+            // Merge the Address to make it managed
+            Address managedAddress = entityManager.merge(address);
+            restaurant.setAddress(managedAddress);
+        }
+
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return mapToRestaurantResponse(savedRestaurant);
     }
