@@ -19,11 +19,13 @@ public interface CloudinaryService {
 
     Map<String, String> uploadFile(MultipartFile file); // Updated to return Map
 
+    Map<String, String> uploadFileRemoveBG(MultipartFile file);
+
     String deleteImage(String publicId) throws IOException;
 
     List<ImageFood> uploadFoodImageToCloudinary(List<MultipartFile> imageFiles, Food food);
 
     List<ImageRestaurant> uploadRestaurantImageToCloudinary(List<MultipartFile> imageFiles, Restaurant restaurant);
-
+    String getBackgroundRemovedImage(String publicId);
 
 }

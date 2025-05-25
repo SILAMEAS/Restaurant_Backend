@@ -20,4 +20,5 @@ public interface UserService {
 
     UserResponse getProfile() throws Exception;
     Long all();
+    EntityResponseHandler<UserResponse> getUsersWhoOrderedFromRestaurant(Long restaurantId, Pageable pageable);
 }

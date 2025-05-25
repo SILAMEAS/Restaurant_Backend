@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface CategoryService {
-    Category create(CategoryRequest categoryReq);
+    Category create(CategoryRequest request);
 
     List<Category> getsByResId(Long restaurantId);
 

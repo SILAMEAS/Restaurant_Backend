@@ -9,5 +9,5 @@ public interface OrderService {
 
     List<OrderResponse> getAll();
 
-    OrderResponse placeOrder(Long userId);
+    OrderResponse placeOrder();
 }

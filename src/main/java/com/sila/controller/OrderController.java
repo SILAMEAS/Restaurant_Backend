@@ -28,8 +28,8 @@ public class OrderController {
     }
     @PreAuthorization({ROLE.USER})
     @PostMapping()
-    public ResponseEntity<OrderResponse> placeOrder(@RequestParam Long userId) {
-        return ResponseEntity.ok(orderService.placeOrder(userId));
+    public ResponseEntity<OrderResponse> placeOrder() {
+        return ResponseEntity.ok(orderService.placeOrder());
     }
 
 }

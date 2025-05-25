@@ -8,7 +8,9 @@ import com.sila.dto.response.UserResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
 import com.sila.model.User;
+import com.sila.repository.RestaurantRepository;
 import com.sila.repository.UserRepository;
+import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import com.sila.specifcation.UserSpecification;
 import com.sila.config.context.UserContext;
@@ -28,6 +30,8 @@ public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final ModelMapper modelMapper;
+    private final RestaurantService restaurantService;
+    private final RestaurantRepository restaurantRepository;
 
     @Override
     public User getByJwt(String jwt) {
@@ -56,6 +60,11 @@ public class UserServiceImp implements UserService {
         if (search != null) {
             spec = spec.and(UserSpecification.search(search));
         }
+        return new EntityResponseHandler<>(userRepository.findAll(spec, pageable).map(re -> this.modelMapper.map(re, UserResponse.class)));
+    }
+    @Override
+    public EntityResponseHandler<UserResponse> getUsersWhoOrderedFromRestaurant(Long restaurantId, Pageable pageable) {
+        Specification<User> spec = UserSpecification.hasOrderedFromRestaurant(restaurantId);
         return new EntityResponseHandler<>(userRepository.findAll(spec, pageable).map(re -> this.modelMapper.map(re, UserResponse.class)));
     }
 
@@ -104,6 +113,8 @@ public class UserServiceImp implements UserService {
     public Long all() {
         return userRepository.count();
     }
+
+
 
 
 }

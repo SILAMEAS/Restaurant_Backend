@@ -1,16 +1,20 @@
 package com.sila.controller;
 
 import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.request.UserRequest;
 import com.sila.dto.response.UserResponse;
 import com.sila.model.User;
 import com.sila.service.UserService;
+import com.sila.util.PageableUtil;
+import com.sila.util.Utils;
 import com.sila.util.annotation.PreAuthorization;
 import com.sila.util.common.PaginationDefaults;
 import com.sila.util.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,12 +41,18 @@ public class UserController {
     @PreAuthorization({ROLE.ADMIN})
     @GetMapping
     public ResponseEntity<EntityResponseHandler<UserResponse>> listUsers(
-            @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo,
-            @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
-            @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
-            @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder,
-            @RequestParam(required = false) String search) throws Exception {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()), sortBy));
-        return new ResponseEntity<>(userService.list(pageable, search), HttpStatus.OK);
+            @ModelAttribute PaginationRequest request
+    ) throws Exception {
+        Pageable pageable = PageableUtil.fromRequest(request);
+        return new ResponseEntity<>(userService.list(pageable, request.getSearch()), HttpStatus.OK);
+    }
+    @PreAuthorization({ROLE.OWNER})
+    @GetMapping("/{restaurantId}/orders")
+    public ResponseEntity<EntityResponseHandler<UserResponse>> listUsersHasOrderInRestaurant(
+            @PathVariable Long restaurantId,
+            @ModelAttribute PaginationRequest request
+    )  {
+        Pageable pageable = PageableUtil.fromRequest(request);
+        return new ResponseEntity<>(userService.getUsersWhoOrderedFromRestaurant(restaurantId, pageable), HttpStatus.OK);
     }
 }

@@ -51,7 +51,7 @@ public class CategoryImp implements CategoryService {
         if (categoryRepository.existsByNameAndRestaurant(request.getName(), restaurant)) {
             throw new BadRequestException("Category name already exists for this restaurant");
         }
-        var image = cloudinaryService.uploadFile(request.getImage());
+        var image =request.getRemoveBg()?  cloudinaryService.uploadFileRemoveBG(request.getImage()): cloudinaryService.uploadFile(request.getImage());
         Category category = Category.builder()
                 .name(request.getName())
                 .restaurant(restaurant)
@@ -63,8 +63,7 @@ public class CategoryImp implements CategoryService {
 
     @Override
     public Category update(String name, Long categoryId) {
-        ROLE user = UserContext.getUser().getRole();
-        if (user.equals(ROLE.USER)) {
+        if (UserContext.getUser().getRole().equals(ROLE.USER)) {
             throw new AccessDeniedException("Customer do not have permission to change category");
         }
         Category category = getById(categoryId);
@@ -113,6 +112,9 @@ public class CategoryImp implements CategoryService {
 
     @Override
     public String deleteAllCategories() {
+        var images = categoryRepository.findAll().stream().map(Category::getPublicId).toList();
+        cloudinaryService.deleteImages(images);
+        log.info("Successfully deleted all images belong categories from cloudinary. Images : " + images + " deleted successfully.");
         categoryRepository.deleteAll();
         return "Deleted all categories successfully";
     }

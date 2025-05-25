@@ -45,7 +45,7 @@ public class RestaurantImp implements RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final ModelMapper modelMapper;
-    private final UserService userService;
+    private final OrderRepository orderRepository;
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
     private final FavoriteRepository favoriteRepository;
@@ -153,6 +153,12 @@ public class RestaurantImp implements RestaurantService {
     public EntityResponseHandler<RestaurantResponse> search(Pageable pageable, SearchRequest searchReq) {
         var restaurantPage = restaurantRepository.findAll(RestaurantSpecification.filterRestaurant(searchReq), pageable);
         return new EntityResponseHandler<>(restaurantPage.map(RestaurantImp::mapToRestaurantResponse));
+    }
+
+    @Override
+    public List<UserResponse> getUsersWhoOrderedFromRestaurant(Long restaurantId) {
+        var users = orderRepository.findUsersByRestaurantId(restaurantId);
+        return users.stream().map(u->this.modelMapper.map(u,UserResponse.class)).toList();
     }
 
     @Override

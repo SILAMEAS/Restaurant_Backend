@@ -1,5 +1,6 @@
 package com.sila.service.lmp;
 
+import com.sila.config.context.UserContext;
 import com.sila.dto.response.OrderResponse;
 import com.sila.model.Order;
 import com.sila.service.OrderService;
@@ -17,7 +18,8 @@ public class OrderImp implements OrderService {
     }
 
     @Override
-    public OrderResponse placeOrder(Long userId) {
+    public OrderResponse placeOrder() {
+        var user = UserContext.getUser();
         return null;
     }
 }

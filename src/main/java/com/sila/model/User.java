@@ -42,4 +42,7 @@ public class User {
 
     @UpdateTimestamp // 👈 auto-set on update
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
 }
