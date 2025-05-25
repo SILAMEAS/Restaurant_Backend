@@ -25,4 +25,5 @@ public interface CloudinaryService {
 
     List<ImageRestaurant> uploadRestaurantImageToCloudinary(List<MultipartFile> imageFiles, Restaurant restaurant);
 
+
 }

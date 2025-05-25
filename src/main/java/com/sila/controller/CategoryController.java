@@ -1,8 +1,10 @@
 package com.sila.controller;
 
 import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.method.OnCreate;
 import com.sila.dto.request.CategoryRequest;
 import com.sila.dto.request.PaginationRequest;
+import com.sila.dto.request.RestaurantRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.CategoryResponse;
 import com.sila.dto.response.MessageResponse;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,8 +43,8 @@ public class CategoryController {
 
     @PostMapping
     @PreAuthorization({ROLE.ADMIN, ROLE.OWNER})
-    public ResponseEntity<Category> createCategory(@RequestHeader("Authorization") String jwt, @RequestBody CategoryRequest categoryReq) {
-        return new ResponseEntity<>(categoryService.create(jwt, categoryReq.getName()), HttpStatus.CREATED);
+    public ResponseEntity<Category> createCategory(@Validated(OnCreate.class) @ModelAttribute  CategoryRequest request) {
+        return new ResponseEntity<>(categoryService.create(request), HttpStatus.CREATED);
     }
 
     @GetMapping("/restaurant/{restaurantId}")
@@ -58,6 +61,12 @@ public class CategoryController {
     @DeleteMapping("{categoryId}")
     public ResponseEntity<MessageResponse> deleteCategory(@PathVariable Long categoryId) {
         return new ResponseEntity<>(categoryService.delete(categoryId), HttpStatus.CREATED);
+    }
+
+    @PreAuthorization({ROLE.ADMIN})
+    @DeleteMapping("/bulk")
+    public ResponseEntity<String> deleteAll() {
+        return new ResponseEntity<>(categoryService.deleteAllCategories(), HttpStatus.CREATED);
     }
 
 

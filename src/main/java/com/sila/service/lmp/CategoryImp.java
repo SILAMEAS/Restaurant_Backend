@@ -1,6 +1,7 @@
 package com.sila.service.lmp;
 
 import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.request.CategoryRequest;
 import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.CategoryResponse;
@@ -15,6 +16,7 @@ import com.sila.repository.CategoryRepository;
 import com.sila.repository.FoodRepository;
 import com.sila.repository.RestaurantRepository;
 import com.sila.service.CategoryService;
+import com.sila.service.CloudinaryService;
 import com.sila.service.FoodService;
 import com.sila.config.context.UserContext;
 import com.sila.specifcation.FoodSpecification;
@@ -41,14 +43,21 @@ public class CategoryImp implements CategoryService {
     private final FoodService foodService;
     private final FoodRepository foodRepository;
     final ModelMapper modelMapper;
+    private final CloudinaryService cloudinaryService;
     @Override
-    public Category create(String jwt, String name) {
+    public Category create(CategoryRequest request) {
         User user = UserContext.getUser();
         Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
-        if (categoryRepository.existsByNameAndRestaurant(name, restaurant)) {
+        if (categoryRepository.existsByNameAndRestaurant(request.getName(), restaurant)) {
             throw new BadRequestException("Category name already exists for this restaurant");
         }
-        Category category = Category.builder().name(name).restaurant(restaurant).build();
+        var image = cloudinaryService.uploadFile(request.getImage());
+        Category category = Category.builder()
+                .name(request.getName())
+                .restaurant(restaurant)
+                .url(image.get("secureUrl"))
+                .publicId(image.get("publicId"))
+                .build();
         return categoryRepository.save(category);
     }
 
@@ -73,8 +82,7 @@ public class CategoryImp implements CategoryService {
 
     @Override
     public MessageResponse delete(Long categoryId) {
-        getById(categoryId);
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException("category not found"));
+        var category =getById(categoryId);
         var foods = foodRepository.findAllByCategoryId(category.getId());
         if (!foods.isEmpty()) {
             foodService.deleteByCategoryId(categoryId);
@@ -101,6 +109,12 @@ public class CategoryImp implements CategoryService {
         );
 
         return new EntityResponseHandler<>(categoryPage.map(c -> modelMapper.map(c, CategoryResponse.class)));
+    }
+
+    @Override
+    public String deleteAllCategories() {
+        categoryRepository.deleteAll();
+        return "Deleted all categories successfully";
     }
 
     public Category getById(Long categoryId) {

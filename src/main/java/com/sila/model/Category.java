@@ -25,4 +25,9 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Food> foodList;
 
+    private String url;
+
+    private String publicId;
+
+
 }

@@ -1,6 +1,7 @@
 package com.sila.service;
 
 import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.request.CategoryRequest;
 import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.CategoryResponse;
@@ -12,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface CategoryService {
-    Category create(String jwt, String name);
+    Category create(CategoryRequest categoryReq);
 
     List<Category> getsByResId(Long restaurantId);
 
@@ -24,6 +25,8 @@ public interface CategoryService {
 
     List<CategoryResponse> all();
     EntityResponseHandler<CategoryResponse> gets(PaginationRequest request);
+
+    String deleteAllCategories();
 
 
 }
