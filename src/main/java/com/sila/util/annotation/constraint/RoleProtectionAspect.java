@@ -1,8 +1,8 @@
 package com.sila.util.annotation.constraint;
 
 import com.sila.exception.AccessDeniedException;
-import com.sila.util.enums.ROLE;
 import com.sila.util.annotation.PreAuthorization;
+import com.sila.util.enums.ROLE;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;

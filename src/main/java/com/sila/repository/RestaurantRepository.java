@@ -1,6 +1,5 @@
 package com.sila.repository;
 
-import com.sila.model.Address;
 import com.sila.model.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

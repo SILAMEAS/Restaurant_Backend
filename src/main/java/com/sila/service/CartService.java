@@ -2,8 +2,6 @@ package com.sila.service;
 
 import com.sila.dto.response.CartResponse;
 
-import java.util.List;
-
 public interface CartService {
 
     CartResponse getAll() throws Exception;

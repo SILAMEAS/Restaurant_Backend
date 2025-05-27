@@ -1,8 +1,8 @@
 package com.sila.util.annotation.constraint;
 
 
+import com.sila.exception.FileValidationException;
 import com.sila.util.annotation.ValidFile;
-import com.sila.exception.FileValidationException; // Import your custom exception
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.web.multipart.MultipartFile;

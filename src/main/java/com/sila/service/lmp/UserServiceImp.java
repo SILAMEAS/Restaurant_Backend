@@ -1,23 +1,16 @@
 package com.sila.service.lmp;
 
+import com.sila.config.context.UserContext;
 import com.sila.config.jwt.JwtProvider;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.UserRequest;
-import com.sila.dto.response.AddressResponse;
-import com.sila.dto.response.FavoriteResponse;
 import com.sila.dto.response.UserResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
 import com.sila.model.User;
-import com.sila.repository.AddressRepository;
-import com.sila.repository.FavoriteRepository;
-import com.sila.repository.RestaurantRepository;
 import com.sila.repository.UserRepository;
-import com.sila.service.AddressService;
-import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import com.sila.specifcation.UserSpecification;
-import com.sila.config.context.UserContext;
 import com.sila.util.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,20 +20,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
-    private final FavoriteRepository favoriteRepository;
     private final JwtProvider jwtProvider;
     private final ModelMapper modelMapper;
-    private final RestaurantService restaurantService;
-    private final RestaurantRepository restaurantRepository;
-    private final AddressRepository addressRepository;
-    private final AddressService addressService;
 
     @Override
     public User getByJwt(String jwt) {
@@ -91,16 +77,7 @@ public class UserServiceImp implements UserService {
         Utils.setIfNotNull(userReq.getAddresses(), user::setAddresses);
         Utils.setIfNotNull(userReq.getFullName(), user::setFullName);
 
-//        if (!userReq.getProfile().isEmpty()) {
-//            user.setProfile(userReq.getProfile());
-//
-//        }
-//        if(!userReq.getAddresses().isEmpty()){
-//            user.setAddresses(userReq.getAddresses());
-//        }
-//        if (!userReq.getFullName().isEmpty()) {
-//            user.setFullName(userReq.getFullName());
-//        }
+
         return this.modelMapper.map(userRepository.save(user), UserResponse.class);
     }
 

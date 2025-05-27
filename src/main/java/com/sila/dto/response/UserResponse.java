@@ -22,9 +22,4 @@ public class UserResponse implements Serializable {
     private String fullName;
     private String email;
     private ROLE role;
-//    private transient List<AddressResponse> addresses;
-//    private transient List<FavoriteResponse> favourites;
-//    private LocalDateTime createdAt;
-//    private LocalDateTime updatedAt;
-//    private List<OrderResponse> orders;
 }

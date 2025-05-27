@@ -1,11 +1,9 @@
 package com.sila.dto.request;
 
 import com.sila.dto.method.OnCreate;
-import com.sila.dto.method.OnUpdate;
 import com.sila.model.Address;
 import com.sila.model.ContactInformation;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

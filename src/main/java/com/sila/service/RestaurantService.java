@@ -8,9 +8,7 @@ import com.sila.dto.response.MessageResponse;
 import com.sila.dto.response.RestaurantResponse;
 import com.sila.dto.response.UserResponse;
 import com.sila.model.Restaurant;
-import com.sila.model.User;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

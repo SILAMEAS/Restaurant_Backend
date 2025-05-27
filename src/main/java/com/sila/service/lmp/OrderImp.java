@@ -7,7 +7,11 @@ import com.sila.dto.response.RestaurantResponse;
 import com.sila.dto.response.UserResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
-import com.sila.model.*;
+import com.sila.model.Cart;
+import com.sila.model.CartItem;
+import com.sila.model.Order;
+import com.sila.model.OrderItem;
+import com.sila.model.Restaurant;
 import com.sila.repository.CartRepository;
 import com.sila.repository.OrderItemRepository;
 import com.sila.repository.OrderRepository;
@@ -21,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

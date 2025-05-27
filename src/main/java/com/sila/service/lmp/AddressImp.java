@@ -3,7 +3,6 @@ package com.sila.service.lmp;
 import com.sila.config.context.UserContext;
 import com.sila.dto.request.AddressRequest;
 import com.sila.dto.response.AddressResponse;
-import com.sila.dto.response.FavoriteResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.model.Address;
 import com.sila.model.Restaurant;
@@ -36,7 +35,7 @@ public class AddressImp implements AddressService {
     public ResponseEntity<AddressResponse> add(AddressRequest req) throws Exception {
         if(UserContext.getUser().getRole() == com.sila.util.enums.ROLE.OWNER){
             var addressOwner = addressRepository.existsAddressByUser(UserContext.getUser());
-            if(addressOwner){
+            if(Boolean.TRUE.equals(addressOwner)){
                 throw new BadRequestException("You can't add address more than One for owner");
             }
         }

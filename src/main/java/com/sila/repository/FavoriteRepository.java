@@ -1,6 +1,5 @@
 package com.sila.repository;
 
-import com.sila.dto.response.FavoriteResponse;
 import com.sila.model.Favorite;
 import com.sila.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

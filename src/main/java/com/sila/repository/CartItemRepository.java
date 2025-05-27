@@ -1,7 +1,6 @@
 package com.sila.repository;
 
 import com.sila.model.CartItem;
-import com.sila.model.Food;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

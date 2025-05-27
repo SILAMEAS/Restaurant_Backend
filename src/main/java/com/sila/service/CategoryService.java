@@ -3,12 +3,9 @@ package com.sila.service;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.CategoryRequest;
 import com.sila.dto.request.PaginationRequest;
-import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.CategoryResponse;
-import com.sila.dto.response.FoodResponse;
 import com.sila.dto.response.MessageResponse;
 import com.sila.model.Category;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 

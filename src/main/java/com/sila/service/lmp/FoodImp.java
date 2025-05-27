@@ -5,7 +5,6 @@ import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.FoodRequest;
 import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.request.SearchRequest;
-import com.sila.dto.response.CategoryResponse;
 import com.sila.dto.response.FoodResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.model.Category;
@@ -29,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
