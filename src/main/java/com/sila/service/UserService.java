@@ -2,9 +2,13 @@ package com.sila.service;
 
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.UserRequest;
+import com.sila.dto.response.AddressResponse;
+import com.sila.dto.response.FavoriteResponse;
 import com.sila.dto.response.UserResponse;
 import com.sila.model.User;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -21,4 +25,5 @@ public interface UserService {
     UserResponse getProfile() throws Exception;
     Long all();
     EntityResponseHandler<UserResponse> getUsersWhoOrderedFromRestaurant(Long restaurantId, Pageable pageable);
+    Long allHaveBeenOrder(Long restaurantId);
 }

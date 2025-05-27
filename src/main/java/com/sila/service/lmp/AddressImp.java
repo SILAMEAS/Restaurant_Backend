@@ -3,6 +3,7 @@ package com.sila.service.lmp;
 import com.sila.config.context.UserContext;
 import com.sila.dto.request.AddressRequest;
 import com.sila.dto.response.AddressResponse;
+import com.sila.dto.response.FavoriteResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.model.Address;
 import com.sila.model.Restaurant;
@@ -114,6 +115,12 @@ public class AddressImp implements AddressService {
 
 
         return this.modelMapper.map(address,AddressResponse.class);
+    }
+
+    @Override
+    public List<AddressResponse> getByUser() {
+        List<Address> address = addressRepository.findAllByUser(UserContext.getUser());
+        return address.stream().map(a->this.modelMapper.map(a, AddressResponse.class)).toList();
     }
 
     private AddressResponse findByIdWithException(Long addressId){

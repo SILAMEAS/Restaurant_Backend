@@ -14,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderResponse {
     private Long id;
-    private Long userId;
-    private Long restaurantId;
+    private UserResponse user;
+    private RestaurantResponse restaurant;
     private double totalAmount;
     private LocalDateTime createdAt;
     private String status;

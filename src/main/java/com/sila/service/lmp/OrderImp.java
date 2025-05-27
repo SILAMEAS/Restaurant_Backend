@@ -3,6 +3,8 @@ package com.sila.service.lmp;
 import com.sila.config.context.UserContext;
 import com.sila.dto.response.OrderItemResponse;
 import com.sila.dto.response.OrderResponse;
+import com.sila.dto.response.RestaurantResponse;
+import com.sila.dto.response.UserResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
 import com.sila.model.*;
@@ -27,6 +29,7 @@ public class OrderImp implements OrderService {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
     private final OrderItemRepository orderItemRepository;
+    private final ModelMapper modelMapper;
     @Override
     public List<OrderResponse> getAll() {
         return orderRepository.findAll().stream()
@@ -93,8 +96,8 @@ public class OrderImp implements OrderService {
     private OrderResponse convertToOrderResponse(Order order) {
         OrderResponse response = new OrderResponse();
         response.setId(order.getId());
-        response.setUserId(order.getUser().getId());
-        response.setRestaurantId(order.getRestaurant().getId());
+        response.setUser(this.modelMapper.map(order.getUser(), UserResponse.class));
+        response.setRestaurant(this.modelMapper.map(order.getRestaurant(), RestaurantResponse.class));
         response.setTotalAmount(order.getTotalAmount());
         response.setCreatedAt(order.getCreatedAt());
         response.setStatus(order.getStatus().name());
@@ -105,7 +108,7 @@ public class OrderImp implements OrderService {
                         item.getQuantity(),
                         item.getFood().getPrice() * item.getQuantity()
                 ))
-                .collect(Collectors.toList()));
+                .toList());
         return response;
     }
 

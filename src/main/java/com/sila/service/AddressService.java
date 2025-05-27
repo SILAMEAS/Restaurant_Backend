@@ -12,4 +12,5 @@ public interface AddressService {
     ResponseEntity<AddressResponse> byId(Long addressId);
     ResponseEntity<List<AddressResponse>> gets();
     AddressResponse update(AddressRequest addressRequest,Long addressId) throws Exception;
+    List<AddressResponse> getByUser();
 }

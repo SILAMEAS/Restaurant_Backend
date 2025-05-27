@@ -1,7 +1,11 @@
 package com.sila.controller;
 
+import com.sila.config.context.UserContext;
 import com.sila.repository.CategoryRepository;
+import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
+import com.sila.util.annotation.PreAuthorization;
+import com.sila.util.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,11 +24,17 @@ import java.util.Map;
 public class DashboardController {
     final UserService userService;
     final CategoryRepository categoryRepository;
+    final RestaurantService restaurantService;
 
+    @PreAuthorization({ROLE.OWNER,ROLE.ADMIN})
     @GetMapping
     public ResponseEntity<Object> getAdminDashboard() {
         Map<String, Object> res = new HashMap<>();
-        res.put("total_users",  userService.all());
+        if(UserContext.getUser().getRole().equals(ROLE.OWNER)){
+            res.put("total_users",userService.allHaveBeenOrder( restaurantService.getByUserLogin().getId()));
+        }else {
+            res.put("total_users",userService.all());
+        }
         res.put("total_orders", 0);
         res.put("total_categories",categoryRepository.count());
         return new ResponseEntity<>(res, HttpStatus.OK);

@@ -1,11 +1,10 @@
 package com.sila.service.lmp;
 
+import com.sila.config.context.UserContext;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.CategoryRequest;
 import com.sila.dto.request.PaginationRequest;
-import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.CategoryResponse;
-import com.sila.dto.response.FoodResponse;
 import com.sila.dto.response.MessageResponse;
 import com.sila.exception.AccessDeniedException;
 import com.sila.exception.BadRequestException;
@@ -18,19 +17,15 @@ import com.sila.repository.RestaurantRepository;
 import com.sila.service.CategoryService;
 import com.sila.service.CloudinaryService;
 import com.sila.service.FoodService;
-import com.sila.config.context.UserContext;
-import com.sila.specifcation.FoodSpecification;
 import com.sila.util.PageableUtil;
 import com.sila.util.enums.ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -107,7 +102,7 @@ public class CategoryImp implements CategoryService {
                 pageable
         );
 
-        return new EntityResponseHandler<>(categoryPage.map(c -> modelMapper.map(c, CategoryResponse.class)));
+        return new EntityResponseHandler<>(categoryPage.map(CategoryImp::mapToCategoryResponse));
     }
 
     @Override
@@ -129,6 +124,18 @@ public class CategoryImp implements CategoryService {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    public static CategoryResponse mapToCategoryResponse(Category category) {
+
+        return CategoryResponse.builder()
+                .id(category.getId())
+                .items(!CollectionUtils.isEmpty(category.getFoodList())?category.getFoodList().size():0)
+                .restaurant(category.getRestaurant().getName())
+                .url(category.getUrl())
+                .publicId(category.getPublicId())
+                .name(category.getName())
+                .build();
     }
 
 }

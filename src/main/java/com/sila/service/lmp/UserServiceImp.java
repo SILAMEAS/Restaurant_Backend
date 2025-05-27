@@ -3,13 +3,17 @@ package com.sila.service.lmp;
 import com.sila.config.jwt.JwtProvider;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.UserRequest;
+import com.sila.dto.response.AddressResponse;
 import com.sila.dto.response.FavoriteResponse;
 import com.sila.dto.response.UserResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
 import com.sila.model.User;
+import com.sila.repository.AddressRepository;
+import com.sila.repository.FavoriteRepository;
 import com.sila.repository.RestaurantRepository;
 import com.sila.repository.UserRepository;
+import com.sila.service.AddressService;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import com.sila.specifcation.UserSpecification;
@@ -23,15 +27,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
+    private final FavoriteRepository favoriteRepository;
     private final JwtProvider jwtProvider;
     private final ModelMapper modelMapper;
     private final RestaurantService restaurantService;
     private final RestaurantRepository restaurantRepository;
+    private final AddressRepository addressRepository;
+    private final AddressService addressService;
 
     @Override
     public User getByJwt(String jwt) {
@@ -69,6 +78,12 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public Long allHaveBeenOrder(Long restaurantId) {
+        return userRepository.count(UserSpecification.hasOrderedFromRestaurant(restaurantId));
+    }
+
+
+    @Override
     public UserResponse update( UserRequest userReq) {
         var user = UserContext.getUser();
 
@@ -97,15 +112,15 @@ public class UserServiceImp implements UserService {
                 .orElseThrow(() -> new Exception("User not found"));
 
         UserResponse userRes = this.modelMapper.map(user, UserResponse.class);
-        userRes.setFavourites(user.getFavourites().stream()
-                .map(fav -> new FavoriteResponse(fav.getId(), fav.getName(), fav.getDescription(), user.getId(), fav.getRestaurant().getId()))
-                .toList());
+//        userRes.setFavourites(user.getFavourites().stream()
+//                .map(fav -> new FavoriteResponse(fav.getId(), fav.getName(), fav.getDescription(), user.getId(), fav.getRestaurant().getId()))
+//                .toList());
         /** I try to currentUsage from null to false */
-        userRes.getAddresses().forEach(address -> {
-            if (address.getCurrentUsage() == null) {
-                address.setCurrentUsage(false);
-            }
-        });
+//        userRes.getAddresses().forEach(address -> {
+//            if (address.getCurrentUsage() == null) {
+//                address.setCurrentUsage(false);
+//            }
+//        });
         return userRes;
     }
 

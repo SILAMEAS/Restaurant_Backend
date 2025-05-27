@@ -20,11 +20,11 @@ import java.util.List;
 public class FoodResponse implements Serializable {
     private Long id;
     private String name;
-    private Long categoryId;
     private String description;
     private Long price;
     private List<String> images;
     private Long restaurantId;
+    private String restaurantName;
     private transient CategoryDTO category;
     private boolean isVegetarian;
     private boolean isSeasonal;
@@ -43,6 +43,7 @@ public class FoodResponse implements Serializable {
         return FoodResponse.builder()
                 .id(food.getId())
                 .name(food.getName())
+                .restaurantName(food.getRestaurant().getName())
                 .description(food.getDescription())
                 .price(food.getPrice())
                 .category(new FoodResponse.CategoryDTO(
