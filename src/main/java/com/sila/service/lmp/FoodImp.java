@@ -83,30 +83,25 @@ public class FoodImp implements FoodService {
         Utils.setIfNotNull(foodReq.isSeasonal(), food::setSeasonal);
         Utils.setIfNotNull(foodReq.isAvailable(), food::setAvailable);
 
-        updateFoodImages(food, foodReq.getImages());
+        cloudinaryService.updateEntityImages(
+                food,
+                foodReq.getImages(),
+                Food::getImages,
+                Food::setImages,
+                (url, publicId) -> {
+                    ImageFood image = new ImageFood();
+                    image.setUrl(url);
+                    image.setPublicId(publicId);
+                    return image;
+                },
+                ImageFood::setFood,
+                ImageFood::getPublicId
+        );
 
 
         return foodRepository.save(food);
     }
-    private void updateFoodImages(Food food, List<MultipartFile> images) {
-        if (!CollectionUtils.isEmpty(images)) {
-            List<ImageFood> uploadedImages = cloudinaryService.uploadImagesToCloudinary(images,food,(url,publicId)->{
-                ImageFood image = new ImageFood();
-                image.setUrl(url);
-                image.setPublicId(publicId);
-                return image;
-            },ImageFood::setFood);
-            if (!CollectionUtils.isEmpty(uploadedImages)) {
-                if (food.getImages() == null) {
-                    food.setImages(new ArrayList<>());
-                } else {
-                    cloudinaryService.deleteImages(food.getImages().stream().map(ImageFood::getPublicId).toList());
-                    food.getImages().clear(); // Clear the existing mutable list
-                }
-                food.getImages().addAll(uploadedImages); // Add new items
-            }
-        }
-    }
+
 
 
     @Override

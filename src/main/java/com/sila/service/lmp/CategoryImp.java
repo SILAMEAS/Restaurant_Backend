@@ -46,7 +46,8 @@ public class CategoryImp implements CategoryService {
         if (categoryRepository.existsByNameAndRestaurant(request.getName(), restaurant)) {
             throw new BadRequestException("Category name already exists for this restaurant");
         }
-        var image =request.getRemoveBg()?  cloudinaryService.uploadFileRemoveBG(request.getImage()): cloudinaryService.uploadFile(request.getImage());
+        var image =Boolean.TRUE.equals(request.getRemoveBg())?  cloudinaryService.uploadFileRemoveBG(request.getImage()): cloudinaryService.uploadFile(request.getImage());
+
         Category category = Category.builder()
                 .name(request.getName())
                 .restaurant(restaurant)
