@@ -1,5 +1,6 @@
 package com.sila.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class OrderItem {
 
     private int quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade= CascadeType.ALL)
     @JoinColumn(name = "food_id") // Foreign key to Food table
     private Food food;
 

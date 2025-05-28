@@ -13,9 +13,11 @@ import com.sila.model.Restaurant;
 import com.sila.model.image.ImageFood;
 import com.sila.repository.CategoryRepository;
 import com.sila.repository.FoodRepository;
+import com.sila.repository.OrderItemRepository;
 import com.sila.repository.RestaurantRepository;
 import com.sila.service.CloudinaryService;
 import com.sila.service.FoodService;
+import com.sila.service.RestaurantService;
 import com.sila.specifcation.FoodSpecification;
 import com.sila.util.PageableUtil;
 import com.sila.util.Utils;
@@ -24,8 +26,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +43,8 @@ public class FoodImp implements FoodService {
     private final RestaurantRepository restaurantRepository;
     private final ModelMapper modelMapper;
     private final CloudinaryService cloudinaryService;
+    private final OrderItemRepository orderItemRepository;
+    private final RestaurantService restaurantService;
 
     @Override
     public Food create(FoodRequest foodRequest, Category category, Restaurant restaurant, List<MultipartFile> imageFiles) {
@@ -60,19 +67,35 @@ public class FoodImp implements FoodService {
             throw new BadRequestException("Food isn't belong to restaurant");
         }
         Category category = categoryRepository.findById(foodReq.getCategoryId()).orElseThrow(() -> new BadRequestException("category not found"));
-        Food food = getById(foodId);
 
-        Utils.setIfNotNull(food.getName(), food::setName);
-        Utils.setIfNotNull(food.getImages(), food::setImages);
+        Food food = getById(foodId);
+        Utils.setIfNotNull(foodReq.getName(), food::setName);
         Utils.setIfNotNull(category, food::setCategory);
-        Utils.setIfNotNull(food.getPrice(), food::setPrice);
-        Utils.setIfNotNull(food.getDescription(), food::setDescription);
-        Utils.setIfNotNull(food.isVegetarian(), food::setVegetarian);
-        Utils.setIfNotNull(food.isSeasonal(), food::setSeasonal);
-        Utils.setIfNotNull(food.isAvailable(), food::setAvailable);
+        Utils.setIfNotNull(foodReq.getPrice(), food::setPrice);
+        Utils.setIfNotNull(foodReq.getDescription(), food::setDescription);
+        Utils.setIfNotNull(foodReq.isVegetarian(), food::setVegetarian);
+        Utils.setIfNotNull(foodReq.isSeasonal(), food::setSeasonal);
+        Utils.setIfNotNull(foodReq.isAvailable(), food::setAvailable);
+
+        updateFoodImages(food, foodReq.getImages());
+
 
         return foodRepository.save(food);
     }
+    private void updateFoodImages(Food food, List<MultipartFile> images) {
+        if (!CollectionUtils.isEmpty(images)) {
+            List<ImageFood> uploadedImages = cloudinaryService.uploadFoodImageToCloudinary(images, food);
+            if (!CollectionUtils.isEmpty(uploadedImages)) {
+                if (food.getImages() == null) {
+                    food.setImages(new ArrayList<>());
+                } else {
+                    food.getImages().clear(); // Clear the existing mutable list
+                }
+                food.getImages().addAll(uploadedImages); // Add new items
+            }
+        }
+    }
+
 
     @Override
     public void delete(Long id) {
@@ -82,12 +105,13 @@ public class FoodImp implements FoodService {
     }
 
     @Override
+    @Transactional
     public String deleteByCategoryId(Long categoryId) {
-        List<Food> foodsToDelete = foodRepository.findAllByCategoryId(categoryId);
-        if (foodsToDelete.isEmpty()) {
-            throw new BadRequestException("No food have category id : " + categoryId);
+        var foods = foodRepository.findAllByCategoryId(categoryId);
+        for(var food : foods){
+            orderItemRepository.deleteAllByFood(food);
         }
-        foodRepository.deleteAll(foodsToDelete);
+        foodRepository.deleteAllByCategoryId(categoryId);
         return "All food have categoryId : " + categoryId + " was deleted";
     }
 
@@ -111,6 +135,17 @@ public class FoodImp implements FoodService {
                 .findAll(FoodSpecification.filterFood(searchRequest, request.getFilterBy()), pageable)
                 .map(FoodResponse::toResponse); // keeps pagination metadata
         return new EntityResponseHandler<>(page);
+    }
+
+    @Override
+    public Long all() {
+        return foodRepository.count();
+    }
+
+    @Override
+    public Long all(Long restaurantId) throws Exception {
+        var restaurant = restaurantService.getById(restaurantId);
+        return foodRepository.countAllByRestaurant(restaurant);
     }
 
     @Override

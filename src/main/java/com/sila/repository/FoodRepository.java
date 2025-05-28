@@ -1,6 +1,7 @@
 package com.sila.repository;
 
 import com.sila.model.Food;
+import com.sila.model.Restaurant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -54,4 +55,7 @@ public interface FoodRepository extends JpaRepository<Food, Long>, PagingAndSort
                                                 @Param("isSeasonal") Boolean isSeasonal,
                                                 @Param("isVegetarian") Boolean isVegetarian);
 
+    void deleteAllByCategoryId(Long categoryId);
+
+    Long countAllByRestaurant(Restaurant restaurant);
 }

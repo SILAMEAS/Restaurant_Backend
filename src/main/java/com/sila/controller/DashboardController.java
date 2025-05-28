@@ -2,6 +2,7 @@ package com.sila.controller;
 
 import com.sila.config.context.UserContext;
 import com.sila.repository.CategoryRepository;
+import com.sila.service.FoodService;
 import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import com.sila.util.annotation.PreAuthorization;
@@ -25,15 +26,19 @@ public class DashboardController {
     final UserService userService;
     final CategoryRepository categoryRepository;
     final RestaurantService restaurantService;
+    private final FoodService foodService;
 
     @PreAuthorization({ROLE.OWNER,ROLE.ADMIN})
     @GetMapping
-    public ResponseEntity<Object> getAdminDashboard() {
+    public ResponseEntity<Object> getAdminDashboard() throws Exception {
         Map<String, Object> res = new HashMap<>();
         if(UserContext.getUser().getRole().equals(ROLE.OWNER)){
-            res.put("total_users",userService.allHaveBeenOrder( restaurantService.getByUserLogin().getId()));
+            var restaurantId= restaurantService.getByUserLogin().getId();
+            res.put("total_users",userService.allHaveBeenOrder( restaurantId));
+            res.put("total_foods", foodService.all(restaurantId));
         }else {
             res.put("total_users",userService.all());
+            res.put("total_foods", foodService.all());
         }
         res.put("total_orders", 0);
         res.put("total_categories",categoryRepository.count());

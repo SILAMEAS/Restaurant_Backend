@@ -28,6 +28,10 @@ public interface FoodService {
 
     EntityResponseHandler<FoodResponse> gets(PaginationRequest request);
 
+    Long all();
+
+    Long all(Long restaurantId) throws Exception;
+
     EntityResponseHandler<FoodResponse> getsByResId(Long restaurantId, Pageable pageable, SearchRequest searchReq, String filterBy);
 
 }
