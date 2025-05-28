@@ -120,7 +120,21 @@ public class RestaurantImp implements RestaurantService {
             throw new AccessDeniedException("You are not the owner of this restaurant.");
         }
 
-        updateRestaurantImages(restaurant,updateRestaurant.getImages());
+        cloudinaryService.updateEntityImages(
+                restaurant,
+                updateRestaurant.getImages(),
+                Restaurant::getImages,
+                Restaurant::setImages,
+                (url, publicId) -> {
+                    ImageRestaurant image = new ImageRestaurant();
+                    image.setUrl(url);
+                    image.setPublicId(publicId);
+                    return image;
+                },
+                ImageRestaurant::setRestaurant,
+                ImageRestaurant::getPublicId
+        );
+
 
         Utils.setIfNotNull(updateRestaurant.getName(), restaurant::setName);
         Utils.setIfNotNull(updateRestaurant.getDescription(), restaurant::setDescription);
@@ -140,30 +154,7 @@ public class RestaurantImp implements RestaurantService {
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return mapToRestaurantResponse(savedRestaurant);
     }
-    private void updateRestaurantImages(Restaurant restaurant, List<MultipartFile> images) {
-        if (!CollectionUtils.isEmpty(images)) {
-            List<ImageRestaurant> uploadedImages =cloudinaryService.uploadImagesToCloudinary(
-                    images,
-                    restaurant,
-                    (url, publicId) -> {
-                        ImageRestaurant image = new ImageRestaurant();
-                        image.setUrl(url);
-                        image.setPublicId(publicId);
-                        return image;
-                    },
-                    ImageRestaurant::setRestaurant
-            );
-            if (!CollectionUtils.isEmpty(uploadedImages)) {
-                if (restaurant.getImages() == null) {
-                    restaurant.setImages(new ArrayList<>());
-                } else {
-                    cloudinaryService.deleteImages(restaurant.getImages().stream().map(ImageRestaurant::getPublicId).toList());
-                    restaurant.getImages().clear(); // Clear the existing mutable list
-                }
-                restaurant.getImages().addAll(uploadedImages); // Add new items
-            }
-        }
-    }
+
     @Override
     @Transactional
     public MessageResponse delete(Long id) throws Exception {

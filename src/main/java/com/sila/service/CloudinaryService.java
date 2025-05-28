@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @Service
 public interface CloudinaryService {
@@ -31,6 +32,16 @@ public interface CloudinaryService {
             T parent,
             BiFunction<String, String, I> imageFactory, // (url, publicId) -> new Image
             BiConsumer<I, T> setParent // (image, parent) -> image.setParent(parent)
+    );
+
+    <T, I> void updateEntityImages(
+            T entity,
+            List<MultipartFile> images,
+            Function<T, List<I>> getImages,
+            BiConsumer<T, List<I>> setImages,
+            BiFunction<String, String, I> imageCreator,
+            BiConsumer<I, T> setEntityRef,
+            Function<I, String> getPublicId
     );
 
 }

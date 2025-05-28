@@ -15,14 +15,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -148,5 +151,42 @@ public class CloudinaryImp implements CloudinaryService {
             setParent.accept(image, parent);
             return image;
         }).toList();
+    }
+
+    @Override
+    public <T, I> void updateEntityImages(
+            T entity,
+            List<MultipartFile> images,
+            Function<T, List<I>> getImages,
+            BiConsumer<T, List<I>> setImages,
+            BiFunction<String, String, I> imageCreator,
+            BiConsumer<I, T> setEntityRef,
+            Function<I, String> getPublicId
+    ) {
+        if (!CollectionUtils.isEmpty(images)) {
+            List<I> uploadedImages = uploadImagesToCloudinary(
+                    images,
+                    entity,
+                    (url, publicId) -> {
+                        I image = imageCreator.apply(url, publicId);
+                        setEntityRef.accept(image, entity);
+                        return image;
+                    },
+                    setEntityRef
+            );
+
+            if (!CollectionUtils.isEmpty(uploadedImages)) {
+                List<I> existingImages = getImages.apply(entity);
+                if (existingImages == null) {
+                    setImages.accept(entity, new ArrayList<>());
+                } else {
+                    deleteImages(existingImages.stream()
+                            .map(getPublicId)
+                            .toList());
+                    existingImages.clear();
+                }
+                getImages.apply(entity).addAll(uploadedImages);
+            }
+        }
     }
 }
