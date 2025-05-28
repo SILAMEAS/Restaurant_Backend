@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @Service
@@ -115,36 +117,9 @@ public class CloudinaryImp implements CloudinaryService {
                 logger.error(errorMessage, e);
                 return "❌ Failed: " + publicId + " - " + errorMessage;
             }
-        }).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ImageFood> uploadFoodImageToCloudinary(List<MultipartFile> imageFiles, Food food) {
-        return imageFiles.stream().map(file -> {
-            Map<String, String> uploadResult = uploadFile(file);
-            String imageUrl = uploadResult.get("secureUrl");
-            String publicId = uploadResult.get("publicId");
-            ImageFood image = new ImageFood();
-            image.setUrl(imageUrl);
-            image.setPublicId(publicId);
-            image.setFood(food);
-            return image;
         }).toList();
     }
 
-    @Override
-    public List<ImageRestaurant> uploadRestaurantImageToCloudinary(List<MultipartFile> imageFiles, Restaurant restaurant) {
-        return imageFiles.stream().map(file -> {
-            Map<String, String> uploadResult = uploadFile(file);
-            String imageUrl = uploadResult.get("secureUrl");
-            String publicId = uploadResult.get("publicId");
-            var image = new ImageRestaurant();
-            image.setUrl(imageUrl);
-            image.setRestaurant(restaurant);
-            image.setPublicId(publicId);
-            return image;
-        }).toList();
-    }
 
     public String getBackgroundRemovedImage(String publicId) {
         try {
@@ -160,5 +135,18 @@ public class CloudinaryImp implements CloudinaryService {
             logger.error(errorMessage, e);
             throw new RuntimeException(errorMessage, e);
         }
+    }
+
+    @Override
+    public <T, I> List<I> uploadImagesToCloudinary(List<MultipartFile> imageFiles, T parent, BiFunction<String, String, I> imageFactory, BiConsumer<I, T> setParent) {
+        return imageFiles.stream().map(file -> {
+            Map<String, String> uploadResult = uploadFile(file);
+            String imageUrl = uploadResult.get("secureUrl");
+            String publicId = uploadResult.get("publicId");
+
+            I image = imageFactory.apply(imageUrl, publicId);
+            setParent.accept(image, parent);
+            return image;
+        }).toList();
     }
 }

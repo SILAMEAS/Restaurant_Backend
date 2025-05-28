@@ -35,9 +35,6 @@ public class EntityResponseHandler<T> {
                 page.hasNext());
     }
 
-    public EntityResponseHandler(List<T> list) {
-        this(list, 0, 0, 0, list.size(), false);
-    }
 
     public EntityResponseHandler(
             List<T> contents, int page, int pageSize, int totalPages, long total, boolean hasNext) {

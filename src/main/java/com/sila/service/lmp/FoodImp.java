@@ -11,6 +11,7 @@ import com.sila.model.Category;
 import com.sila.model.Food;
 import com.sila.model.Restaurant;
 import com.sila.model.image.ImageFood;
+import com.sila.model.image.ImageRestaurant;
 import com.sila.repository.CategoryRepository;
 import com.sila.repository.FoodRepository;
 import com.sila.repository.OrderItemRepository;
@@ -50,7 +51,12 @@ public class FoodImp implements FoodService {
     public Food create(FoodRequest foodRequest, Category category, Restaurant restaurant, List<MultipartFile> imageFiles) {
         Food food = Food.builder().name(foodRequest.getName()).description(foodRequest.getDescription()).price(foodRequest.getPrice()).available(foodRequest.isAvailable()).isVegetarian(foodRequest.isVegetarian()).isSeasonal(foodRequest.isSeasonal()).creationDate(new Date()).category(category).restaurant(restaurant).build();
 
-        List<ImageFood> imageEntities = cloudinaryService.uploadFoodImageToCloudinary(imageFiles, food);
+        List<ImageFood> imageEntities = cloudinaryService.uploadImagesToCloudinary(imageFiles,food,(url,publicId)->{
+            ImageFood image = new ImageFood();
+            image.setUrl(url);
+            image.setPublicId(publicId);
+            return image;
+        },ImageFood::setFood);
 
         food.setImages(imageEntities);
         Food savedFood = foodRepository.save(food);
@@ -84,11 +90,17 @@ public class FoodImp implements FoodService {
     }
     private void updateFoodImages(Food food, List<MultipartFile> images) {
         if (!CollectionUtils.isEmpty(images)) {
-            List<ImageFood> uploadedImages = cloudinaryService.uploadFoodImageToCloudinary(images, food);
+            List<ImageFood> uploadedImages = cloudinaryService.uploadImagesToCloudinary(images,food,(url,publicId)->{
+                ImageFood image = new ImageFood();
+                image.setUrl(url);
+                image.setPublicId(publicId);
+                return image;
+            },ImageFood::setFood);
             if (!CollectionUtils.isEmpty(uploadedImages)) {
                 if (food.getImages() == null) {
                     food.setImages(new ArrayList<>());
                 } else {
+                    cloudinaryService.deleteImages(food.getImages().stream().map(ImageFood::getPublicId).toList());
                     food.getImages().clear(); // Clear the existing mutable list
                 }
                 food.getImages().addAll(uploadedImages); // Add new items

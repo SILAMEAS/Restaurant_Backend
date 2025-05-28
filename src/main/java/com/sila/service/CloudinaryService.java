@@ -10,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 @Service
 public interface CloudinaryService {
@@ -22,10 +24,13 @@ public interface CloudinaryService {
     Map<String, String> uploadFileRemoveBG(MultipartFile file);
 
     String deleteImage(String publicId) throws IOException;
-
-    List<ImageFood> uploadFoodImageToCloudinary(List<MultipartFile> imageFiles, Food food);
-
-    List<ImageRestaurant> uploadRestaurantImageToCloudinary(List<MultipartFile> imageFiles, Restaurant restaurant);
     String getBackgroundRemovedImage(String publicId);
+
+    <T, I> List<I> uploadImagesToCloudinary(
+            List<MultipartFile> imageFiles,
+            T parent,
+            BiFunction<String, String, I> imageFactory, // (url, publicId) -> new Image
+            BiConsumer<I, T> setParent // (image, parent) -> image.setParent(parent)
+    );
 
 }

@@ -55,7 +55,7 @@ public class UserController {
     }
     @PreAuthorization({ROLE.OWNER})
     @GetMapping("/{restaurantId}/user-orders")
-    public ResponseEntity<EntityResponseHandler<UserResponse>> listUsersHasOrderInRestaurant(
+    public ResponseEntity<EntityResponseHandler<UserResponse.UserResponseCustom>> listUsersHasOrderInRestaurant(
             @PathVariable Long restaurantId,
             @ModelAttribute PaginationRequest request
     )  {

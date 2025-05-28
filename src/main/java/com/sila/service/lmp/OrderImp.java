@@ -1,6 +1,8 @@
 package com.sila.service.lmp;
 
 import com.sila.config.context.UserContext;
+import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.response.OrderItemResponse;
 import com.sila.dto.response.OrderResponse;
 import com.sila.dto.response.RestaurantResponse;
@@ -16,9 +18,11 @@ import com.sila.repository.CartRepository;
 import com.sila.repository.OrderItemRepository;
 import com.sila.repository.OrderRepository;
 import com.sila.service.OrderService;
+import com.sila.util.PageableUtil;
 import com.sila.util.enums.PAYMENT_STATUS;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +38,10 @@ public class OrderImp implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final ModelMapper modelMapper;
     @Override
-    public List<OrderResponse> getAll() {
-        return orderRepository.findAll().stream()
-                .map(this::convertToOrderResponse)
-                .toList();
+    public EntityResponseHandler<OrderResponse> getAll(PaginationRequest request) {
+        Pageable pageable = PageableUtil.fromRequest(request);
+        return  new EntityResponseHandler<>(orderRepository.findAll(pageable)
+                .map(this::convertToOrderResponse));
     }
 
     @Override
@@ -96,6 +100,16 @@ public class OrderImp implements OrderService {
         // Convert to OrderResponse
         return convertToOrderResponse(order);
     }
+
+    @Override
+    public String deletePlaceOrder(Long orderId) {
+        var order = orderRepository.findById(orderId).orElseThrow(
+                ()-> new BadRequestException("Order not found")
+        );
+        orderRepository.deleteById(order.getId());
+        return "Order has been delete";
+    }
+
     private OrderResponse convertToOrderResponse(Order order) {
         OrderResponse response = new OrderResponse();
         response.setId(order.getId());

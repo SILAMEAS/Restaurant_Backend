@@ -58,9 +58,9 @@ public class UserServiceImp implements UserService {
         return new EntityResponseHandler<>(userRepository.findAll(spec, pageable).map(re -> this.modelMapper.map(re, UserResponse.class)));
     }
     @Override
-    public EntityResponseHandler<UserResponse> getUsersWhoOrderedFromRestaurant(Long restaurantId, Pageable pageable) {
+    public EntityResponseHandler<UserResponse.UserResponseCustom> getUsersWhoOrderedFromRestaurant(Long restaurantId, Pageable pageable) {
         Specification<User> spec = UserSpecification.hasOrderedFromRestaurant(restaurantId);
-        return new EntityResponseHandler<>(userRepository.findAll(spec, pageable).map(re -> this.modelMapper.map(re, UserResponse.class)));
+        return new EntityResponseHandler<>(userRepository.findAll(spec, pageable).map(UserResponse::toUserResponseCustom));
     }
 
     @Override

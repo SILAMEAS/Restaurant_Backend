@@ -16,7 +16,9 @@ import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
 import com.sila.model.Address;
 import com.sila.model.Favorite;
+import com.sila.model.Food;
 import com.sila.model.Restaurant;
+import com.sila.model.image.ImageFood;
 import com.sila.model.image.ImageRestaurant;
 import com.sila.repository.AddressRepository;
 import com.sila.repository.CategoryRepository;
@@ -36,8 +38,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -88,7 +93,17 @@ public class RestaurantImp implements RestaurantService {
                 .open(restaurantReq.getOpen()) // don't forget this!
                 .build();
 
-        var imageEntities = cloudinaryService.uploadRestaurantImageToCloudinary(restaurantReq.getImages(), restaurant);
+        var imageEntities =cloudinaryService.uploadImagesToCloudinary(
+                restaurantReq.getImages(),
+                restaurant,
+                (url, publicId) -> {
+                    ImageRestaurant image = new ImageRestaurant();
+                    image.setUrl(url);
+                    image.setPublicId(publicId);
+                    return image;
+                },
+                ImageRestaurant::setRestaurant
+        );
         restaurant.setImages(imageEntities);
 
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
@@ -105,10 +120,7 @@ public class RestaurantImp implements RestaurantService {
             throw new AccessDeniedException("You are not the owner of this restaurant.");
         }
 
-        if (updateRestaurant.getImages() != null) {
-            var imageEntities = cloudinaryService.uploadRestaurantImageToCloudinary(updateRestaurant.getImages(), restaurant);
-            imageEntities.forEach(restaurant::addImage);
-        }
+        updateRestaurantImages(restaurant,updateRestaurant.getImages());
 
         Utils.setIfNotNull(updateRestaurant.getName(), restaurant::setName);
         Utils.setIfNotNull(updateRestaurant.getDescription(), restaurant::setDescription);
@@ -128,7 +140,30 @@ public class RestaurantImp implements RestaurantService {
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return mapToRestaurantResponse(savedRestaurant);
     }
-
+    private void updateRestaurantImages(Restaurant restaurant, List<MultipartFile> images) {
+        if (!CollectionUtils.isEmpty(images)) {
+            List<ImageRestaurant> uploadedImages =cloudinaryService.uploadImagesToCloudinary(
+                    images,
+                    restaurant,
+                    (url, publicId) -> {
+                        ImageRestaurant image = new ImageRestaurant();
+                        image.setUrl(url);
+                        image.setPublicId(publicId);
+                        return image;
+                    },
+                    ImageRestaurant::setRestaurant
+            );
+            if (!CollectionUtils.isEmpty(uploadedImages)) {
+                if (restaurant.getImages() == null) {
+                    restaurant.setImages(new ArrayList<>());
+                } else {
+                    cloudinaryService.deleteImages(restaurant.getImages().stream().map(ImageRestaurant::getPublicId).toList());
+                    restaurant.getImages().clear(); // Clear the existing mutable list
+                }
+                restaurant.getImages().addAll(uploadedImages); // Add new items
+            }
+        }
+    }
     @Override
     @Transactional
     public MessageResponse delete(Long id) throws Exception {
