@@ -37,4 +37,6 @@ public class RestaurantRequest {
 
     @NotNull
     private Boolean open; // use Boolean to allow null-check validation
+
+    private String ownerName;
 }

@@ -16,9 +16,7 @@ import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
 import com.sila.model.Address;
 import com.sila.model.Favorite;
-import com.sila.model.Food;
 import com.sila.model.Restaurant;
-import com.sila.model.image.ImageFood;
 import com.sila.model.image.ImageRestaurant;
 import com.sila.repository.AddressRepository;
 import com.sila.repository.CategoryRepository;
@@ -38,11 +36,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -135,6 +130,7 @@ public class RestaurantImp implements RestaurantService {
                 ImageRestaurant::getPublicId
         );
 
+        Utils.setIfNotNull(updateRestaurant.getOwnerName(), s -> restaurant.getOwner().setFullName(s));
 
         Utils.setIfNotNull(updateRestaurant.getName(), restaurant::setName);
         Utils.setIfNotNull(updateRestaurant.getDescription(), restaurant::setDescription);
@@ -151,7 +147,7 @@ public class RestaurantImp implements RestaurantService {
             restaurant.setAddress(managedAddress);
         }
 
-        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+            Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return mapToRestaurantResponse(savedRestaurant);
     }
 

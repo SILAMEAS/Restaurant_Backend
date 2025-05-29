@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -36,6 +37,7 @@ public class UserResponse implements Serializable {
         private String email;
         private ROLE role;
         private int orders;
+        private LocalDateTime createdAt;
     }
 
     public static UserResponseCustom toUserResponseCustom(User user) {
@@ -46,6 +48,7 @@ public class UserResponse implements Serializable {
                 .profile(user.getProfile())
                 .fullName(user.getFullName())
                 .role(user.getRole())
+                .createdAt(user.getCreatedAt())
                 .build();
     }
 }
