@@ -29,4 +29,6 @@ public interface RestaurantService {
     EntityResponseHandler<RestaurantResponse> search(Pageable pageable, SearchRequest searchReq);
 
     List<UserResponse> getUsersWhoOrderedFromRestaurant(Long restaurantId);
+
+    Long all();
 }

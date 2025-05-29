@@ -39,6 +39,8 @@ public class DashboardController {
         }else {
             res.put("total_users",userService.all());
             res.put("total_foods", foodService.all());
+            res.put("total_restaurants", restaurantService.all());
+
         }
         res.put("total_orders", 0);
         res.put("total_categories",categoryRepository.count());

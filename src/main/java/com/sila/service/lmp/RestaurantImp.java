@@ -200,6 +200,11 @@ public class RestaurantImp implements RestaurantService {
     }
 
     @Override
+    public Long all() {
+        return restaurantRepository.count();
+    }
+
+    @Override
     public List<FavoriteResponse> addFav(Long restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new RuntimeException("Restaurant not found"));
         Favorite fav = Favorite.builder().name(restaurant.getName()).description(restaurant.getDescription()).restaurant(restaurant).owner(UserContext.getUser()).build();
