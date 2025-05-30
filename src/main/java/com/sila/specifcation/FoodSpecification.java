@@ -54,16 +54,23 @@ public final class FoodSpecification {
         Specification<Food> spec = Specification.where(null);
         spec = addSearchSpecification(spec, searchReq);
         spec = addFilterSpecification(spec, filterBy);
-        spec = addSessionalSpecification(spec, searchReq);
-        spec = addVegetarianSpecification(spec, searchReq);
+
+        if(Objects.equals(filterBy, "sessional")){
+            spec = addSessionalSpecification(spec, true);
+        }
+        if(Objects.equals(filterBy, "vegeterain")){
+            spec = addVegetarianSpecification(spec, true);
+        }
+//        spec = addSessionalSpecification(spec, searchReq);
+//        spec = addVegetarianSpecification(spec, searchReq);
         return spec;
     }
 
     public static Specification<Food> filterFoodByRestaurantId(Long restaurantId, SearchRequest searchReq, String filterBy) {
         Specification<Food> spec = Specification.where(null);
         spec= addFilterSpecification(spec,filterBy);
-        spec = addSessionalSpecification(spec, searchReq);
-        spec = addVegetarianSpecification(spec, searchReq);
+        spec = addSessionalSpecification(spec, Objects.equals(filterBy, "sessional"));
+        spec = addVegetarianSpecification(spec,  Objects.equals(filterBy, "vegeterain"));
         spec = addRestaurantIdSpecification(spec,restaurantId);
         return spec;
     }
@@ -90,15 +97,15 @@ public final class FoodSpecification {
         return spec;
     }
 
-    private static Specification<Food> addSessionalSpecification(Specification<Food> spec, SearchRequest searchReq) {
-        if (Boolean.TRUE.equals(searchReq.getSessional())) {
+    private static Specification<Food> addSessionalSpecification(Specification<Food> spec,Boolean sessional) {
+        if (Boolean.TRUE.equals(sessional)) {
             return spec.and(FoodSpecification.bySession(true));
         }
         return spec;
     }
 
-    private static Specification<Food> addVegetarianSpecification(Specification<Food> spec, SearchRequest searchReq) {
-        if (Boolean.TRUE.equals(searchReq.getVegeterain())) {
+    private static Specification<Food> addVegetarianSpecification(Specification<Food> spec,Boolean vegeterain) {
+        if (Boolean.TRUE.equals(vegeterain)) {
             return spec.and(FoodSpecification.byVegetarian(true));
         }
         return spec;

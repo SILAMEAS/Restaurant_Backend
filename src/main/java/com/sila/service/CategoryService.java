@@ -14,7 +14,7 @@ public interface CategoryService {
 
     List<Category> getsByResId(Long restaurantId);
 
-    Category update(String name, Long categoryId);
+    Category update(CategoryRequest request, Long categoryId);
 
     Category getById(Long categoryId);
 

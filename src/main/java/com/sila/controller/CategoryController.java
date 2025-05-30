@@ -2,6 +2,7 @@ package com.sila.controller;
 
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.method.OnCreate;
+import com.sila.dto.method.OnUpdate;
 import com.sila.dto.request.CategoryRequest;
 import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.response.CategoryResponse;
@@ -56,8 +57,8 @@ public class CategoryController {
     }
     @PreAuthorization({ROLE.ADMIN, ROLE.OWNER})
     @PutMapping("{categoryId}")
-    public ResponseEntity<Category> editCategory(@RequestBody CategoryRequest categoryReq, @PathVariable Long categoryId) {
-        return new ResponseEntity<>(categoryService.update(categoryReq.getName(), categoryId), HttpStatus.CREATED);
+    public ResponseEntity<Category> editCategory(@Validated(OnUpdate.class) @ModelAttribute  CategoryRequest request, @PathVariable Long categoryId) {
+        return new ResponseEntity<>(categoryService.update(request, categoryId), HttpStatus.CREATED);
     }
     @PreAuthorization({ROLE.ADMIN, ROLE.OWNER})
     @DeleteMapping("{categoryId}")

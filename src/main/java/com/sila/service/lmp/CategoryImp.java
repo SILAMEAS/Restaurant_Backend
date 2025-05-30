@@ -18,6 +18,8 @@ import com.sila.service.CategoryService;
 import com.sila.service.CloudinaryService;
 import com.sila.service.FoodService;
 import com.sila.util.PageableUtil;
+import com.sila.util.Utils;
+import com.sila.util.enums.KeyImageProperty;
 import com.sila.util.enums.ROLE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,14 +60,20 @@ public class CategoryImp implements CategoryService {
     }
 
     @Override
-    public Category update(String name, Long categoryId) {
+    public Category update(CategoryRequest request, Long categoryId) {
         if (UserContext.getUser().getRole().equals(ROLE.USER)) {
             throw new AccessDeniedException("Customer do not have permission to change category");
         }
         Category category = getById(categoryId);
-        if (!name.isEmpty()) {
-            category.setName(name);
+        if(request.getImage()!=null){
+            var image = cloudinaryService.uploadFile(request.getImage());
+            Utils.setIfNotNull(image.get(KeyImageProperty.url.toString()),category::setUrl);
+            Utils.setIfNotNull(image.get(KeyImageProperty.publicId.toString()),category::setPublicId);
         }
+
+
+        Utils.setIfNotNull(request.getName(),category::setName);
+
         return categoryRepository.save(category);
     }
 
@@ -80,7 +88,8 @@ public class CategoryImp implements CategoryService {
         var category =getById(categoryId);
         var foods = foodRepository.findAllByCategoryId(category.getId());
         if (!foods.isEmpty()) {
-            foodService.deleteByCategoryId(categoryId);
+            throw new BadRequestException("Please remove food from category before delete category");
+//            foodService.deleteByCategoryId(categoryId);
         }
         categoryRepository.deleteById(categoryId);
         MessageResponse messageResponse = new MessageResponse();

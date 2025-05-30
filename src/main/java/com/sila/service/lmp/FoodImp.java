@@ -106,9 +106,13 @@ public class FoodImp implements FoodService {
 
     @Override
     public void delete(Long id) {
-        Food foodByID = getById(id);
-        foodByID.setRestaurant(null);
-        foodRepository.deleteById(id);
+        Food food = getById(id);
+        var orderItems = orderItemRepository.findAllByFood(food);
+        if(orderItems.isEmpty()){
+            food.setRestaurant(null);
+            foodRepository.deleteById(id);
+        }
+        throw new BadRequestException("Food has been order! finished order before delete");
     }
 
     @Override
