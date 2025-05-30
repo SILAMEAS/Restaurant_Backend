@@ -12,6 +12,10 @@ public class PaginationRequest {
     private String sortBy = PaginationDefaults.SORT_BY;
     private String sortOrder = PaginationDefaults.SORT_ORDER;
 
-    private Boolean vegetarian=false; // Optional Boolean instead of primitive boolean
-    private Boolean seasonal=false;   // Optional Boolean instead of primitive boolean
+    private Double price;         // Add this
+
+    private Double minPrice;  // new field
+    private Double maxPrice;  // new field
+
+    private String foodType;      // And this
 }

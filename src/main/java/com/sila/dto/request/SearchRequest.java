@@ -11,14 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SearchRequest {
     private String search;
-    private Boolean sessional;
-    private Boolean vegeterain;
 
     public static SearchRequest from(PaginationRequest request) {
         return new SearchRequest(
-                request.getSearch(),
-                request.getSeasonal(),
-                request.getVegetarian()
+                request.getSearch()
         );
     }
 

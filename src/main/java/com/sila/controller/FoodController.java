@@ -79,10 +79,9 @@ public class FoodController {
     }
 
     @GetMapping("restaurant/{restaurantId}")
-    public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoodByRestaurantId( @RequestParam(required = false) boolean vegetarian, @RequestParam(required = false) boolean seasanal, @RequestParam(required = false) String filterBy, @RequestParam(required = false) String search, @RequestParam(defaultValue = PaginationDefaults.PAGE_NO) Integer pageNo, @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize, @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy, @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder, @PathVariable Long restaurantId) throws Exception {
+    public ResponseEntity<EntityResponseHandler<FoodResponse>> listFoodByRestaurantId(@ModelAttribute PaginationRequest request, @PathVariable Long restaurantId) throws Exception {
 
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()), sortBy));
-        var foodResEntityResponseHandler = foodService.getsByResId(restaurantId, pageable, new SearchRequest(search, seasanal, vegetarian), filterBy);
+        var foodResEntityResponseHandler = foodService.getsByResId(restaurantId, request);
         return new ResponseEntity<>(foodResEntityResponseHandler, HttpStatus.OK);
     }
     @PreAuthorization({ROLE.OWNER,ROLE.ADMIN})

@@ -2,7 +2,6 @@ package com.sila.specifcation;
 
 import com.sila.dto.request.SearchRequest;
 import com.sila.model.Address_;
-import com.sila.model.Food_;
 import com.sila.model.Restaurant;
 import com.sila.model.Restaurant_;
 import lombok.AccessLevel;
@@ -43,17 +42,7 @@ public class RestaurantSpecification {
 
     }
 
-    public static Specification<Restaurant> bySession(Boolean sessional) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Restaurant_.FOODS).get(
-                Food_.IS_SEASONAL), sessional);
 
-    }
-
-    public static Specification<Restaurant> byVegetarian(Boolean vegetarian) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Restaurant_.FOODS).get(
-                Food_.IS_VEGETARIAN), vegetarian);
-
-    }
 
     public static Specification<Restaurant> likeCountry(String country) {
         if (country == null) {

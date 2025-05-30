@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -34,6 +35,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+import static com.sila.specifcation.FoodSpecification.filterByFoodType;
+import static com.sila.specifcation.FoodSpecification.filterByPrice;
+import static com.sila.specifcation.FoodSpecification.filterByPriceRange;
+import static com.sila.specifcation.FoodSpecification.filterCategory;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +56,7 @@ public class FoodImp implements FoodService {
 
     @Override
     public Food create(FoodRequest foodRequest, Category category, Restaurant restaurant, List<MultipartFile> imageFiles) {
-        Food food = Food.builder().name(foodRequest.getName()).description(foodRequest.getDescription()).price(foodRequest.getPrice()).available(foodRequest.isAvailable()).isVegetarian(foodRequest.isVegetarian()).isSeasonal(foodRequest.isSeasonal()).creationDate(new Date()).category(category).restaurant(restaurant).build();
+        Food food = Food.builder().name(foodRequest.getName()).description(foodRequest.getDescription()).price(foodRequest.getPrice()).available(foodRequest.isAvailable()).foodtype(foodRequest.getFoodType()).creationDate(new Date()).category(category).restaurant(restaurant).build();
 
         List<ImageFood> imageEntities = cloudinaryService.uploadImagesToCloudinary(imageFiles,food,(url,publicId)->{
             ImageFood image = new ImageFood();
@@ -79,8 +86,7 @@ public class FoodImp implements FoodService {
         Utils.setIfNotNull(category, food::setCategory);
         Utils.setIfNotNull(foodReq.getPrice(), food::setPrice);
         Utils.setIfNotNull(foodReq.getDescription(), food::setDescription);
-        Utils.setIfNotNull(foodReq.isVegetarian(), food::setVegetarian);
-        Utils.setIfNotNull(foodReq.isSeasonal(), food::setSeasonal);
+        Utils.setIfNotNull(foodReq.getFoodType(), food::setFoodtype);
         Utils.setIfNotNull(foodReq.isAvailable(), food::setAvailable);
 
         cloudinaryService.updateEntityImages(
@@ -140,10 +146,22 @@ public class FoodImp implements FoodService {
 
     @Override
     public EntityResponseHandler<FoodResponse> gets(PaginationRequest request) {
-        SearchRequest searchRequest = SearchRequest.from(request);
         Pageable pageable = PageableUtil.fromRequest(request);
+        Specification<Food> spec = Specification.where(null);
+        if (Objects.nonNull(request.getFilterBy())) {
+            spec = spec.and(filterCategory(request.getFilterBy()));
+        }
+        if (Objects.nonNull(request.getPrice())) {
+            spec = spec.and(filterByPrice(request.getPrice()));
+        }
+        if (Objects.nonNull(request.getFoodType())) {
+            spec = spec.and(filterByFoodType(request.getFoodType()));
+        }
+        if (request.getMinPrice() != null || request.getMaxPrice() != null) {
+            spec = spec.and(filterByPriceRange(request.getMinPrice(), request.getMaxPrice()));
+        }
         Page<FoodResponse> page = foodRepository
-                .findAll(FoodSpecification.filterFood(searchRequest, request.getFilterBy()), pageable)
+                .findAll(spec, pageable)
                 .map(FoodResponse::toResponse); // keeps pagination metadata
         return new EntityResponseHandler<>(page);
     }
@@ -160,8 +178,9 @@ public class FoodImp implements FoodService {
     }
 
     @Override
-    public EntityResponseHandler<FoodResponse> getsByResId(Long restaurantId, Pageable pageable, SearchRequest searchReq, String filterBy) {
-        var foodPage = foodRepository.findAll(FoodSpecification.filterFoodByRestaurantId(restaurantId, searchReq, filterBy), pageable);
+    public EntityResponseHandler<FoodResponse> getsByResId(Long restaurantId,  PaginationRequest request) {
+        Pageable pageable = PageableUtil.fromRequest(request);
+        var foodPage = foodRepository.findAll(FoodSpecification.filterFoodByRestaurantId(restaurantId, request.getFilterBy()), pageable);
         return new EntityResponseHandler<>(foodPage.map(fs -> this.modelMapper.map(fs, FoodResponse.class)));
     }
 

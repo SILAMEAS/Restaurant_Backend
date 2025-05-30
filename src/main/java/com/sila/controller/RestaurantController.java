@@ -51,14 +51,10 @@ public class RestaurantController {
             @RequestParam(defaultValue = PaginationDefaults.PAGE_SIZE) Integer pageSize,
             @RequestParam(defaultValue = PaginationDefaults.SORT_BY) String sortBy,
             @RequestParam(defaultValue = PaginationDefaults.SORT_ORDER) String sortOrder,
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false,defaultValue = "true") Boolean sessional,
-            @RequestParam(required = false,defaultValue = "true") Boolean vegetarian) {
+            @RequestParam(required = false) String search) {
         Pageable pageable = PageRequest.of(pageNo-1, pageSize,Sort.by(Direction.valueOf(sortOrder.toUpperCase()),sortBy));
         SearchRequest searchReq=new SearchRequest();
         searchReq.setSearch(search);
-        searchReq.setSessional(sessional);
-        searchReq.setVegeterain(vegetarian);
         return new ResponseEntity<>(restaurantService.search(pageable,searchReq),HttpStatus.OK);
     }
     @GetMapping("/{id}")

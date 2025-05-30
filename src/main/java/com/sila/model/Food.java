@@ -2,8 +2,11 @@ package com.sila.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sila.model.image.ImageFood;
+import com.sila.util.enums.FoodType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,8 +47,8 @@ public class Food {
     private boolean available;
     @ManyToOne
     private Restaurant restaurant;
-    private boolean isVegetarian;
-    private boolean isSeasonal;
+    @Enumerated(EnumType.STRING)
+    private FoodType foodtype;
     private Date creationDate;
 
 }

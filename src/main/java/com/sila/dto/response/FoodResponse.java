@@ -2,6 +2,7 @@ package com.sila.dto.response;
 
 import com.sila.model.Food;
 import com.sila.model.image.ImageFood;
+import com.sila.util.enums.FoodType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,8 +27,7 @@ public class FoodResponse implements Serializable {
     private Long restaurantId;
     private String restaurantName;
     private transient CategoryDTO category;
-    private boolean isVegetarian;
-    private boolean isSeasonal;
+    private FoodType foodType;
     private boolean available;
 
 
@@ -54,8 +54,7 @@ public class FoodResponse implements Serializable {
                         .toList())
                 .available(food.isAvailable())
                 .restaurantId(food.getRestaurant().getId()) // optional simplification
-                .isVegetarian(food.isVegetarian())
-                .isSeasonal(food.isSeasonal())
+                .foodType(food.getFoodtype())
                 .build();
     }
 }

@@ -2,6 +2,7 @@ package com.sila.dto.request;
 
 import com.sila.dto.method.OnCreate;
 import com.sila.model.Category;
+import com.sila.util.enums.FoodType;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +19,6 @@ public class FoodRequest {
     private List<MultipartFile> images;
     private Long restaurantId;
     private Long categoryId;
-    private boolean vegetarian;
-    private boolean seasonal;
+    private FoodType foodType;
     private boolean available;
 }

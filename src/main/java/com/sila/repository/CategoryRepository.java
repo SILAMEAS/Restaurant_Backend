@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     public List<Category> findByRestaurantId(Long restaurant_id);
@@ -26,4 +27,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
                                  @Param("restaurantId") Long restaurantId,
                                  Pageable pageable);
 
+    Optional<Category> findByName(String filterBy);
 }

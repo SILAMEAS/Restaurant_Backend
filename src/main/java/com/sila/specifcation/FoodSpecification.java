@@ -30,15 +30,7 @@ public final class FoodSpecification {
 
     }
 
-    public static Specification<Food> bySession(Boolean sessional) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Food_.IS_SEASONAL), sessional);
 
-    }
-
-    public static Specification<Food> byVegetarian(Boolean vegetarian) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Food_.IS_VEGETARIAN), vegetarian);
-
-    }
 
     public static Specification<Food> filterByRestaurantId(Long resId) {
         if (resId == null) {
@@ -50,27 +42,16 @@ public final class FoodSpecification {
     /**
      * ==============================  Specification  ========================================================
      **/
-    public static Specification<Food> filterFood(SearchRequest searchReq, String filterBy) {
+    public static Specification<Food> filterFood(String search, String filterBy) {
         Specification<Food> spec = Specification.where(null);
-        spec = addSearchSpecification(spec, searchReq);
+        spec = addSearchSpecification(spec, search);
         spec = addFilterSpecification(spec, filterBy);
-
-        if(Objects.equals(filterBy, "sessional")){
-            spec = addSessionalSpecification(spec, true);
-        }
-        if(Objects.equals(filterBy, "vegeterain")){
-            spec = addVegetarianSpecification(spec, true);
-        }
-//        spec = addSessionalSpecification(spec, searchReq);
-//        spec = addVegetarianSpecification(spec, searchReq);
         return spec;
     }
 
-    public static Specification<Food> filterFoodByRestaurantId(Long restaurantId, SearchRequest searchReq, String filterBy) {
+    public static Specification<Food> filterFoodByRestaurantId(Long restaurantId, String filterBy) {
         Specification<Food> spec = Specification.where(null);
         spec= addFilterSpecification(spec,filterBy);
-        spec = addSessionalSpecification(spec, Objects.equals(filterBy, "sessional"));
-        spec = addVegetarianSpecification(spec,  Objects.equals(filterBy, "vegeterain"));
         spec = addRestaurantIdSpecification(spec,restaurantId);
         return spec;
     }
@@ -83,9 +64,9 @@ public final class FoodSpecification {
         }
         return spec;
     }
-    private static Specification<Food> addSearchSpecification(Specification<Food> spec, SearchRequest searchReq) {
-        if (Objects.nonNull(searchReq.getSearch())) {
-            return spec.and(FoodSpecification.search(searchReq.getSearch()));
+    private static Specification<Food> addSearchSpecification(Specification<Food> spec, String search) {
+        if (Objects.nonNull(search)) {
+            return spec.and(FoodSpecification.search(search));
         }
         return spec;
     }
@@ -97,19 +78,30 @@ public final class FoodSpecification {
         return spec;
     }
 
-    private static Specification<Food> addSessionalSpecification(Specification<Food> spec,Boolean sessional) {
-        if (Boolean.TRUE.equals(sessional)) {
-            return spec.and(FoodSpecification.bySession(true));
+    public static Specification<Food> filterByPrice(Double price) {
+        if (price == null) {
+            return null;
         }
-        return spec;
+        return (root, query, cb) -> cb.equal(root.get(Food_.PRICE), price);
     }
 
-    private static Specification<Food> addVegetarianSpecification(Specification<Food> spec,Boolean vegeterain) {
-        if (Boolean.TRUE.equals(vegeterain)) {
-            return spec.and(FoodSpecification.byVegetarian(true));
+    public static Specification<Food> filterByFoodType(String foodType) {
+        if (foodType == null) {
+            return null;
         }
-        return spec;
+        return (root, query, cb) -> cb.equal(root.get(Food_.FOODTYPE), foodType);
     }
 
-
+    public static Specification<Food> filterByPriceRange(Double minPrice, Double maxPrice) {
+        return (root, query, cb) -> {
+            if (minPrice != null && maxPrice != null) {
+                return cb.between(root.get(Food_.PRICE), minPrice, maxPrice);
+            } else if (minPrice != null) {
+                return cb.greaterThanOrEqualTo(root.get(Food_.PRICE), minPrice);
+            } else if (maxPrice != null) {
+                return cb.lessThanOrEqualTo(root.get(Food_.PRICE), maxPrice);
+            }
+            return null;
+        };
+    }
 }
