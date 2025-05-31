@@ -7,15 +7,12 @@ import com.sila.util.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "Cart Controller", description = "User operations related to Cart")
 @RestController
@@ -32,17 +29,26 @@ public class CartController {
     }
 
 
-    @GetMapping()
-    public ResponseEntity<CartResponse> addToCart() throws Exception {
-        return new ResponseEntity<>(cartService.getAll(), HttpStatus.OK);
-    }
-
     @PreAuthorization({ROLE.USER})
-    @DeleteMapping("/{id}")
+    @GetMapping()
+    public ResponseEntity<CartResponse> getMyCart() throws Exception {
+        return new ResponseEntity<>(cartService.getAll(),HttpStatus.OK);
+    }
+    @PreAuthorization({ROLE.USER})
+    @DeleteMapping("cartItems/{id}")
     public ResponseEntity<String> deleteCartItem(
             @PathVariable Long id) throws Exception {
 
         cartService.removeItemFromCart(id);
         return ResponseEntity.ok("Item remove from cart");
+    }
+
+    @PreAuthorization({ROLE.USER})
+    @PutMapping("cartItems/{id}")
+    public ResponseEntity<String> updateCartItem(
+            @PathVariable Long id, @RequestParam int quantity ) throws Exception {
+
+        cartService.updateItemFromCart(id,quantity);
+        return ResponseEntity.ok("Item was update in cart");
     }
 }

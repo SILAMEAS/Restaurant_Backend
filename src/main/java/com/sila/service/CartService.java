@@ -9,4 +9,6 @@ public interface CartService {
     void addItemToCart( Long foodId, int quantity) throws Exception;
 
     void removeItemFromCart(Long cartItemId) throws Exception;
+
+    void updateItemFromCart(Long cartItemId,int quantity) throws Exception;
 }

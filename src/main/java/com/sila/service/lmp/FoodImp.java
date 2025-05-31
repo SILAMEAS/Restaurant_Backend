@@ -22,6 +22,7 @@ import com.sila.service.RestaurantService;
 import com.sila.specifcation.FoodSpecification;
 import com.sila.util.PageableUtil;
 import com.sila.util.Utils;
+import com.sila.util.enums.FoodType;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -56,7 +57,7 @@ public class FoodImp implements FoodService {
 
     @Override
     public Food create(FoodRequest foodRequest, Category category, Restaurant restaurant, List<MultipartFile> imageFiles) {
-        Food food = Food.builder().name(foodRequest.getName()).description(foodRequest.getDescription()).price(foodRequest.getPrice()).available(foodRequest.isAvailable()).foodtype(foodRequest.getFoodType()).creationDate(new Date()).category(category).restaurant(restaurant).build();
+        Food food = Food.builder().name(foodRequest.getName()).description(foodRequest.getDescription()).price(foodRequest.getPrice()).available(foodRequest.isAvailable()).foodtype(FoodType.valueOf(foodRequest.getFoodType())).creationDate(new Date()).category(category).restaurant(restaurant).build();
 
         List<ImageFood> imageEntities = cloudinaryService.uploadImagesToCloudinary(imageFiles,food,(url,publicId)->{
             ImageFood image = new ImageFood();
@@ -86,7 +87,7 @@ public class FoodImp implements FoodService {
         Utils.setIfNotNull(category, food::setCategory);
         Utils.setIfNotNull(foodReq.getPrice(), food::setPrice);
         Utils.setIfNotNull(foodReq.getDescription(), food::setDescription);
-        Utils.setIfNotNull(foodReq.getFoodType(), food::setFoodtype);
+        Utils.setIfNotNull(FoodType.valueOf(foodReq.getFoodType()), food::setFoodtype);
         Utils.setIfNotNull(foodReq.isAvailable(), food::setAvailable);
 
         cloudinaryService.updateEntityImages(
@@ -114,11 +115,11 @@ public class FoodImp implements FoodService {
     public void delete(Long id) {
         Food food = getById(id);
         var orderItems = orderItemRepository.findAllByFood(food);
-        if(orderItems.isEmpty()){
-            food.setRestaurant(null);
-            foodRepository.deleteById(id);
+        if(!orderItems.isEmpty()){
+            throw new BadRequestException("Food has been order! finished order before delete");
         }
-        throw new BadRequestException("Food has been order! finished order before delete");
+        food.setRestaurant(null);
+        foodRepository.deleteById(id);
     }
 
     @Override
