@@ -30,5 +30,4 @@ public interface FoodRepository extends JpaRepository<Food, Long>, PagingAndSort
             @Param("filter") String filter,
             Pageable pageable
     );
-    Page<Food> findAllByRestaurantId(Restaurant restaurant,Specification<Food> spec, Pageable pageable);
 }

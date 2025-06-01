@@ -142,9 +142,9 @@ public class FoodImp implements FoodService {
     @Override
     public EntityResponseHandler<FoodResponse> gets(PaginationRequest request) {
         var user = UserContext.getUser();
-        var restaurant = restaurantService.findRestaurantByOwner(user);
         Pageable pageable = PageableUtil.fromRequest(request);
         Specification<Food> spec = Specification.where(null);
+
         if (Objects.nonNull(request.getFilterBy())) {
             spec = spec.and(filterCategory(request.getFilterBy()));
         }
@@ -157,19 +157,20 @@ public class FoodImp implements FoodService {
         if (request.getMinPrice() != null || request.getMaxPrice() != null) {
             spec = spec.and(filterByPriceRange(request.getMinPrice(), request.getMaxPrice()));
         }
-        Page<FoodResponse> page; // ✅ Explicit type
 
-
-        if(user.getRole()== ROLE.OWNER){
-            page =foodRepository.findAllByRestaurantId(restaurant,spec,pageable).map(FoodResponse::toResponse);
-        }else {
-            page = foodRepository
-                    .findAll(spec, pageable)
-                    .map(FoodResponse::toResponse); // keeps pagination metadata
+        if (user.getRole() == ROLE.OWNER) {
+            var restaurant = restaurantService.findRestaurantByOwner(user);
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("restaurant"), restaurant)
+            );
         }
+
+        Page<FoodResponse> page = foodRepository
+                .findAll(spec, pageable)
+                .map(FoodResponse::toResponse);
+
         return new EntityResponseHandler<>(page);
     }
-
     @Override
     public Long all() {
         return foodRepository.count();
