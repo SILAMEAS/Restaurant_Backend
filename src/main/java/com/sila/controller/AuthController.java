@@ -3,6 +3,7 @@ package com.sila.controller;
 import com.sila.dto.request.LoginRequest;
 import com.sila.dto.request.SignUpRequest;
 import com.sila.dto.response.AuthResponse;
+import com.sila.exception.AccessDeniedException;
 import com.sila.model.User;
 import com.sila.service.AuthService;
 import com.sila.util.annotation.PreAuthorization;
@@ -29,8 +30,11 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody @Valid SignUpRequest request) {
-
-        return authService.signUp(request);
+        if(request.getRole().equals(ROLE.USER)) {
+            return authService.signUp(request);
+        }else {
+            throw new AccessDeniedException("Only users can sign up");
+        }
     }
 
     @PostMapping("/sign-in")

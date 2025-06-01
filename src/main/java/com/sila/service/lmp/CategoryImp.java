@@ -9,7 +9,6 @@ import com.sila.dto.response.MessageResponse;
 import com.sila.exception.AccessDeniedException;
 import com.sila.exception.BadRequestException;
 import com.sila.model.Category;
-import com.sila.model.Restaurant;
 import com.sila.model.User;
 import com.sila.repository.CategoryRepository;
 import com.sila.repository.FoodRepository;
@@ -17,6 +16,7 @@ import com.sila.repository.RestaurantRepository;
 import com.sila.service.CategoryService;
 import com.sila.service.CloudinaryService;
 import com.sila.service.FoodService;
+import com.sila.service.RestaurantService;
 import com.sila.util.PageableUtil;
 import com.sila.util.Utils;
 import com.sila.util.enums.KeyImageProperty;
@@ -37,14 +37,15 @@ import java.util.List;
 public class CategoryImp implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final RestaurantRepository restaurantRepository;
-    private final FoodService foodService;
     private final FoodRepository foodRepository;
     final ModelMapper modelMapper;
     private final CloudinaryService cloudinaryService;
+    private final RestaurantService restaurantService;
+
     @Override
     public Category create(CategoryRequest request) {
         User user = UserContext.getUser();
-        Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
+        var restaurant =restaurantService.findRestaurantByOwner(user);
         if (categoryRepository.existsByNameAndRestaurant(request.getName(), restaurant)) {
             throw new BadRequestException("Category name already exists for this restaurant");
         }
@@ -105,10 +106,17 @@ public class CategoryImp implements CategoryService {
 
     @Override
     public EntityResponseHandler<CategoryResponse> gets(PaginationRequest request) {
+        var user = UserContext.getUser();
+
+        Long restaurantId=null;
+        if(user.getRole().equals(ROLE.OWNER)){
+            var restaurantExit  = restaurantService.findRestaurantByOwner(user);
+            restaurantId = user.getRole()==ROLE.OWNER ? restaurantExit.getId() : null;
+        }
         Pageable pageable = PageableUtil.fromRequest(request);
         Page<Category> categoryPage = categoryRepository.findByFilters(
                 request.getSearch(),
-                parseRestaurantId(request.getFilterBy()),
+                restaurantId,
                 pageable
         );
 

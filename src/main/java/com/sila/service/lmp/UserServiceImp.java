@@ -81,6 +81,12 @@ public class UserServiceImp implements UserService {
         return "User updated successfully";
     }
 
+    @Override
+    public String deleteUser(Long Id) {
+        userRepository.deleteById(Id);
+        return "Successfully deleted user";
+    }
+
 
     @Override
     public UserResponse update( UserRequest userReq) {

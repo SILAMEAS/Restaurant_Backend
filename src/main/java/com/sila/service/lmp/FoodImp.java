@@ -4,14 +4,12 @@ import com.sila.config.context.UserContext;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.FoodRequest;
 import com.sila.dto.request.PaginationRequest;
-import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FoodResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.model.Category;
 import com.sila.model.Food;
 import com.sila.model.Restaurant;
 import com.sila.model.image.ImageFood;
-import com.sila.model.image.ImageRestaurant;
 import com.sila.repository.CategoryRepository;
 import com.sila.repository.FoodRepository;
 import com.sila.repository.OrderItemRepository;
@@ -23,6 +21,7 @@ import com.sila.specifcation.FoodSpecification;
 import com.sila.util.PageableUtil;
 import com.sila.util.Utils;
 import com.sila.util.enums.FoodType;
+import com.sila.util.enums.ROLE;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -30,18 +29,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static com.sila.specifcation.FoodSpecification.filterByFoodType;
-import static com.sila.specifcation.FoodSpecification.filterByPrice;
-import static com.sila.specifcation.FoodSpecification.filterByPriceRange;
-import static com.sila.specifcation.FoodSpecification.filterCategory;
+import static com.sila.specifcation.FoodSpecification.*;
 
 @Service
 @RequiredArgsConstructor
@@ -75,7 +69,7 @@ public class FoodImp implements FoodService {
     @Override
     public Food update(FoodRequest foodReq, Long foodId) {
         var user = UserContext.getUser();
-        Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
+        Restaurant restaurant = restaurantService.findRestaurantByOwner(user);
         Food foodToUpdate = getById(foodId);
         if (!foodToUpdate.getRestaurant().getId().equals(restaurant.getId())) {
             throw new BadRequestException("Food isn't belong to restaurant");
@@ -147,6 +141,8 @@ public class FoodImp implements FoodService {
 
     @Override
     public EntityResponseHandler<FoodResponse> gets(PaginationRequest request) {
+        var user = UserContext.getUser();
+        var restaurant = restaurantService.findRestaurantByOwner(user);
         Pageable pageable = PageableUtil.fromRequest(request);
         Specification<Food> spec = Specification.where(null);
         if (Objects.nonNull(request.getFilterBy())) {
@@ -161,9 +157,16 @@ public class FoodImp implements FoodService {
         if (request.getMinPrice() != null || request.getMaxPrice() != null) {
             spec = spec.and(filterByPriceRange(request.getMinPrice(), request.getMaxPrice()));
         }
-        Page<FoodResponse> page = foodRepository
-                .findAll(spec, pageable)
-                .map(FoodResponse::toResponse); // keeps pagination metadata
+        Page<FoodResponse> page; // ✅ Explicit type
+
+
+        if(user.getRole()== ROLE.OWNER){
+            page =foodRepository.findAllByRestaurantId(restaurant,spec,pageable).map(FoodResponse::toResponse);
+        }else {
+            page = foodRepository
+                    .findAll(spec, pageable)
+                    .map(FoodResponse::toResponse); // keeps pagination metadata
+        }
         return new EntityResponseHandler<>(page);
     }
 

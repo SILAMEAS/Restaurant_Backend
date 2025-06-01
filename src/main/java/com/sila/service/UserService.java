@@ -26,4 +26,6 @@ public interface UserService {
     Long allHaveBeenOrder(Long restaurantId);
 
     String updateUser(Long Id, UpdateUserRequest request);
+
+    String deleteUser(Long Id);
 }

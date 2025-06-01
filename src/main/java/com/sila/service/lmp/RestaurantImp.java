@@ -14,9 +14,7 @@ import com.sila.dto.response.UserResponse;
 import com.sila.exception.AccessDeniedException;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
-import com.sila.model.Address;
-import com.sila.model.Favorite;
-import com.sila.model.Restaurant;
+import com.sila.model.*;
 import com.sila.model.image.ImageRestaurant;
 import com.sila.repository.AddressRepository;
 import com.sila.repository.CategoryRepository;
@@ -177,7 +175,7 @@ public class RestaurantImp implements RestaurantService {
     @Override
     public RestaurantResponse getByUserLogin() {
         var user = UserContext.getUser();
-        Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
+        Restaurant restaurant = findRestaurantByOwner(user);
         if (Objects.isNull(restaurant)) {
             if(user.getRole() == ROLE.OWNER){
                 throw new BadRequestException("user don't have restaurant");
@@ -202,6 +200,49 @@ public class RestaurantImp implements RestaurantService {
     @Override
     public Long all() {
         return restaurantRepository.count();
+    }
+
+    @Override
+    public Restaurant findRestaurantByOwner(User user) {
+        return restaurantRepository.findByOwnerId(user.getId()).orElseThrow(()->
+                new NotFoundException("Restaurant not found with this owner"));
+    }
+
+    @Override
+    public void autoCreateRestaurantAsDefault(User user) {
+        var IsCreatedRestaurant = restaurantRepository.existsByOwnerId(user.getId());
+        if(!IsCreatedRestaurant) {
+            Address address = addressRepository.save(Address.builder()
+                    .name("WORK") // ✅ Add this line
+                    .street("STREET")
+                    .city("PHNOM PENH")
+                    .country("CAMBODIA")
+                    .state("CENTER")
+                    .zip("0000")
+                    .user(user)
+                    .currentUsage(Boolean.TRUE)
+                    .build());
+
+            ContactInformation contactInformation= ContactInformation.builder()
+                    .email(user.getEmail())
+                    .phone("0123456789")
+                    .build();
+
+            Restaurant restaurant = Restaurant.builder()
+                    .name("DEFAULT")
+                    .openingHours("...")
+                    .description("DESCRIPTION")
+                    .registrationDate(LocalDateTime.now())
+                    .owner(user)
+                    .cuisineType("NONE")
+                    .address(address)
+                    .contactInformation(contactInformation)
+                    .open(false) // don't forget this!
+                    .build();
+
+            restaurantRepository.save(restaurant);
+
+        }
     }
 
     @Override

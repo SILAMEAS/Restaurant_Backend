@@ -11,6 +11,7 @@ import com.sila.exception.NotFoundException;
 import com.sila.model.User;
 import com.sila.repository.UserRepository;
 import com.sila.service.AuthService;
+import com.sila.service.RestaurantService;
 import com.sila.service.UserService;
 import com.sila.util.enums.ROLE;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class AuthImp implements AuthService {
     private final JwtProvider jwtProvider;
     private final CustomerUserDetailsService customerUserDetailsService;
     private final UserService userService;
+    private final RestaurantService restaurantService;
 
     private Authentication authenticate(String email, String password) {
         UserDetails userDetails = customerUserDetailsService.loadUserByUsername(email);
@@ -54,14 +56,12 @@ public class AuthImp implements AuthService {
         newUser.setEmail(request.getEmail());
         newUser.setFullName(request.getFullName());
         newUser.setRole(request.getRole());
-//        newUser.setAddresses(request.getAddresses());
-
-//        if (request.getProfile() != null && !user.getProfile().isEmpty()) {
-//            newUser.setProfile(user.getProfile());
-//        }
 
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+
         userRepository.save(newUser);
+
+        restaurantService.autoCreateRestaurantAsDefault(newUser);
 
 
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
