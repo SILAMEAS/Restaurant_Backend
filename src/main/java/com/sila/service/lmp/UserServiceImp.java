@@ -3,6 +3,7 @@ package com.sila.service.lmp;
 import com.sila.config.context.UserContext;
 import com.sila.config.jwt.JwtProvider;
 import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.request.UpdateUserRequest;
 import com.sila.dto.request.UserRequest;
 import com.sila.dto.response.UserResponse;
 import com.sila.exception.BadRequestException;
@@ -66,6 +67,18 @@ public class UserServiceImp implements UserService {
     @Override
     public Long allHaveBeenOrder(Long restaurantId) {
         return userRepository.count(UserSpecification.hasOrderedFromRestaurant(restaurantId));
+    }
+
+    @Override
+    public String updateUser(Long Id, UpdateUserRequest request) {
+        var userExit = userRepository.findById(Id).orElseThrow(() -> new BadRequestException("User not found"));
+
+        userExit.setRole(request.getRole());
+        userExit.setFullName(request.getFullName());
+
+        userRepository.save(userExit);
+
+        return "User updated successfully";
     }
 
 

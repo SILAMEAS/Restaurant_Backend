@@ -2,6 +2,8 @@ package com.sila.controller;
 
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.PaginationRequest;
+import com.sila.dto.request.SignUpRequest;
+import com.sila.dto.request.UpdateUserRequest;
 import com.sila.dto.request.UserRequest;
 import com.sila.dto.response.AddressResponse;
 import com.sila.dto.response.FavoriteResponse;
@@ -18,12 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -69,5 +66,11 @@ public class UserController {
     @GetMapping("/favorite")
     public ResponseEntity<List<FavoriteResponse>> getMyFav()  {
         return new ResponseEntity<>(favoriteService.getMyFav(), HttpStatus.OK);
+    }
+
+    @PreAuthorization({ROLE.ADMIN})
+    @PutMapping("{Id}")
+    public ResponseEntity<String> updateUser(@PathVariable Long Id,@Valid @RequestBody UpdateUserRequest request) {
+        return new ResponseEntity<>(userService.updateUser(Id,request),HttpStatus.OK);
     }
 }

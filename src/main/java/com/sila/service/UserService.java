@@ -1,6 +1,8 @@
 package com.sila.service;
 
 import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.request.SignUpRequest;
+import com.sila.dto.request.UpdateUserRequest;
 import com.sila.dto.request.UserRequest;
 import com.sila.dto.response.UserResponse;
 import com.sila.model.User;
@@ -22,4 +24,6 @@ public interface UserService {
     Long all();
     EntityResponseHandler<UserResponse.UserResponseCustom> getUsersWhoOrderedFromRestaurant(Long restaurantId, Pageable pageable);
     Long allHaveBeenOrder(Long restaurantId);
+
+    String updateUser(Long Id, UpdateUserRequest request);
 }

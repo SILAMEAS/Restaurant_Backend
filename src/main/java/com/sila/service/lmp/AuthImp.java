@@ -4,6 +4,7 @@ import com.sila.config.custom.CustomUserDetails;
 import com.sila.config.custom.CustomerUserDetailsService;
 import com.sila.config.jwt.JwtProvider;
 import com.sila.dto.request.LoginRequest;
+import com.sila.dto.request.SignUpRequest;
 import com.sila.dto.response.AuthResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.exception.NotFoundException;
@@ -44,22 +45,22 @@ public class AuthImp implements AuthService {
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
-    public ResponseEntity<String> signUp(User user) {
-        if (userRepository.findByEmail(user.getEmail()) != null) {
+    public ResponseEntity<String> signUp(SignUpRequest request) {
+        if (userRepository.findByEmail(request.getEmail()) != null) {
             throw new BadRequestException("Email is already used");
         }
 
         User newUser = new User();
-        newUser.setEmail(user.getEmail());
-        newUser.setFullName(user.getFullName());
-        newUser.setRole(user.getRole());
-        newUser.setAddresses(user.getAddresses());
+        newUser.setEmail(request.getEmail());
+        newUser.setFullName(request.getFullName());
+        newUser.setRole(request.getRole());
+//        newUser.setAddresses(request.getAddresses());
 
-        if (user.getProfile() != null && !user.getProfile().isEmpty()) {
-            newUser.setProfile(user.getProfile());
-        }
+//        if (request.getProfile() != null && !user.getProfile().isEmpty()) {
+//            newUser.setProfile(user.getProfile());
+//        }
 
-        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(newUser);
 
 

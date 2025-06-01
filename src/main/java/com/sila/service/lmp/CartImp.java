@@ -72,17 +72,12 @@ public class CartImp implements CartService {
 
     @Override
     public void updateItemFromCart(Long cartItemId, int quantity) throws Exception {
-        Cart cart = findCartByUser();
-        var exited = cartItemRepository.findById(cartItemId).isPresent();
-        if(!exited){
-            throw new BadRequestException("Not found item cart with this id");
-        }
-        var cartItem= cartItemRepository.findByCart(cart).orElseThrow(()->
-             new BadRequestException("Not found item cart with this id")
-        );
+        Cart cart = findCartByUser(); // Get cart of currently authenticated user
+        CartItem cartItem = cartItemRepository.findByIdAndCart(cartItemId, cart)
+                .orElseThrow(() -> new BadRequestException("Cart item not found in your cart"));
+
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
-
     }
 
     private Cart findCartByUser() throws Exception {
