@@ -5,6 +5,7 @@ import com.sila.util.enums.ROLE;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,8 +45,8 @@ public class User {
     private List<Favorite> favourites = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     private List<Address> addresses = new ArrayList<>();
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Cart cart;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Cart> carts = new ArrayList<>();
 
     @CreationTimestamp // 👈 auto-set on insert
     private LocalDateTime createdAt = LocalDateTime.now();

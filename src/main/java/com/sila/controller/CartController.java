@@ -28,10 +28,16 @@ public class CartController {
         return ResponseEntity.ok("Item added to cart");
     }
 
+    @DeleteMapping("{cartId}")
+    public ResponseEntity<String> deleteCart(@PathVariable Long cartId) throws Exception {
+        cartService.deleteCart( cartId);
+        return ResponseEntity.ok("remove cart already");
+    }
+
 
     @PreAuthorization({ROLE.USER})
     @GetMapping()
-    public ResponseEntity<CartResponse> getMyCart() throws Exception {
+    public ResponseEntity<List<CartResponse>> getMyCart() throws Exception {
         return new ResponseEntity<>(cartService.getAll(),HttpStatus.OK);
     }
     @PreAuthorization({ROLE.USER})

@@ -5,16 +5,26 @@ import com.sila.dto.response.CartResponse;
 import com.sila.exception.BadRequestException;
 import com.sila.model.Cart;
 import com.sila.model.CartItem;
+import com.sila.model.Food;
+import com.sila.model.Restaurant;
+import com.sila.model.User;
 import com.sila.repository.CartItemRepository;
 import com.sila.repository.CartRepository;
+import com.sila.repository.UserRepository;
 import com.sila.service.CartService;
 import com.sila.service.FoodService;
 import com.sila.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,24 +36,48 @@ public class CartImp implements CartService {
     final CartRepository cartRepository;
     final ModelMapper modelMapper;
     private final CartItemRepository cartItemRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public CartResponse getAll() {
-        var categories = cartRepository.findByUser(userService.getById(UserContext.getUser().getId())).orElseThrow(()->
-                new BadRequestException("Cart not found with this user")
-        );
-        return CartResponse.toResponse(categories);
+    public List<CartResponse> getAll() {
+        var categories = cartRepository.findAllByUser(UserContext.getUser());
+        if(CollectionUtils.isEmpty(categories)){
+            return new ArrayList<>();
+        }
+        return categories.stream().map(CartResponse::toResponse).toList();
     }
 
     @Override
-    public void addItemToCart( Long foodId, int quantity) throws Exception {
-        Cart cart = findCartByUser();
+    @Transactional
+    public void addItemToCart(Long foodId, int quantity) {
         var food = foodService.getById(foodId);
-        // Check if the item already exists in the cart
-        Optional<CartItem> existingItemOpt = cart.getItems().stream()
-                .filter(item -> item.getFood().getId().equals(foodId))
-                .findFirst();
+        var foodRestaurant = food.getRestaurant(); // Assuming food has a restaurant field
 
+        var carts = cartRepository.findAllByUserId(UserContext.getUser().getId());
+
+        for(var cart:carts){
+            for(var f:cart.getItems()){
+                var restaruantId = f.getFood().getRestaurant().getId();
+                if(Objects.equals(foodRestaurant.getId(), restaruantId)){
+                    cartRepository.save(addItemToCartItemExit(cart,food,quantity));
+                    return;
+                }
+            }
+        }
+
+        User user = UserContext.getUser();
+        Cart newCart = new Cart();
+        newCart.setUser(user);
+        cartRepository.save(addItemToCartItemExit(newCart,food,quantity));
+        user.getCarts().add(newCart);
+        userRepository.save(user);
+
+    }
+
+    private Cart addItemToCartItemExit(Cart cart, Food food, int quantity) {
+        Optional<CartItem> existingItemOpt = cart.getItems().stream()
+                .filter(item -> item.getFood().getId().equals(food.getId()))
+                .findFirst();
 
         if (existingItemOpt.isPresent()) {
             CartItem existingItem = existingItemOpt.get();
@@ -56,8 +90,10 @@ public class CartImp implements CartService {
             cart.getItems().add(newItem);
         }
 
-        cartRepository.save(cart); // Cascade should handle CartItem persistence
+        return cart;
     }
+
+
 
     @Override
     public void removeItemFromCart(Long cartItemId) throws Exception {
@@ -78,6 +114,12 @@ public class CartImp implements CartService {
 
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCart(Long cartId) {
+        cartRepository.deleteAllByIdInBatch(Collections.singletonList(cartId));
     }
 
     private Cart findCartByUser() throws Exception {
