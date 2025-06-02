@@ -3,10 +3,10 @@ package com.sila.service.lmp;
 import com.sila.config.context.UserContext;
 import com.sila.dto.response.CartResponse;
 import com.sila.exception.BadRequestException;
+import com.sila.exception.NotFoundException;
 import com.sila.model.Cart;
 import com.sila.model.CartItem;
 import com.sila.model.Food;
-import com.sila.model.Restaurant;
 import com.sila.model.User;
 import com.sila.repository.CartItemRepository;
 import com.sila.repository.CartRepository;
@@ -15,18 +15,15 @@ import com.sila.service.CartService;
 import com.sila.service.FoodService;
 import com.sila.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +31,6 @@ public class CartImp implements CartService {
     final UserService userService;
     final FoodService foodService;
     final CartRepository cartRepository;
-    final ModelMapper modelMapper;
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
 
@@ -64,6 +60,7 @@ public class CartImp implements CartService {
                 }
             }
         }
+        /** Add new Cart when food from new restaurant */
 
         User user = UserContext.getUser();
         Cart newCart = new Cart();
@@ -96,8 +93,8 @@ public class CartImp implements CartService {
 
 
     @Override
-    public void removeItemFromCart(Long cartItemId) throws Exception {
-        Cart cart = findCartByUser();
+    public void removeItemFromCart(Long cartId,Long cartItemId) {
+        Cart cart = cartRepository.findById(cartId).orElseThrow(()-> new NotFoundException("Not found with this cart id"));
         var exited = cartItemRepository.findById(cartItemId).isPresent();
         if(!exited){
             throw new BadRequestException("Not found item cart with this id");
@@ -107,8 +104,8 @@ public class CartImp implements CartService {
     }
 
     @Override
-    public void updateItemFromCart(Long cartItemId, int quantity) throws Exception {
-        Cart cart = findCartByUser(); // Get cart of currently authenticated user
+    public void updateItemFromCart(Long cartId,Long cartItemId, int quantity) throws Exception {
+        Cart cart = cartRepository.findById(cartId).orElseThrow(()-> new NotFoundException("Not found cart with this id"+cartId)); // Get cart of currently authenticated user
         CartItem cartItem = cartItemRepository.findByIdAndCart(cartItemId, cart)
                 .orElseThrow(() -> new BadRequestException("Cart item not found in your cart"));
 

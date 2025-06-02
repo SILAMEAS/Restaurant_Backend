@@ -7,10 +7,16 @@ import com.sila.util.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -29,7 +35,7 @@ public class CartController {
     }
 
     @DeleteMapping("{cartId}")
-    public ResponseEntity<String> deleteCart(@PathVariable Long cartId) throws Exception {
+    public ResponseEntity<String> deleteCart(@PathVariable Long cartId) {
         cartService.deleteCart( cartId);
         return ResponseEntity.ok("remove cart already");
     }
@@ -41,20 +47,21 @@ public class CartController {
         return new ResponseEntity<>(cartService.getAll(),HttpStatus.OK);
     }
     @PreAuthorization({ROLE.USER})
-    @DeleteMapping("cartItems/{id}")
+    @DeleteMapping("{cartId}/cartItems/{cartItemId}")
     public ResponseEntity<String> deleteCartItem(
-            @PathVariable Long id) throws Exception {
+            @PathVariable Long cartId,
+            @PathVariable Long cartItemId) throws Exception {
 
-        cartService.removeItemFromCart(id);
+        cartService.removeItemFromCart(cartId,cartItemId);
         return ResponseEntity.ok("Item remove from cart");
     }
 
     @PreAuthorization({ROLE.USER})
-    @PutMapping("cartItems/{id}")
+    @PutMapping("{cartId}/cartItems/{cartItemId}")
     public ResponseEntity<String> updateCartItem(
-            @PathVariable Long id, @RequestParam int quantity ) throws Exception {
+            @PathVariable Long cartId,@PathVariable Long cartItemId, @RequestParam int quantity ) throws Exception {
 
-        cartService.updateItemFromCart(id,quantity);
+        cartService.updateItemFromCart(cartId,cartItemId,quantity);
         return ResponseEntity.ok("Item was update in cart");
     }
 }

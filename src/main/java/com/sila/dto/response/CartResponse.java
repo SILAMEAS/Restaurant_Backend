@@ -14,11 +14,17 @@ import java.util.List;
 public class CartResponse {
     private Long id;
     private List<CartItemResponse> items;
+    private String restaurantName;
+    private Long totalItems;
 
     public static CartResponse toResponse(Cart cart) {
+        var items =cart.getItems().stream().map(CartItemResponse::toResponse).toList();
+        var name = "OK";
         return CartResponse.builder()
                 .id(cart.getId())
-                .items(cart.getItems().stream().map(CartItemResponse::toResponse).toList())
+                .totalItems((long) cart.getItems().size())
+                .restaurantName(name)
+                .items(items)
                 .build();
     }
 }
