@@ -13,7 +13,7 @@ import java.util.List;
 public class FoodRequest {
     private String name;
     private String description;
-    private Long price;
+    private Double price;
     private Category category;
     @NotEmpty(groups = OnCreate.class,message = "images must not be empty during creation")
     private List<MultipartFile> images;

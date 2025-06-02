@@ -27,4 +27,8 @@ public class RestaurantResponse{
     private List<ImageDetailsResponse> imageUrls;
     private int rating;
     private String ownerName;
+
+    private double deliveryFee;
+
+    private double discount;
 }

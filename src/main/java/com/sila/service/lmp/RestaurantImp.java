@@ -137,6 +137,9 @@ public class RestaurantImp implements RestaurantService {
         Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurant::setContactInformation);
         Utils.setIfNotNull(updateRestaurant.getOpen(), restaurant::setOpen);
 
+        Utils.setIfNotNull(updateRestaurant.getDiscount(), restaurant::setRestaurantDiscount);
+        Utils.setIfNotNull(updateRestaurant.getDeliveryFee(), restaurant::setDeliveryFee);
+
         // Handle Address
         if (updateRestaurant.getAddress() != null) {
             Address address = updateRestaurant.getAddress();
@@ -309,6 +312,8 @@ public class RestaurantImp implements RestaurantService {
                         .build())
                 .imageUrls(imageDetails)
                 .ownerName(restaurant.getOwner().getFullName())
+                .deliveryFee(restaurant.getDeliveryFee())
+                .discount(restaurant.getRestaurantDiscount())
                 .build();
     }
 }

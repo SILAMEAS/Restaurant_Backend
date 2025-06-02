@@ -1,9 +1,13 @@
 package com.sila.dto.request;
 
 import com.sila.dto.method.OnCreate;
+import com.sila.dto.method.OnUpdate;
 import com.sila.model.Address;
 import com.sila.model.ContactInformation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -39,4 +43,12 @@ public class RestaurantRequest {
     private Boolean open; // use Boolean to allow null-check validation
 
     private String ownerName;
+
+    @Min(value = 0, message = "Discount must be a positive value.",groups = OnUpdate.class)
+    @DecimalMax(value = "99.99", message = "You can't set a 100% discount or more.",groups = OnUpdate.class)
+    private Double discount;
+
+    @DecimalMin(value = "0.0", inclusive = true, message = "Delivery fee must be 0 or more", groups = OnUpdate.class)
+    @DecimalMax(value = "5.0", inclusive = true, message = "Delivery fee must be 5 or less", groups = OnUpdate.class)
+    private Double deliveryFee;
 }

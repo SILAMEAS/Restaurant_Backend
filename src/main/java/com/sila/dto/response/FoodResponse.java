@@ -22,13 +22,19 @@ public class FoodResponse implements Serializable {
     private Long id;
     private String name;
     private String description;
-    private Long price;
+    private Double price;
+
+    private Double priceDiscount;
+
     private List<String> images;
     private Long restaurantId;
     private String restaurantName;
     private transient CategoryDTO category;
     private FoodType foodType;
     private boolean available;
+    private double deliveryFee;
+
+    private double tax;
 
 
     @Data
@@ -46,7 +52,7 @@ public class FoodResponse implements Serializable {
                 .restaurantName(food.getRestaurant().getName())
                 .description(food.getDescription())
                 .price(food.getPrice())
-                .category(new FoodResponse.CategoryDTO(
+                .category(new CategoryDTO(
                         food.getCategory().getId(),
                         food.getCategory().getName()))
                 .images(food.getImages().stream()
@@ -55,6 +61,9 @@ public class FoodResponse implements Serializable {
                 .available(food.isAvailable())
                 .restaurantId(food.getRestaurant().getId()) // optional simplification
                 .foodType(food.getFoodtype())
+                .tax(food.getTax())
+                .deliveryFee(food.getRestaurant().getDeliveryFee())
+                .priceDiscount(food.getPriceWithDiscount())
                 .build();
     }
 }

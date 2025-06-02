@@ -64,4 +64,8 @@ public class Restaurant {
     public void addImage(ImageRestaurant restaurant) {
         this.images.add(restaurant);
     }
+
+    public double deliveryFee = 0;
+
+    private double restaurantDiscount = 0;
 }
