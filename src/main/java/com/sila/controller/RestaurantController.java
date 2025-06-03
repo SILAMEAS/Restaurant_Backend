@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.sila.service.lmp.RestaurantImp.mapToRestaurantResponse;
+
 @Tag(name = "Restaurant Controller")
 @RestController
 @RequestMapping("/api/restaurants")
@@ -62,10 +64,8 @@ public class RestaurantController {
         return new ResponseEntity<>(restaurantService.search(pageable,searchReq),HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<RestaurantResponse> getRestaurantById(@RequestHeader("Authorization") String jwt, @PathVariable Long id) throws Exception {
-        userService.getByJwt(jwt);
-        var restaurant = this.modelMapper.map(restaurantService.getById(id), RestaurantResponse.class);
-        return new ResponseEntity<>(restaurant, HttpStatus.OK);
+    public ResponseEntity<RestaurantResponse> getRestaurantById(@PathVariable Long id) throws Exception {
+        return new ResponseEntity<>(mapToRestaurantResponse(restaurantService.getById(id)), HttpStatus.OK);
     }
     @PutMapping("/{id}/favorites")
     public ResponseEntity<List<FavoriteResponse>> addRestaurantToFavorites( @PathVariable Long id) {

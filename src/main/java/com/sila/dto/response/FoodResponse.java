@@ -34,6 +34,8 @@ public class FoodResponse implements Serializable {
     private boolean available;
     private double deliveryFee;
 
+    private boolean open;
+
     private double tax;
 
 
@@ -64,6 +66,7 @@ public class FoodResponse implements Serializable {
                 .tax(food.getTax())
                 .deliveryFee(food.getRestaurant().getDeliveryFee())
                 .priceDiscount(food.getPriceWithDiscount())
+                .open(food.getRestaurant().isOpen())
                 .build();
     }
 }

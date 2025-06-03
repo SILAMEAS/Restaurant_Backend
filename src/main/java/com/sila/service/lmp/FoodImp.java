@@ -164,7 +164,10 @@ public class FoodImp implements FoodService {
                     cb.equal(root.get("restaurant"), restaurant)
             );
         }
+        if(Objects.nonNull(request.getSearch())){
+            spec = spec.and(addSearchSpecification(spec,request.getSearch()));
 
+        }
         Page<FoodResponse> page = foodRepository
                 .findAll(spec, pageable)
                 .map(FoodResponse::toResponse);
@@ -186,7 +189,7 @@ public class FoodImp implements FoodService {
     public EntityResponseHandler<FoodResponse> getsByResId(Long restaurantId,  PaginationRequest request) {
         Pageable pageable = PageableUtil.fromRequest(request);
         var foodPage = foodRepository.findAll(FoodSpecification.filterFoodByRestaurantId(restaurantId, request.getFilterBy()), pageable);
-        return new EntityResponseHandler<>(foodPage.map(fs -> this.modelMapper.map(fs, FoodResponse.class)));
+        return new EntityResponseHandler<>(foodPage.map(FoodResponse::toResponse));
     }
 
 }

@@ -21,6 +21,6 @@ public class FavoriteImp implements FavoriteService {
     @Override
     public List<FavoriteResponse> getMyFav() {
         List<Favorite> favorite =favoriteRepository.findAllByOwner(UserContext.getUser()).stream().toList();
-        return favorite.stream().map(f->this.modelMapper.map(f,FavoriteResponse.class)).toList();
+        return favorite.stream().map(FavoriteResponse::toResponse).toList();
     }
 }

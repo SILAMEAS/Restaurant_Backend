@@ -106,18 +106,7 @@ public class UserServiceImp implements UserService {
         User userFromContext = UserContext.getUser(); // JWT-based context
         User user = userRepository.findByIdWithFavorites(userFromContext.getId())
                 .orElseThrow(() -> new Exception("User not found"));
-
-        UserResponse userRes = this.modelMapper.map(user, UserResponse.class);
-//        userRes.setFavourites(user.getFavourites().stream()
-//                .map(fav -> new FavoriteResponse(fav.getId(), fav.getName(), fav.getDescription(), user.getId(), fav.getRestaurant().getId()))
-//                .toList());
-        /** I try to currentUsage from null to false */
-//        userRes.getAddresses().forEach(address -> {
-//            if (address.getCurrentUsage() == null) {
-//                address.setCurrentUsage(false);
-//            }
-//        });
-        return userRes;
+        return this.modelMapper.map(user, UserResponse.class);
     }
 
     @Override

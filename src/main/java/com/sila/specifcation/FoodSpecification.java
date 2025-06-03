@@ -64,7 +64,7 @@ public final class FoodSpecification {
         }
         return spec;
     }
-    private static Specification<Food> addSearchSpecification(Specification<Food> spec, String search) {
+    public static Specification<Food> addSearchSpecification(Specification<Food> spec, String search) {
         if (Objects.nonNull(search)) {
             return spec.and(FoodSpecification.search(search));
         }
@@ -104,4 +104,6 @@ public final class FoodSpecification {
             return null;
         };
     }
+
+
 }
