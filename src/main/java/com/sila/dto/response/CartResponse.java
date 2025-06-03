@@ -19,7 +19,12 @@ public class CartResponse {
 
     public static CartResponse toResponse(Cart cart) {
         var items =cart.getItems().stream().map(CartItemResponse::toResponse).toList();
-        var name = "OK";
+        String name = items.stream()
+                .findFirst()
+                .map(item -> item.getFood())
+                .map(food -> food.getRestaurantName())
+                .orElse("UNKONWN");
+
         return CartResponse.builder()
                 .id(cart.getId())
                 .totalItems((long) cart.getItems().size())
