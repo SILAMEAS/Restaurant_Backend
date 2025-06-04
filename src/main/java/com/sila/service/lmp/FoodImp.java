@@ -51,18 +51,43 @@ public class FoodImp implements FoodService {
 
     @Override
     public Food create(FoodRequest foodRequest, Category category, Restaurant restaurant, List<MultipartFile> imageFiles) {
-        Food food = Food.builder().name(foodRequest.getName()).description(foodRequest.getDescription()).price(foodRequest.getPrice()).available(foodRequest.isAvailable()).foodtype(FoodType.valueOf(foodRequest.getFoodType())).creationDate(new Date()).category(category).restaurant(restaurant).build();
+        double price = foodRequest.getPrice();
+        double foodDiscount = foodRequest.getDiscount(); // ensure this is passed in request
+        double restaurantDiscount = restaurant.getRestaurantDiscount();
+        double totalDiscount = Math.min(foodDiscount + restaurantDiscount, 100.0);
 
-        List<ImageFood> imageEntities = cloudinaryService.uploadImagesToCloudinary(imageFiles,food,(url,publicId)->{
-            ImageFood image = new ImageFood();
-            image.setUrl(url);
-            image.setPublicId(publicId);
-            return image;
-        },ImageFood::setFood);
+        double discountedPrice = price - (price * totalDiscount / 100.0);
+        double finalPrice = Math.round(discountedPrice * 100.0) / 100.0;
+
+        Food food = Food.builder()
+                .name(foodRequest.getName())
+                .description(foodRequest.getDescription())
+                .price(price)
+                .discount(foodDiscount)
+                .priceWithDiscount(finalPrice) // ✅ important
+                .available(foodRequest.isAvailable())
+                .foodtype(FoodType.valueOf(foodRequest.getFoodType()))
+                .creationDate(new Date())
+                .category(category)
+                .restaurant(restaurant)
+                .build();
+
+        List<ImageFood> imageEntities = cloudinaryService.uploadImagesToCloudinary(
+                imageFiles,
+                food,
+                (url, publicId) -> {
+                    ImageFood image = new ImageFood();
+                    image.setUrl(url);
+                    image.setPublicId(publicId);
+                    return image;
+                },
+                ImageFood::setFood
+        );
 
         food.setImages(imageEntities);
         Food savedFood = foodRepository.save(food);
         restaurant.getFoods().add(savedFood);
+
         return savedFood;
     }
 
@@ -78,6 +103,7 @@ public class FoodImp implements FoodService {
 
         Food food = getById(foodId);
         Utils.setIfNotNull(foodReq.getName(), food::setName);
+        Utils.setIfNotNull(foodReq.getDiscount(), food::setDiscount);
         Utils.setIfNotNull(category, food::setCategory);
         Utils.setIfNotNull(foodReq.getPrice(), food::setPrice);
         Utils.setIfNotNull(foodReq.getDescription(), food::setDescription);
@@ -98,7 +124,6 @@ public class FoodImp implements FoodService {
                 ImageFood::setFood,
                 ImageFood::getPublicId
         );
-
 
         return foodRepository.save(food);
     }

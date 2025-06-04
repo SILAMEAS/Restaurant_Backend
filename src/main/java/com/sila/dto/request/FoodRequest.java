@@ -22,4 +22,7 @@ public class FoodRequest {
     @NotEmpty(groups = OnCreate.class,message = "foodType must not be empty during creation")
     private String foodType;
     private boolean available;
+    private double tax=0;
+    private double discount = 0;
+
 }

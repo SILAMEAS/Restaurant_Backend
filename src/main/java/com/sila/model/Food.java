@@ -36,39 +36,40 @@ public class Food {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String description;
     private Double price;
+
+    private boolean available;
+
+    private double tax = 0;
+    private double discount = 0;
+    private Double priceWithDiscount = 0.0; // ✅ Stored in DB
+
+    private Date creationDate;
+
+    @Enumerated(EnumType.STRING)
+    private FoodType foodtype;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
+
     @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<ImageFood> images = new ArrayList<>();
-    private boolean available;
-    @ManyToOne
-    private Restaurant restaurant;
-    @Enumerated(EnumType.STRING)
-    private FoodType foodtype;
-    private Date creationDate;
-
-    private double tax=0;
-
-    private double discount = 0;
 
     @Transient
-    public double getPriceWithDiscount() {
+    public double getPriceWithDiscountCalculated() {
         double foodDiscount = this.discount;
         double restaurantDiscount = (restaurant != null) ? restaurant.getRestaurantDiscount() : 0;
-
-        double totalDiscount = foodDiscount + restaurantDiscount;
-
-        // Clamp total discount to 100% maximum
-        totalDiscount = Math.min(totalDiscount, 100);
-
-        double discountedPrice = price - (price * totalDiscount / 100);
-
-        return Math.round(discountedPrice * 100.0) / 100.0; // round to 2 decimal places
+        double totalDiscount = Math.min(foodDiscount + restaurantDiscount, 100);
+        return Math.round((price - price * totalDiscount / 100.0) * 100.0) / 100.0;
     }
 
     @Transient
@@ -78,6 +79,5 @@ public class Food {
         return foodDiscount + restaurantDiscount;
     }
 
-
-
+    // Getters, setters, and builder as needed
 }
