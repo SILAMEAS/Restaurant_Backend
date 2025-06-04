@@ -8,12 +8,11 @@ import com.sila.dto.response.OrderResponse;
 import com.sila.dto.response.RestaurantResponse;
 import com.sila.dto.response.UserResponse;
 import com.sila.exception.BadRequestException;
-import com.sila.exception.NotFoundException;
-import com.sila.model.Cart;
 import com.sila.model.CartItem;
 import com.sila.model.Order;
 import com.sila.model.OrderItem;
 import com.sila.model.Restaurant;
+import com.sila.repository.CartItemRepository;
 import com.sila.repository.CartRepository;
 import com.sila.repository.OrderItemRepository;
 import com.sila.repository.OrderRepository;
@@ -37,6 +36,8 @@ public class OrderImp implements OrderService {
     private final CartRepository cartRepository;
     private final OrderItemRepository orderItemRepository;
     private final ModelMapper modelMapper;
+    private final CartItemRepository cartItemRepository;
+
     @Override
     public EntityResponseHandler<OrderResponse> getAll(PaginationRequest request) {
         Pageable pageable = PageableUtil.fromRequest(request);
@@ -46,18 +47,12 @@ public class OrderImp implements OrderService {
 
     @Override
     @Transactional
-    public OrderResponse placeOrder() {
+    public OrderResponse placeOrder(Long cartId) {
         // Get the authenticated user
         final var user = UserContext.getUser();
-
-        // Fetch the user's cart
-        Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new NotFoundException("Cart not found for user"));
-
-        // Check if cart has items
-        if (cart.getItems().isEmpty()) {
-            throw new BadRequestException("Cannot place order with an empty cart");
-        }
+        var cart = cartRepository.findByIdAndUserAndItemsNotEmpty(cartId,user).orElseThrow(()->
+                        new BadRequestException("cart is not belong to user or cart not found")
+                );
 
         // Create a new order
         Order order = new Order();
@@ -94,8 +89,11 @@ public class OrderImp implements OrderService {
         orderItemRepository.saveAll(orderItems);
 
         // Clear the cart
-        cart.getItems().clear();
-        cartRepository.save(cart);
+        var itemIds = cart.getItems().stream()
+                .map(CartItem::getId)
+                .toList();
+        cartItemRepository.deleteAllByIdInBatch(itemIds);
+        cartRepository.deleteAllByIdInBatch(List.of(cartId));
 
         // Convert to OrderResponse
         return convertToOrderResponse(order);

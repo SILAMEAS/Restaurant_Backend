@@ -4,13 +4,11 @@ import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.response.OrderResponse;
 
-import java.util.List;
-
 public interface OrderService {
 
     EntityResponseHandler<OrderResponse> getAll(PaginationRequest request);
 
-    OrderResponse placeOrder();
+    OrderResponse placeOrder(Long cartId);
 
     String deletePlaceOrder(Long orderId);
 }

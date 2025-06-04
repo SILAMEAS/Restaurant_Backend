@@ -32,9 +32,9 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getAll(request), HttpStatus.OK);
     }
     @PreAuthorization({ROLE.USER})
-    @PostMapping()
-    public ResponseEntity<OrderResponse> placeOrder() {
-        return ResponseEntity.ok(orderService.placeOrder());
+    @PostMapping("/cart/{cartId}")
+    public ResponseEntity<OrderResponse> placeOrder(@PathVariable Long cartId) {
+        return ResponseEntity.ok(orderService.placeOrder(cartId));
     }
     @DeleteMapping("{orderId}")
     public ResponseEntity<String> deleteOrder(@PathVariable Long orderId) {

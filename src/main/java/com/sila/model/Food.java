@@ -71,6 +71,13 @@ public class Food {
         return Math.round(discountedPrice * 100.0) / 100.0; // round to 2 decimal places
     }
 
+    @Transient
+    public double getTotalDiscount() {
+        double foodDiscount = this.discount;
+        double restaurantDiscount = (restaurant != null) ? restaurant.getRestaurantDiscount() : 0;
+        return foodDiscount + restaurantDiscount;
+    }
+
 
 
 }

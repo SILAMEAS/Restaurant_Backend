@@ -50,4 +50,6 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
+
+    private String noted;
 }
