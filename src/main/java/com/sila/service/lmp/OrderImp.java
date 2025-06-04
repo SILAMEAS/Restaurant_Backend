@@ -19,8 +19,10 @@ import com.sila.repository.OrderRepository;
 import com.sila.service.OrderService;
 import com.sila.util.PageableUtil;
 import com.sila.util.enums.PAYMENT_STATUS;
+import com.sila.util.enums.ROLE;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,8 +42,17 @@ public class OrderImp implements OrderService {
 
     @Override
     public EntityResponseHandler<OrderResponse> getAll(PaginationRequest request) {
+
+        var user = UserContext.getUser();
         Pageable pageable = PageableUtil.fromRequest(request);
-        return  new EntityResponseHandler<>(orderRepository.findAll(pageable)
+
+        Page<Order> orders ;
+        if(user.getRole()== ROLE.USER){
+            orders = orderRepository.findAllByUser(user,pageable);
+        }else {
+            orders= orderRepository.findAll(pageable);
+        }
+        return  new EntityResponseHandler<>(orders
                 .map(this::convertToOrderResponse));
     }
 

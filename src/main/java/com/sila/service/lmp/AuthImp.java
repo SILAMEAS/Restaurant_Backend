@@ -61,8 +61,9 @@ public class AuthImp implements AuthService {
 
         userRepository.save(newUser);
 
-        restaurantService.autoCreateRestaurantAsDefault(newUser);
-
+        if(request.getRole()==ROLE.OWNER){
+            restaurantService.autoCreateRestaurantAsDefault(newUser);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }

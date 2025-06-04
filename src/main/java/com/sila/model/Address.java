@@ -42,6 +42,4 @@ public class Address {
     @JoinColumn(name ="user_id",referencedColumnName = "id",foreignKey = @ForeignKey(name = "fk_user_address"))
     @ManyToOne
     private User user;
-
-
 }
