@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class UpdateUserDateStartup implements ApplicationListener<ApplicationReadyEvent> {
+public class UserMigrateStartup implements ApplicationListener<ApplicationReadyEvent> {
 
     private final UserRepository userRepository;
 
-    public UpdateUserDateStartup(UserRepository userRepository) {
+    public UserMigrateStartup(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

@@ -7,6 +7,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +32,6 @@ import java.util.List;
 @Builder
 @Setter
 @Getter
-@ToString
 public class Food {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,7 +45,7 @@ public class Food {
 
     private double tax = 0;
     private double discount = 0;
-    private Double priceWithDiscount = 0.0; // ✅ Stored in DB
+    private double priceWithDiscount = 0.0; // ✅ Stored in DB
 
     private Date creationDate;
 
@@ -56,7 +56,7 @@ public class Food {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
@@ -77,6 +77,10 @@ public class Food {
         double foodDiscount = this.discount;
         double restaurantDiscount = (restaurant != null) ? restaurant.getRestaurantDiscount() : 0;
         return foodDiscount + restaurantDiscount;
+    }
+    @Transient
+    public double getPriceWithDiscount() {
+        return getPriceWithDiscountCalculated();
     }
 
     // Getters, setters, and builder as needed

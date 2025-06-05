@@ -72,6 +72,8 @@ public class FoodImp implements FoodService {
                 .restaurant(restaurant)
                 .build();
 
+        food.setPriceWithDiscount(food.getPriceWithDiscountCalculated());
+
         List<ImageFood> imageEntities = cloudinaryService.uploadImagesToCloudinary(
                 imageFiles,
                 food,
@@ -109,6 +111,13 @@ public class FoodImp implements FoodService {
         Utils.setIfNotNull(foodReq.getDescription(), food::setDescription);
         Utils.setIfNotNull(FoodType.valueOf(foodReq.getFoodType()), food::setFoodtype);
         Utils.setIfNotNull(foodReq.isAvailable(), food::setAvailable);
+
+        // Recalculate and set
+        food.setPriceWithDiscount(food.getPriceWithDiscountCalculated());
+
+
+
+
 
         cloudinaryService.updateEntityImages(
                 food,

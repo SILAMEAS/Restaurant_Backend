@@ -33,7 +33,7 @@ public class FoodResponse implements Serializable {
     private FoodType foodType;
     private boolean available;
     private double deliveryFee;
-    private double discount;
+    private DiscountResponse discount;
 
     private boolean open;
 
@@ -68,7 +68,11 @@ public class FoodResponse implements Serializable {
                 .deliveryFee(food.getRestaurant().getDeliveryFee())
                 .priceDiscount(food.getPriceWithDiscount())
                 .open(food.getRestaurant().isOpen())
-                .discount(food.getTotalDiscount())
+                .discount(DiscountResponse.builder()
+                        .food(food.getDiscount())
+                        .restaurant(food.getRestaurant().getRestaurantDiscount())
+                        .total(food.getTotalDiscount())
+                        .build())
                 .build();
     }
 }
