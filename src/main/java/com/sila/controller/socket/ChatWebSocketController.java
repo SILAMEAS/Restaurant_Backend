@@ -27,8 +27,8 @@ public class ChatWebSocketController {
     private final ChatRoomService chatRoomService;
 
     @MessageMapping("/chat/send")
-    @SendTo("/topic/messages")  // Changed this line
-    public ChatMessageDTO sendMessage(@Payload ChatMessageDTO dto) {
+//    @SendTo("/topic/messages")  // Changed this line
+    public void sendMessage(@Payload ChatMessageDTO dto) {
         User sender = userService.getById(dto.getSenderId());
         ChatRoom room = chatRoomRepository.findByRoomId(dto.getRoomId())
                 .orElseThrow(() -> new RuntimeException("Chat room not found"));
@@ -53,6 +53,5 @@ public class ChatWebSocketController {
         // Explicitly send to the topic
         messagingTemplate.convertAndSend("/topic/messages", responseDto);
 
-        return responseDto;
     }
 }
