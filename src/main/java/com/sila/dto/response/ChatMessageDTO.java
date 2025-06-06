@@ -1,14 +1,15 @@
-package com.sila.dto;
+package com.sila.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMessageDTO {
+public class ChatMessageDTO implements Serializable {
     private String content;
     private Long senderId;
     private String roomId;

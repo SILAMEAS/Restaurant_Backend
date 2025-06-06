@@ -1,7 +1,6 @@
 package com.sila.service;
 
 import com.sila.dto.EntityResponseHandler;
-import com.sila.dto.request.SignUpRequest;
 import com.sila.dto.request.UpdateUserRequest;
 import com.sila.dto.request.UserRequest;
 import com.sila.dto.response.UserResponse;

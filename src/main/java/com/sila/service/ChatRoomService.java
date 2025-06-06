@@ -5,4 +5,5 @@ import com.sila.model.ChatRoom;
 public interface ChatRoomService {
 
     ChatRoom createOrGetChatRoom(Long senderId,Long receiverId);
+    ChatRoom findById(Long chatRoomId);
 }

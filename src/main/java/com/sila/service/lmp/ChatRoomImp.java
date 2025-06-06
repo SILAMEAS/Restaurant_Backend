@@ -1,5 +1,6 @@
 package com.sila.service.lmp;
 
+import com.sila.exception.NotFoundException;
 import com.sila.model.ChatRoom;
 import com.sila.model.User;
 import com.sila.repository.ChatRoomRepository;
@@ -35,5 +36,10 @@ public class ChatRoomImp implements ChatRoomService {
                     room.setMembers(new HashSet<>(List.of(sender, receiver)));
                     return chatRoomRepository.save(room);
                 });
+    }
+
+    @Override
+    public ChatRoom findById(Long chatRoomId) {
+        return chatRoomRepository.findById(chatRoomId).orElseThrow(()->new NotFoundException("not found room with this id"));
     }
 }
