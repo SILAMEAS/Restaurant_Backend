@@ -73,7 +73,8 @@ public class AppConfig {
             cfg.setAllowedOrigins(Arrays.asList(
                     "http://localhost:3033",
                     "http://localhost:3000",
-                    "http://localhost:5000"
+                    "http://localhost:5000",
+                    "https://lacy-restaurant.vercel.app"
             ));
             cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
             cfg.setAllowCredentials(true);
