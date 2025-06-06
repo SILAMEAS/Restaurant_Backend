@@ -1,6 +1,9 @@
 server:
   port: ${SERVER_PORT:5000}
   address: 0.0.0.0
+  tomcat:
+    max-http-form-post-size: 20MB
+    max-swallow-size: 20MB
 
 spring:
   jmx:
@@ -31,6 +34,7 @@ spring:
 logging:
   level:
     org.springframework.security: warn
+    org.springframework.web.socket: trace
 
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}

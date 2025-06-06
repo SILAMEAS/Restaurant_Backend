@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,9 +35,11 @@ public class AppConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/api/auth/**" // allow login/register
+                                "/api/auth/**",
+                                "/ws-chat/**",  // Allow WebSocket endpoint
+                                "/topic/**"     // Allow STOMP destinations
                         ).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll() // Allow GET requests to /api/**
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .requestMatchers("/api/admin/**").hasAnyAuthority("OWNER", "ADMIN")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
@@ -67,17 +70,21 @@ public class AppConfig {
     private CorsConfigurationSource corsConfigrationSource() {
         return request -> {
             CorsConfiguration cfg = new CorsConfiguration();
-            // Allow all origins using wildcard
-            cfg.setAllowedOrigins(Collections.singletonList("*"));
-            // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
-            cfg.setAllowedMethods(Collections.singletonList("*"));
-            // Allow credentials (e.g., cookies, authorization headers)
-//            cfg.setAllowCredentials(true);
-            // Allow all headers
-            cfg.setAllowedHeaders(Collections.singletonList("*"));
-            // Expose specific headers to the client
-            cfg.setExposedHeaders(List.of("Authorization"));
-            // Set the max age for preflight requests
+            cfg.setAllowedOrigins(Arrays.asList(
+                    "http://localhost:3033",
+                    "http://localhost:3000",
+                    "http://localhost:5000"
+            ));
+            cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            cfg.setAllowCredentials(true);
+            cfg.setAllowedHeaders(Arrays.asList(
+                    "Authorization",
+                    "Content-Type",
+                    "Accept",
+                    "X-Requested-With",
+                    "remember-me"
+            ));
+            cfg.setExposedHeaders(Arrays.asList("Authorization"));
             cfg.setMaxAge(3600L);
             return cfg;
         };
