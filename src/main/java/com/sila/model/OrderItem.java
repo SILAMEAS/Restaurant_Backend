@@ -27,7 +27,7 @@ public class OrderItem {
 
     private int quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade= CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "food_id") // Foreign key to Food table
     private Food food;
 

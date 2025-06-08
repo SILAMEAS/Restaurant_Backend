@@ -11,4 +11,6 @@ public interface OrderService {
     OrderResponse placeOrder(Long cartId);
 
     String deletePlaceOrder(Long orderId);
+
+    String deleteAllPlaceOrderInRestaurant();
 }

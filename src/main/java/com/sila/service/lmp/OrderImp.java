@@ -17,6 +17,7 @@ import com.sila.repository.CartRepository;
 import com.sila.repository.OrderItemRepository;
 import com.sila.repository.OrderRepository;
 import com.sila.service.OrderService;
+import com.sila.service.RestaurantService;
 import com.sila.util.PageableUtil;
 import com.sila.util.enums.PAYMENT_STATUS;
 import com.sila.util.enums.ROLE;
@@ -39,16 +40,21 @@ public class OrderImp implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final ModelMapper modelMapper;
     private final CartItemRepository cartItemRepository;
+    private final RestaurantService restaurantService;
 
     @Override
     public EntityResponseHandler<OrderResponse> getAll(PaginationRequest request) {
 
         var user = UserContext.getUser();
+
         Pageable pageable = PageableUtil.fromRequest(request);
 
         Page<Order> orders ;
         if(user.getRole()== ROLE.USER){
             orders = orderRepository.findAllByUser(user,pageable);
+        }else if(user.getRole()== ROLE.OWNER){
+            var restaurant = restaurantService.findRestaurantByOwner(user);
+            orders= orderRepository.findAllByRestaurant(restaurant,pageable);
         }else {
             orders= orderRepository.findAll(pageable);
         }
@@ -117,6 +123,15 @@ public class OrderImp implements OrderService {
         );
         orderRepository.deleteById(order.getId());
         return "Order has been delete";
+    }
+
+    @Transactional
+    @Override
+    public String deleteAllPlaceOrderInRestaurant() {
+        var restaurant = restaurantService.findRestaurantByOwner(UserContext.getUser());
+        var orders = orderRepository.findAllByRestaurant(restaurant);
+        orderRepository.deleteAll(orders);
+        return "All orders have been deleted in restaurant";
     }
 
     private OrderResponse convertToOrderResponse(Order order) {

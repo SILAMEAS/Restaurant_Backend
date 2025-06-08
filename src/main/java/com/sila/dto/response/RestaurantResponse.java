@@ -28,6 +28,7 @@ public class RestaurantResponse{
     private int rating;
     private String ownerName;
 
+
     private double deliveryFee;
 
     private double discount;

@@ -36,9 +36,16 @@ public class OrderController {
     public ResponseEntity<OrderResponse> placeOrder(@PathVariable Long cartId) {
         return ResponseEntity.ok(orderService.placeOrder(cartId));
     }
+    @PreAuthorization({ROLE.OWNER})
+    @DeleteMapping("/bulk")
+    public ResponseEntity<String> deleteAllOrderInRestaurantAsOwner() {
+        return ResponseEntity.ok(orderService.deleteAllPlaceOrderInRestaurant());
+    }
     @DeleteMapping("{orderId}")
     public ResponseEntity<String> deleteOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.deletePlaceOrder(orderId));
     }
+
+
 
 }

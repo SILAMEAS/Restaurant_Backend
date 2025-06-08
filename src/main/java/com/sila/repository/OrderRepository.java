@@ -1,6 +1,7 @@
 package com.sila.repository;
 
 import com.sila.model.Order;
+import com.sila.model.Restaurant;
 import com.sila.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,4 +16,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<User> findUsersByRestaurantId(@Param("restaurantId") Long restaurantId);
 
     Page<Order> findAllByUser(User user, Pageable pageable);
+
+    void deleteAllByRestaurant(Restaurant restaurant);
+
+    List<Order> findAllByRestaurant(Restaurant restaurant);
+
+    Page<Order> findAllByRestaurant(Restaurant restaurant,Pageable pageable);
 }
