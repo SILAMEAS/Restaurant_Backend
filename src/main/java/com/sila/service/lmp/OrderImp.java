@@ -132,7 +132,9 @@ public class OrderImp implements OrderService {
                         item.getId(),
                         item.getFood().getId(),
                         item.getQuantity(),
-                        item.getFood().getPrice() * item.getQuantity()
+                        item.getFood().getPrice() * item.getQuantity(),
+                        item.getFood().getName(),
+                        item.getFood().getPrice()
                 ))
                 .toList());
         return response;

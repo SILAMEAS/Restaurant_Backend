@@ -7,6 +7,7 @@ import com.sila.dto.request.FoodRequest;
 import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.request.SearchRequest;
 import com.sila.dto.response.FoodResponse;
+import com.sila.dto.response.MessageResponse;
 import com.sila.model.Category;
 import com.sila.model.Food;
 import com.sila.model.Restaurant;
@@ -19,6 +20,7 @@ import com.sila.util.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.bridge.Message;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -58,7 +60,7 @@ public class FoodController {
 
     @PreAuthorization({ROLE.OWNER})
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> createFood(
+    public ResponseEntity<MessageResponse> createFood(
             @Validated(OnCreate.class) @ModelAttribute FoodRequest foodRequest,
             @RequestParam("images") List<MultipartFile> imageFiles) throws Exception {
 
@@ -66,7 +68,7 @@ public class FoodController {
         Category category = categoryService.getById(foodRequest.getCategoryId());
         foodService.create(foodRequest, category, restaurant, imageFiles);
 
-        return new ResponseEntity<>("Food Created", HttpStatus.CREATED);
+        return new ResponseEntity<>(MessageResponse.builder().message("food create").status(201).build(), HttpStatus.CREATED);
     }
     @PreAuthorization({ROLE.OWNER})
     @DeleteMapping("/{id}")

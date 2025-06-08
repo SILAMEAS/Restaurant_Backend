@@ -15,5 +15,9 @@ public class OrderItemResponse {
     private int quantity;
     private double subtotal;
 
+    private String name;
+
+    private double price;
+
     // Getters and setters
 }
