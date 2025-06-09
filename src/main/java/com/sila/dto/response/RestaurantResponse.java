@@ -28,6 +28,8 @@ public class RestaurantResponse{
     private int rating;
     private String ownerName;
 
+    private Long ownerId;
+
 
     private double deliveryFee;
 

@@ -3,7 +3,6 @@ package com.sila.controller.socket;
 import com.sila.dto.response.ChatMessageDTO;
 import com.sila.model.ChatRoom;
 import com.sila.model.User;
-import com.sila.repository.ChatMessageRepository;
 import com.sila.repository.ChatRoomRepository;
 import com.sila.service.ChatMessageService;
 import com.sila.service.UserService;
@@ -19,7 +18,6 @@ public class ChatWebSocketController {
     private final SimpMessageSendingOperations messagingTemplate;
     private final UserService userService;
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatMessageRepository chatMessageRepository;
     private final ChatMessageService chatMessageService;
 
     @MessageMapping("/chat/send")

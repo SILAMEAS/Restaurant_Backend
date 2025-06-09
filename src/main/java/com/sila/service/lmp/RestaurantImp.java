@@ -312,6 +312,7 @@ public class RestaurantImp implements RestaurantService {
                         .build())
                 .imageUrls(imageDetails)
                 .ownerName(restaurant.getOwner().getFullName())
+                .ownerId(restaurant.getOwner().getId())
                 .deliveryFee(restaurant.getDeliveryFee())
                 .discount(restaurant.getRestaurantDiscount())
                 .build();
