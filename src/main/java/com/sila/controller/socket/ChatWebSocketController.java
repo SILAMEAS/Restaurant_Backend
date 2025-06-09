@@ -1,7 +1,6 @@
 package com.sila.controller.socket;
 
 import com.sila.dto.response.ChatMessageDTO;
-import com.sila.model.ChatMessage;
 import com.sila.model.ChatRoom;
 import com.sila.model.User;
 import com.sila.repository.ChatMessageRepository;
@@ -13,8 +12,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
-
-import java.time.LocalDateTime;
 @Controller
 @RequiredArgsConstructor
 public class ChatWebSocketController {

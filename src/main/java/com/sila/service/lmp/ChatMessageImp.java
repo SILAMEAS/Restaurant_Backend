@@ -3,6 +3,7 @@ package com.sila.service.lmp;
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.response.ChatMessageDTO;
+import com.sila.dto.response.ChatRoomResponse;
 import com.sila.exception.NotFoundException;
 import com.sila.model.ChatMessage;
 import com.sila.model.ChatRoom;
@@ -14,7 +15,11 @@ import com.sila.util.PageableUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -44,4 +49,6 @@ public class ChatMessageImp implements ChatMessageService {
         Pageable pageable = PageableUtil.fromRequest(request);
         return new EntityResponseHandler<>(chatMessageRepository.findAllByRoom(pageable,room).map(re -> this.modelMapper.map(re, ChatMessageDTO.class)));
     }
+
+
 }
