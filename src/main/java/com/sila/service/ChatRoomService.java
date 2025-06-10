@@ -11,4 +11,8 @@ public interface ChatRoomService {
     ChatRoom findById(Long chatRoomId);
     Optional<ChatRoom> findByRoomId(String roomId);
 
+    String deleteAllRoom();
+
+    String deleteAllRoomByUser();
+
 }
