@@ -6,6 +6,7 @@ import com.sila.model.User;
 import com.sila.repository.ChatRoomRepository;
 import com.sila.service.ChatMessageService;
 import com.sila.service.UserService;
+import com.sila.service.lmp.ChatRoomImp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -27,8 +28,6 @@ public class ChatWebSocketController {
                 .orElseThrow(() -> new RuntimeException("Chat room not found"));
         // Explicitly send to the topic
         messagingTemplate.convertAndSend("/topic/messages", chatMessageService.createMessage(dto,room,sender));
-
-
 
     }
 }

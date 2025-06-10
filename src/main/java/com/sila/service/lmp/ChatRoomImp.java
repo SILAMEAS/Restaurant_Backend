@@ -1,7 +1,5 @@
 package com.sila.service.lmp;
 
-import com.sila.config.context.UserContext;
-import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.response.ChatRoomResponse;
 import com.sila.exception.NotFoundException;
 import com.sila.model.ChatRoom;
@@ -10,11 +8,8 @@ import com.sila.repository.ChatRoomRepository;
 import com.sila.service.ChatRoomService;
 import com.sila.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,14 +24,6 @@ public class ChatRoomImp implements ChatRoomService {
         return chatRoomRepository.findById(chatRoomId).orElseThrow(()->new NotFoundException("not found room with this id"));
     }
 
-    @Override
-    public EntityResponseHandler<ChatRoomResponse> findRoomAll() {
-        var user = UserContext.getUser();
-
-        var chatRooms = chatRoomRepository.findAllByMembers((Set<User>) user);
-
-        return null;
-    }
 
     @Override
     public Optional<ChatRoom> findByRoomId(String roomId) {
