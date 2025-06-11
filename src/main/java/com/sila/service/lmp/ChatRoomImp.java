@@ -1,16 +1,19 @@
 package com.sila.service.lmp;
 
 import com.sila.config.context.UserContext;
+import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.response.ChatRoomResponse;
 import com.sila.exception.NotFoundException;
 import com.sila.model.ChatRoom;
 import com.sila.model.User;
 import com.sila.repository.ChatMessageRepository;
 import com.sila.repository.ChatRoomRepository;
+import com.sila.repository.UserRepository;
 import com.sila.service.ChatRoomService;
 import com.sila.service.UserService;
+import com.sila.util.PageableUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -22,6 +25,7 @@ public class ChatRoomImp implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
     public ChatRoom findById(Long chatRoomId) {
@@ -69,10 +73,15 @@ public class ChatRoomImp implements ChatRoomService {
     }
 
     @Override
+    public EntityResponseHandler<ChatRoomResponse> findAllByMember(PaginationRequest request) {
+        var user = UserContext.getUser();
+        var chatRooms = chatRoomRepository.findAllByMembers(PageableUtil.fromRequest(request),Set.of(user));
+        return new EntityResponseHandler<>(chatRooms.map(ChatRoomResponse::toResponse));
+    }
+
+    @Override
     public ChatRoomResponse createOrGet(Long senderId,Long receiverId) {
-        String roomId = senderId < receiverId
-                ? senderId + "_" + receiverId
-                : receiverId + "_" + senderId;
+        String roomId = ChatRoomService.generateRoom(senderId,receiverId);
 
         Optional<ChatRoom> existingRoom = findByRoomId(roomId);
         if (existingRoom.isPresent()) {
@@ -91,5 +100,6 @@ public class ChatRoomImp implements ChatRoomService {
         ChatRoom saved = chatRoomRepository.save(room);
         return ChatRoomResponse.toResponse(saved);
     }
+
 
 }

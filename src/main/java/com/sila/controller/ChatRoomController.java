@@ -1,5 +1,7 @@
 package com.sila.controller;
 
+import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.response.ChatRoomResponse;
 import com.sila.repository.ChatRoomRepository;
 import com.sila.service.ChatRoomService;
@@ -9,11 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,9 +29,8 @@ public class ChatRoomController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ChatRoomResponse>> listAllRooms() {
-        var rooms = chatRoomRepository.findAll();
-        return ResponseEntity.ok(rooms.stream().map(ChatRoomResponse::toResponse).toList());
+    public ResponseEntity<EntityResponseHandler<ChatRoomResponse>> listAllRooms(@ModelAttribute PaginationRequest request) {
+        return ResponseEntity.ok(chatRoomService.findAllByMember(request));
     }
 
     @Transactional

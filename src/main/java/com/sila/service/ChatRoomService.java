@@ -1,5 +1,7 @@
 package com.sila.service;
 
+import com.sila.dto.EntityResponseHandler;
+import com.sila.dto.request.PaginationRequest;
 import com.sila.dto.response.ChatRoomResponse;
 import com.sila.model.ChatRoom;
 
@@ -14,5 +16,13 @@ public interface ChatRoomService {
     String deleteAllRoom();
 
     String deleteAllRoomByUser();
+
+    EntityResponseHandler<ChatRoomResponse> findAllByMember(PaginationRequest request);
+
+    public static String generateRoom(Long senderId,Long receiverId){
+        return senderId < receiverId
+                ? senderId + "_" + receiverId
+                : receiverId + "_" + senderId;
+    }
 
 }
