@@ -24,10 +24,7 @@ public class ChatWebSocketController {
     @MessageMapping("/chat/send")
     public void sendMessage(@Payload ChatMessageDTO dto) {
         User sender = userService.getById(dto.getSenderId());
-        var users= dto.getRoomId().split("_");
-        Long senderId = Long.parseLong(users[0]);
-        Long receiverId = Long.parseLong(users[1]);
-        String roomId = ChatRoomService.generateRoom(senderId,receiverId);
+        String roomId = ChatRoomService.generateRoom(dto.getRoomId());
 
         ChatRoom room = chatRoomRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new RuntimeException("Chat room not found"));

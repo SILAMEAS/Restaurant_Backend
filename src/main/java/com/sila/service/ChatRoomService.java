@@ -19,7 +19,10 @@ public interface ChatRoomService {
 
     EntityResponseHandler<ChatRoomResponse> findAllByMember(PaginationRequest request);
 
-    public static String generateRoom(Long senderId,Long receiverId){
+    public static String generateRoom(String roomId){
+        var users= roomId.split("_");
+        Long senderId = Long.parseLong(users[0]);
+        Long receiverId = Long.parseLong(users[1]);
         return senderId < receiverId
                 ? senderId + "_" + receiverId
                 : receiverId + "_" + senderId;

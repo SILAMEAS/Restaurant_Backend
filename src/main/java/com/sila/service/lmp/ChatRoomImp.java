@@ -81,7 +81,7 @@ public class ChatRoomImp implements ChatRoomService {
 
     @Override
     public ChatRoomResponse createOrGet(Long senderId,Long receiverId) {
-        String roomId = ChatRoomService.generateRoom(senderId,receiverId);
+        String roomId = ChatRoomService.generateRoom(senderId+"_"+receiverId);
 
         Optional<ChatRoom> existingRoom = findByRoomId(roomId);
         if (existingRoom.isPresent()) {
