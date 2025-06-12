@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessageDTO implements Serializable {
+    private Long id;
     private String content;
     private Long senderId;
     private String roomId;

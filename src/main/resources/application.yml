@@ -22,8 +22,8 @@ spring:
       ddl-auto: ${DDL_AUTO:update}
     properties:
       hibernate:
-        show_sql: ${SHOW_SQL:true}
-        format_sql: ${FORMAT_SQL:true}
+        show_sql: ${SHOW_SQL:false}
+        format_sql: ${FORMAT_SQL:false}
 
   servlet:
     multipart:
