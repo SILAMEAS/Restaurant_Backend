@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +16,7 @@ public class ChatMessageDTO implements Serializable {
     private String content;
     private Long senderId;
     private String roomId;
-    private LocalDateTime timestamp;
+    private Date timestamp;
     private String senderName;  // Added this field
 
 }

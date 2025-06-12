@@ -10,8 +10,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Setter
@@ -32,5 +34,6 @@ public class ChatMessage {
     @ManyToOne
     private ChatRoom room;
 
-    private LocalDateTime timestamp = LocalDateTime.now();
+    @CreationTimestamp
+    private Date timestamp ;
 }
