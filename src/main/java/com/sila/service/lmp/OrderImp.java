@@ -135,10 +135,11 @@ public class OrderImp implements OrderService {
     }
 
     private OrderResponse convertToOrderResponse(Order order) {
+        Restaurant restaurant = order.getRestaurant();
         OrderResponse response = new OrderResponse();
         response.setId(order.getId());
         response.setUser(this.modelMapper.map(order.getUser(), UserResponse.class));
-        response.setRestaurant(this.modelMapper.map(order.getRestaurant(), RestaurantResponse.class));
+        response.setRestaurant(RestaurantImp.mapToRestaurantResponse(restaurant));
         response.setTotalAmount(order.getTotalAmount());
         response.setCreatedAt(order.getCreatedAt());
         response.setStatus(order.getStatus().name());
