@@ -6,6 +6,19 @@ server:
     max-swallow-size: 20MB
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: las239879@gmail.com
+    password: oyfgznsxxcmbbvbg
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
   jmx:
     enabled: false
   main:
