@@ -11,6 +11,7 @@ import com.sila.repository.ChatMessageRepository;
 import com.sila.repository.ChatRoomRepository;
 import com.sila.service.ChatMessageService;
 import com.sila.service.ChatRoomService;
+import com.sila.service.UserService;
 import com.sila.util.PageableUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -23,10 +24,15 @@ public class ChatMessageImp implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ModelMapper modelMapper;
+    private final UserService userService;
 
     @Override
-    public ChatMessageDTO createMessage(ChatMessageDTO request,
-                              ChatRoom room , User sender) {
+    public ChatMessageDTO createMessage(ChatMessageDTO request) {
+        User sender = userService.getById(request.getSenderId());
+        String roomId = ChatRoomService.generateRoom(request.getRoomId());
+
+        ChatRoom room = chatRoomRepository.findByRoomId(roomId)
+                .orElseThrow(() -> new RuntimeException("Chat room not found"));
         ChatMessage cartMessage = ChatMessage.builder()
                 .content(request.getContent())
                 .room(room)

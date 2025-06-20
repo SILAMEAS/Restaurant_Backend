@@ -9,8 +9,7 @@ import com.sila.model.User;
 
 public interface ChatMessageService {
 
-    ChatMessageDTO createMessage(ChatMessageDTO request,
-                                 ChatRoom room, User sender);
+    ChatMessageDTO createMessage(ChatMessageDTO request);
 
     EntityResponseHandler<ChatMessageDTO> findAll(String roomId, PaginationRequest request);
 
