@@ -1,3 +1,118 @@
+# Restaurant Backend API
+
+A robust backend RESTful API for managing a restaurant system built with **Spring Boot**.
+
+---
+
+## Table of Contents
+
+- [About](#about)  
+- [Features](#features)  
+- [Tech Stack](#tech-stack)  
+- [Getting Started](#getting-started)  
+  - [Prerequisites](#prerequisites)  
+  - [Installation](#installation)  
+  - [Running the Application](#running-the-application)  
+- [API Documentation](#api-documentation)  
+- [Project Structure](#project-structure)  
+- [Contributing](#contributing)  
+- [License](#license)  
+- [Contact](#contact)  
+
+---
+
+## About
+
+This backend API is designed to manage various aspects of a restaurant, including menu management, order processing, table reservations, and user authentication. The system provides secure, scalable REST endpoints, making it suitable for integration with web or mobile frontends.
+
+---
+
+## Features
+
+- User registration, login, and role-based access control (e.g., admin, staff, customer)  
+- CRUD operations for menu items, categories, and ingredients  
+- Order management with status tracking  
+- Table management and reservation system  
+- Secure password hashing using BCrypt  
+- JWT-based authentication and authorization  
+- Exception handling and input validation  
+- Integration with PostgreSQL (or other relational databases)  
+- API documentation with Swagger/OpenAPI  
+
+---
+
+## Tech Stack
+
+| Technology           | Description                           |
+|---------------------|-------------------------------------|
+| Java 17+            | Programming language                 |
+| Spring Boot         | Application framework                |
+| Spring Security     | Authentication & Authorization      |
+| Spring Data JPA     | Database access layer                |
+| PostgreSQL          | Relational database                  |
+| Maven               | Build and dependency management     |
+| JWT                 | JSON Web Tokens for security        |
+| Swagger/OpenAPI     | API documentation                   |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Java Development Kit (JDK) 17 or higher  
+- Maven 3.6+  
+- PostgreSQL installed and running  
+- IDE such as IntelliJ IDEA or Eclipse (optional)  
+
+### Installation
+
+1. Clone this repository:
+
+   ```bash
+   git clone https://github.com/SILAMEAS/Restaurant_Backend.git
+   cd Restaurant_Backend
+
+    spring.datasource.url=jdbc:postgresql://localhost:5432/restaurant_db
+    spring.datasource.username=your_db_username
+    spring.datasource.password=your_db_password
+    spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.show-sql=true
+    
+    jwt.secret=your_jwt_secret_key
+    jwt.expirationMs=3600000
+
+    mvn clean install
+
+    mvn spring-boot:run
+
+    http://localhost:8080/swagger-ui/index.html
+
+### Project Structure
+
+
+    src/
+     ├─ main/
+     │   ├─ java/com/yourorg/restaurant/
+     │   │    ├─ controller/       # REST Controllers (API endpoints)
+     │   │    ├─ service/          # Business logic layer
+     │   │    ├─ repository/       # Database repositories (JPA)
+     │   │    ├─ model/            # JPA entities and domain models
+     │   │    ├─ security/         # JWT & Spring Security configuration
+     │   │    ├─ exception/        # Custom exceptions and handlers
+     │   │    └─ config/           # App configuration classes
+     │   └─ resources/
+     │        ├─ application.properties  # Spring Boot config
+     │        └─ db/migration               # Flyway or Liquibase migration scripts (if used)
+
+
+
+
+
+
+
+
+
 ### Integrate sprint boot and cloudinary
 
 ✅ 1. Create a Cloudinary Account
