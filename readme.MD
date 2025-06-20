@@ -36,20 +36,21 @@ A scalable, production-ready RESTful API for a restaurant management system buil
 
 ## 📁 Project Structure
 
-Restaurant_Backend/
-├── src/
-│ ├── main/
-│ │ ├── java/com/example/restaurant/
-│ │ │ ├── config/ # Security and app config
-│ │ │ ├── controller/ # REST Controllers
-│ │ │ ├── dto/ # Data Transfer Objects
-│ │ │ ├── entity/ # JPA Entities
-│ │ │ ├── repository/ # Repositories
-│ │ │ ├── service/ # Business logic
-│ │ │ └── RestaurantApplication.java
-│ └── resources/
-│ ├── application.yml # App config
-│ └── data.sql # Sample seed data
+
+    Restaurant_Backend/
+    ├── src/
+    │ ├── main/
+    │ │ ├── java/com/example/restaurant/
+    │ │ │ ├── config/ # Security and app config
+    │ │ │ ├── controller/ # REST Controllers
+    │ │ │ ├── dto/ # Data Transfer Objects
+    │ │ │ ├── entity/ # JPA Entities
+    │ │ │ ├── repository/ # Repositories
+    │ │ │ ├── service/ # Business logic
+    │ │ │ └── RestaurantApplication.java
+    │ └── resources/
+    │ ├── application.yml # App config
+    │ └── data.sql # Sample seed data
 
 
 
