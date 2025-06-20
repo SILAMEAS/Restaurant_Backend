@@ -3,7 +3,7 @@ package com.sila.service;
 
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.PaginationRequest;
-import com.sila.dto.response.ChatMessageDTO;
+import com.sila.dto.response.websocket.ChatMessageDTO;
 import com.sila.model.ChatRoom;
 import com.sila.model.User;
 

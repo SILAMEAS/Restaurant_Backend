@@ -2,7 +2,7 @@ package com.sila.service.lmp;
 
 import com.sila.dto.EntityResponseHandler;
 import com.sila.dto.request.PaginationRequest;
-import com.sila.dto.response.ChatMessageDTO;
+import com.sila.dto.response.websocket.ChatMessageDTO;
 import com.sila.exception.NotFoundException;
 import com.sila.model.ChatMessage;
 import com.sila.model.ChatRoom;
