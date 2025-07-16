@@ -15,6 +15,7 @@ import com.sila.util.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -37,7 +38,7 @@ import java.util.List;
 @Slf4j
 public class CategoryController {
     private final CategoryService categoryService;
-    private final FoodService foodService;
+    private final ModelMapper modelMapper;
 
     @GetMapping()
     public ResponseEntity<EntityResponseHandler<CategoryResponse>> getCategories(@ModelAttribute PaginationRequest request) {
@@ -51,8 +52,8 @@ public class CategoryController {
     }
 
     @GetMapping("/restaurant/{restaurantId}")
-    public ResponseEntity<List<Category>> getRestaurantCategory(@PathVariable Long restaurantId) {
-        List<Category> categoriesInRestaurant = categoryService.getsByResId(restaurantId);
+    public ResponseEntity<List<CategoryResponse>> getRestaurantCategory(@PathVariable Long restaurantId) {
+        List<CategoryResponse> categoriesInRestaurant = categoryService.getsByResId(restaurantId).stream().map(f->modelMapper.map(f, CategoryResponse.class)).toList();
         return new ResponseEntity<>(categoriesInRestaurant, HttpStatus.OK);
     }
     @PreAuthorization({ROLE.ADMIN, ROLE.OWNER})
