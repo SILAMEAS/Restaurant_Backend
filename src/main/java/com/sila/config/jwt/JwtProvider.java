@@ -1,6 +1,5 @@
 package com.sila.config.jwt;
 
-import com.sila.util.constant.JwtConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

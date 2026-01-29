@@ -1,6 +1,6 @@
 package com.sila.config.custom;
 
-import com.sila.model.User;
+import com.sila.modules.profile.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

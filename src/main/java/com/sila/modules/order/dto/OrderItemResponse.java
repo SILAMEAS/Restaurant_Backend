@@ -1,0 +1,23 @@
+package com.sila.modules.order.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class OrderItemResponse {
+    private Long id;
+    private Long foodId;
+    private int quantity;
+    private double subtotal;
+
+    private String name;
+
+    private double price;
+
+    // Getters and setters
+}

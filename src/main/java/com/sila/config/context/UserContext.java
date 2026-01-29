@@ -1,7 +1,7 @@
 package com.sila.config.context;
 
-import com.sila.exception.BadRequestException;
-import com.sila.model.User;
+import com.sila.config.exception.BadRequestException;
+import com.sila.modules.profile.model.User;
 
 import java.util.Objects;
 import java.util.Optional;

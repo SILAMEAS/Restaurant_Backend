@@ -1,8 +1,8 @@
 package com.sila.config.custom;
 
-import com.sila.exception.NotFoundException;
-import com.sila.model.User;
-import com.sila.repository.UserRepository;
+import com.sila.config.exception.NotFoundException;
+import com.sila.modules.profile.model.User;
+import com.sila.modules.profile.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
