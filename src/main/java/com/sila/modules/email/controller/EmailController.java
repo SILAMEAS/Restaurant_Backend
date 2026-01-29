@@ -13,9 +13,13 @@ public class EmailController {
 
     private final EmailService emailService;
 
-    @GetMapping("/send")
-    public String sendTestEmail() {
-        emailService.sendEmail("silam8422@gmail.com", "Email for restaurant <Lucy>", "Hello from Spring Boot & Mailtrap!");
+    @GetMapping("/sent")
+    public String testEmail() {
+        emailService.sendEmail(
+                "las239879@gmail.com",
+                "Hello from Spring Boot",
+                "This email is sent via Lacy-Restaurant"
+        );
         return "Email sent!";
     }
 }
