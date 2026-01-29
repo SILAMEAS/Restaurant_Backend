@@ -38,21 +38,39 @@ A scalable, production-ready RESTful API for a restaurant management system buil
 
 ## 📁 Project Structure
 
+```text
+Restaurant_Backend/
+├── src/
+│   ├── main/
+│   │   ├── java/com/sila/
+│   │   │   ├── config/             # Configuration classes (Security, JWT, Cloudinary, etc.)
+│   │   │   ├── modules/            # Business logic modules (Modular Architecture)
+│   │   │   │   ├── address/        # Address management
+│   │   │   │   ├── cart/           # Shopping cart logic
+│   │   │   │   ├── category/       # Food categories
+│   │   │   │   ├── chat/           # Chat/Communication features
+│   │   │   │   ├── email/          # Email service
+│   │   │   │   ├── favorite/       # User favorites
+│   │   │   │   ├── food/           # Food/Menu management
+│   │   │   │   ├── order/          # Order processing
+│   │   │   │   ├── payment/        # Payment integration
+│   │   │   │   ├── profile/        # User profile & Authentication
+│   │   │   │   ├── resturant/      # Restaurant management
+│   │   │   │   └── upload/         # File upload service
+│   │   │   └── share/              # Shared utilities, DTOs, Enums, and Constants
+│   │   └── resources/
+│   │       ├── application.yml     # Application configuration
+│   │       └── ...
+└── ...
+```
 
-    Restaurant_Backend/
-    ├── src/
-    │ ├── main/
-    │ │ ├── java/com/example/restaurant/
-    │ │ │ ├── config/ # Security and app config
-    │ │ │ ├── controller/ # REST Controllers
-    │ │ │ ├── dto/ # Data Transfer Objects
-    │ │ │ ├── entity/ # JPA Entities
-    │ │ │ ├── repository/ # Repositories
-    │ │ │ ├── service/ # Business logic
-    │ │ │ └── RestaurantApplication.java
-    │ └── resources/
-    │ ├── application.yml # App config
-    │ └── data.sql # Sample seed data
+### 🧩 Module Internal Structure
+Each module under `com.sila.modules` typically follows this structure:
+- `controller/`: REST endpoints
+- `services/`: Business logic
+- `repository/`: Data access layer
+- `model/`: JPA entities
+- `dto/`: Data Transfer Objects (Requests/Responses)
 
 
 
