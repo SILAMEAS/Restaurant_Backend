@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "cloudinary")
+@ConfigurationProperties(prefix = "app.cloudinary")
 public class CloudinaryProperties {
     private String cloudName;
     private String apiKey;
