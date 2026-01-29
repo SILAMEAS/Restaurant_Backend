@@ -131,17 +131,17 @@ public class RestaurantImp implements RestaurantService {
                 ImageRestaurant::getPublicId
         );
 
-        Utils.setIfNotNull(updateRestaurant.getOwnerName(), s -> restaurant.getOwner().setFullName(s));
+        Utils.setValueSafe(updateRestaurant.getOwnerName(), s -> restaurant.getOwner().setFullName(s));
 
-        Utils.setIfNotNull(updateRestaurant.getName(), restaurant::setName);
-        Utils.setIfNotNull(updateRestaurant.getDescription(), restaurant::setDescription);
-        Utils.setIfNotNull(updateRestaurant.getCuisineType(), restaurant::setCuisineType);
-        Utils.setIfNotNull(updateRestaurant.getOpeningHours(), restaurant::setOpeningHours);
-        Utils.setIfNotNull(updateRestaurant.getContactInformation(), restaurant::setContactInformation);
-        Utils.setIfNotNull(updateRestaurant.getOpen(), restaurant::setOpen);
+        Utils.setValueSafe(updateRestaurant.getName(), restaurant::setName);
+        Utils.setValueSafe(updateRestaurant.getDescription(), restaurant::setDescription);
+        Utils.setValueSafe(updateRestaurant.getCuisineType(), restaurant::setCuisineType);
+        Utils.setValueSafe(updateRestaurant.getOpeningHours(), restaurant::setOpeningHours);
+        Utils.setValueSafe(updateRestaurant.getContactInformation(), restaurant::setContactInformation);
+        Utils.setValueSafe(updateRestaurant.getOpen(), restaurant::setOpen);
 
-        Utils.setIfNotNull(updateRestaurant.getDiscount(), restaurant::setRestaurantDiscount);
-        Utils.setIfNotNull(updateRestaurant.getDeliveryFee(), restaurant::setDeliveryFee);
+        Utils.setValueSafe(updateRestaurant.getDiscount(), restaurant::setRestaurantDiscount);
+        Utils.setValueSafe(updateRestaurant.getDeliveryFee(), restaurant::setDeliveryFee);
 
         // Handle Address
         if (updateRestaurant.getAddress() != null) {

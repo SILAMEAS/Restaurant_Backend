@@ -91,9 +91,9 @@ public class UserServiceImp implements UserService {
     public UserResponse update( UserRequest userReq) {
         var user = UserContext.getUser();
 
-        Utils.setIfNotNull(userReq.getProfile(), user::setProfile);
-        Utils.setIfNotNull(userReq.getAddresses(), user::setAddresses);
-        Utils.setIfNotNull(userReq.getFullName(), user::setFullName);
+        Utils.setValueSafe(userReq.getProfile(), user::setProfile);
+        Utils.setValueSafe(userReq.getAddresses(), user::setAddresses);
+        Utils.setValueSafe(userReq.getFullName(), user::setFullName);
 
 
         return this.modelMapper.map(userRepository.save(user), UserResponse.class);

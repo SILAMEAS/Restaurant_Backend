@@ -1,14 +1,14 @@
 package com.sila.modules.address.services;
 
 import com.sila.config.context.UserContext;
+import com.sila.config.exception.BadRequestException;
 import com.sila.modules.address.dto.AddressRequest;
 import com.sila.modules.address.dto.AddressResponse;
-import com.sila.config.exception.BadRequestException;
 import com.sila.modules.address.model.Address;
-import com.sila.modules.resturant.model.Restaurant;
 import com.sila.modules.address.repository.AddressRepository;
-import com.sila.modules.resturant.repository.RestaurantRepository;
 import com.sila.modules.profile.repository.UserRepository;
+import com.sila.modules.resturant.model.Restaurant;
+import com.sila.modules.resturant.repository.RestaurantRepository;
 import com.sila.share.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +32,9 @@ public class AddressImp implements AddressService {
 
     @Override
     public ResponseEntity<AddressResponse> add(AddressRequest req) throws Exception {
-        if(UserContext.getUser().getRole() == com.sila.share.enums.ROLE.OWNER){
+        if (UserContext.getUser().getRole() == com.sila.share.enums.ROLE.OWNER) {
             var addressOwner = addressRepository.existsAddressByUser(UserContext.getUser());
-            if(Boolean.TRUE.equals(addressOwner)){
+            if (Boolean.TRUE.equals(addressOwner)) {
                 throw new BadRequestException("You can't add address more than One for owner");
             }
         }
@@ -49,7 +49,7 @@ public class AddressImp implements AddressService {
                 .currentUsage(Boolean.TRUE.equals(req.getCurrentUsage()))
                 .build();
 
-            addressRepository.save(address);
+        addressRepository.save(address);
         return new ResponseEntity<>(modelMapper.map(address, AddressResponse.class), HttpStatus.CREATED);
     }
 
@@ -85,7 +85,7 @@ public class AddressImp implements AddressService {
 
     @Override
     public ResponseEntity<AddressResponse> byId(Long addressId) {
-        return new ResponseEntity<>(findByIdWithException(addressId),HttpStatus.OK);
+        return new ResponseEntity<>(findByIdWithException(addressId), HttpStatus.OK);
     }
 
     @Override
@@ -98,34 +98,43 @@ public class AddressImp implements AddressService {
     }
 
     @Override
-    public AddressResponse update(AddressRequest addressRequest,Long addressId) throws Exception {
+    public AddressResponse update(AddressRequest addressRequest, Long addressId) throws Exception {
+        /** -------------------------------------------------------
+         *               Checking User and Address
+         *  -------------------------------------------------------
+         **/
         final var user = userRepository.findById(UserContext.getUser().getId()).orElseThrow(() -> new BadRequestException("User not found"));
         final var address = addressRepository.findById(addressId).orElseThrow(() -> new BadRequestException("Address not found"));
 
-        Utils.setIfNotNull(addressRequest.getName(), address::setName);
-        Utils.setIfNotNull(addressRequest.getCity(), address::setCity);
-        Utils.setIfNotNull(addressRequest.getCountry(), address::setCountry);
-        Utils.setIfNotNull(addressRequest.getState(), address::setState);
-        Utils.setIfNotNull(addressRequest.getStreet(), address::setStreet);
+        /** -------------------------------------------------------
+         *               Set Safe data
+         *  -------------------------------------------------------
+         **/
+
+        Utils.setValueSafe(addressRequest.getName(), address::setName);
+        Utils.setValueSafe(addressRequest.getCity(), address::setCity);
+        Utils.setValueSafe(addressRequest.getCountry(), address::setCountry);
+        Utils.setValueSafe(addressRequest.getState(), address::setState);
+        Utils.setValueSafe(addressRequest.getStreet(), address::setStreet);
 
         addressRepository.updateAddressCurrentUsageMisMatch(user.getId(), false);
         addressRepository.updateAddressCurrentUsageMatch(addressId, true);
 
 
-        return this.modelMapper.map(address,AddressResponse.class);
+        return this.modelMapper.map(address, AddressResponse.class);
     }
 
     @Override
     public List<AddressResponse> getByUser() {
         List<Address> address = addressRepository.findAllByUser(UserContext.getUser());
-        return address.stream().map(a->this.modelMapper.map(a, AddressResponse.class)).toList();
+        return address.stream().map(a -> this.modelMapper.map(a, AddressResponse.class)).toList();
     }
 
-    private AddressResponse findByIdWithException(Long addressId){
+    private AddressResponse findByIdWithException(Long addressId) {
         Optional<Address> address = addressRepository.findById(addressId);
-        if(address.isEmpty()){
+        if (address.isEmpty()) {
             throw new BadRequestException("Address not found");
         }
-        return modelMapper.map(address,AddressResponse.class);
+        return modelMapper.map(address, AddressResponse.class);
     }
 }

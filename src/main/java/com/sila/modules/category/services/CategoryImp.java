@@ -66,12 +66,12 @@ public class CategoryImp implements CategoryService {
         Category category = getById(categoryId);
         if(request.getImage()!=null){
             var image = cloudinaryService.uploadFile(request.getImage());
-            Utils.setIfNotNull(image.get(KeyImageProperty.url.toString()),category::setUrl);
-            Utils.setIfNotNull(image.get(KeyImageProperty.publicId.toString()),category::setPublicId);
+            Utils.setValueSafe(image.get(KeyImageProperty.url.toString()),category::setUrl);
+            Utils.setValueSafe(image.get(KeyImageProperty.publicId.toString()),category::setPublicId);
         }
 
 
-        Utils.setIfNotNull(request.getName(),category::setName);
+        Utils.setValueSafe(request.getName(),category::setName);
 
         return categoryRepository.save(category);
     }

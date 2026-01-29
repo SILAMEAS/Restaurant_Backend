@@ -103,13 +103,13 @@ public class FoodImp implements FoodService {
         Category category = categoryRepository.findById(foodReq.getCategoryId()).orElseThrow(() -> new BadRequestException("category not found"));
 
         Food food = getById(foodId);
-        Utils.setIfNotNull(foodReq.getName(), food::setName);
-        Utils.setIfNotNull(foodReq.getDiscount(), food::setDiscount);
-        Utils.setIfNotNull(category, food::setCategory);
-        Utils.setIfNotNull(foodReq.getPrice(), food::setPrice);
-        Utils.setIfNotNull(foodReq.getDescription(), food::setDescription);
-        Utils.setIfNotNull(FoodType.valueOf(foodReq.getFoodType()), food::setFoodtype);
-        Utils.setIfNotNull(foodReq.isAvailable(), food::setAvailable);
+        Utils.setValueSafe(foodReq.getName(), food::setName);
+        Utils.setValueSafe(foodReq.getDiscount(), food::setDiscount);
+        Utils.setValueSafe(category, food::setCategory);
+        Utils.setValueSafe(foodReq.getPrice(), food::setPrice);
+        Utils.setValueSafe(foodReq.getDescription(), food::setDescription);
+        Utils.setValueSafe(FoodType.valueOf(foodReq.getFoodType()), food::setFoodtype);
+        Utils.setValueSafe(foodReq.isAvailable(), food::setAvailable);
 
         // Recalculate and set
         food.setPriceWithDiscount(food.getPriceWithDiscountCalculated());
