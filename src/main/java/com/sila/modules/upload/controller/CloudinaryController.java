@@ -1,5 +1,6 @@
 package com.sila.modules.upload.controller;
 
+import com.sila.modules.upload.KeyUploadResponse;
 import com.sila.modules.upload.dto.UploadResponse;
 import com.sila.config.exception.BadRequestException;
 import com.sila.modules.upload.services.CloudinaryService;
@@ -35,8 +36,8 @@ public class CloudinaryController {
         try {
             Map<String, String> uploadResult = cloudinaryService.uploadFile(file);
             UploadResponse response = new UploadResponse(
-                    uploadResult.get("publicId"),
-                    uploadResult.get("secureUrl")
+                    uploadResult.get(KeyUploadResponse.publicId.toString()),
+                    uploadResult.get(KeyUploadResponse.secureUrl.toString())
             );
             return ResponseEntity.ok(response);
         } catch (Exception e) {
