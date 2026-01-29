@@ -1,4 +1,4 @@
-package com.sila.config.openApi;
+package com.sila.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

@@ -1,7 +1,7 @@
 package com.sila.config.websocket;
 
 
-import com.sila.config.CorsProperties;
+import com.sila.config.cors.CorsProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

@@ -1,7 +1,9 @@
 package com.sila.config;
 
 import com.sila.config.context.UserContextFilter;
+import com.sila.config.cors.CorsProperties;
 import com.sila.config.jwt.JwtTokenValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,16 +20,19 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class AppConfig {
+    private final CorsProperties corsProperties;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigrationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -57,24 +62,10 @@ public class AppConfig {
         registrationBean.setOrder(1); // early in the chain
         return registrationBean;
     }
-//    CorsConfiguration cfg = new CorsConfiguration();
-//            cfg.setAllowedOrigins(List.of("http://localhost:3000", "https://sila-restrurant.vercel.app",
-//                    "http://localhost:3030", "http://192.168.1.8:3030", "http://192.168.1.8:3000"));
-//            cfg.setAllowedMethods(Collections.singletonList("*"));
-//            cfg.setAllowCredentials(true);
-//            cfg.setAllowedHeaders(Collections.singletonList("*"));
-//            cfg.setExposedHeaders(List.of("Authorization"));
-//            cfg.setMaxAge(3600L);
-
-    private CorsConfigurationSource corsConfigrationSource() {
+    private CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             CorsConfiguration cfg = new CorsConfiguration();
-            cfg.setAllowedOrigins(Arrays.asList(
-                    "http://localhost:3033",
-                    "http://localhost:3000",
-                    "http://localhost:5000",
-                    "https://lacy-restaurant.vercel.app"
-            ));
+            cfg.setAllowedOrigins(corsProperties.getAllowedOrigins());
             cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
             cfg.setAllowCredentials(true);
             cfg.setAllowedHeaders(Arrays.asList(
@@ -84,7 +75,7 @@ public class AppConfig {
                     "X-Requested-With",
                     "remember-me"
             ));
-            cfg.setExposedHeaders(Arrays.asList("Authorization"));
+            cfg.setExposedHeaders(List.of("Authorization"));
             cfg.setMaxAge(3600L);
             return cfg;
         };

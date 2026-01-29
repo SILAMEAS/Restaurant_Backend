@@ -1,4 +1,4 @@
-package com.sila.config.modelMapper;
+package com.sila.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.Conditions;

@@ -99,17 +99,8 @@ public class AddressImp implements AddressService {
 
     @Override
     public AddressResponse update(AddressRequest addressRequest, Long addressId) throws Exception {
-        /** -------------------------------------------------------
-         *               Checking User and Address
-         *  -------------------------------------------------------
-         **/
         final var user = userRepository.findById(UserContext.getUser().getId()).orElseThrow(() -> new BadRequestException("User not found"));
         final var address = addressRepository.findById(addressId).orElseThrow(() -> new BadRequestException("Address not found"));
-
-        /** -------------------------------------------------------
-         *               Set Safe data
-         *  -------------------------------------------------------
-         **/
 
         Utils.setValueSafe(addressRequest.getName(), address::setName);
         Utils.setValueSafe(addressRequest.getCity(), address::setCity);
