@@ -1,3 +1,4 @@
+
 server:
   port: ${PORT:${SERVER_PORT:8080}}
   address: 0.0.0.0
@@ -44,6 +45,7 @@ spring:
       max-request-size: ${MAX_REQUEST_SIZE:10MB}
       enabled: true
 
+
 logging:
   level:
     org.springframework.security: warn
@@ -52,6 +54,10 @@ logging:
 
 
 app:
+  detail:
+    name: "Lacy Restaurant"
+    version: "1.0.0"
+    description: "API documentation for Lacy restaurant application"
   cloudinary:
     cloud-name: ${CLOUDINARY_CLOUD_NAME}
     api-key: ${CLOUDINARY_API_KEY}
@@ -62,3 +68,4 @@ app:
       - http://localhost:3000
       - http://localhost:5000
       - https://lacy-restaurant.vercel.app
+      - https://lacy.meassila.site

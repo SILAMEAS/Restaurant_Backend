@@ -1,4 +1,4 @@
-package com.sila.config.cors;
+package com.sila.config.properties;
 
 
 import lombok.Getter;

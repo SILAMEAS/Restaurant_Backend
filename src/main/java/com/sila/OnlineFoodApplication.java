@@ -1,23 +1,18 @@
 package com.sila;
 
-import com.sila.config.cors.CorsProperties;
+import com.sila.config.properties.ApplicationProperties;
+import com.sila.config.properties.CorsProperties;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-@OpenAPIDefinition(
-        info = @Info(
-                title = "Online Food Application",
-                version = "1.0",
-                description = "API documentation for Online Food Application"
-        )
-)
+
+@OpenAPIDefinition
 @SpringBootApplication
 @EnableJpaAuditing // 👈 enable auditing
-@EnableConfigurationProperties(CorsProperties.class)
+@EnableConfigurationProperties({CorsProperties.class, ApplicationProperties.class})
 @ConfigurationPropertiesScan
 public class OnlineFoodApplication {
 

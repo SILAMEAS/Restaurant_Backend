@@ -1,7 +1,7 @@
 package com.sila.config;
 
 import com.sila.config.context.UserContextFilter;
-import com.sila.config.cors.CorsProperties;
+import com.sila.config.properties.CorsProperties;
 import com.sila.config.jwt.JwtTokenValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
