@@ -20,9 +20,9 @@ public interface UserService {
     UserResponse update( UserRequest userReq) throws Exception;
 
     UserResponse getProfile() throws Exception;
-    Long all();
+    Long count();
     EntityResponseHandler<UserResponse.UserResponseCustom> getUsersWhoOrderedFromRestaurant(Long restaurantId, Pageable pageable);
-    Long allHaveBeenOrder(Long restaurantId);
+    Long countById(Long restaurantId);
 
     String updateUser(Long Id, UpdateUserRequest request);
 

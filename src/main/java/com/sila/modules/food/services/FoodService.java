@@ -26,9 +26,9 @@ public interface FoodService {
 
     EntityResponseHandler<FoodResponse> gets(PaginationRequest request);
 
-    Long all();
+    Long count();
 
-    Long all(Long restaurantId) throws Exception;
+    Long count(Long restaurantId);
 
     EntityResponseHandler<FoodResponse> getsByResId(Long restaurantId,  PaginationRequest request);
 

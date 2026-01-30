@@ -1,7 +1,9 @@
-package com.sila.modules.email.controller;
+package com.sila.modules.dashboard.controller;
 
 import com.sila.config.context.UserContext;
 import com.sila.modules.category.repository.CategoryRepository;
+import com.sila.modules.dashboard.dto.res.DashboardResponse;
+import com.sila.modules.dashboard.services.DashboardService;
 import com.sila.modules.food.services.FoodService;
 import com.sila.modules.resturant.services.RestaurantService;
 import com.sila.modules.profile.services.UserService;
@@ -9,6 +11,7 @@ import com.sila.share.annotation.PreAuthorization;
 import com.sila.share.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,28 +26,12 @@ import java.util.Map;
 @Tag(name = "Dashboard")
 @RequiredArgsConstructor
 public class DashboardController {
-    final UserService userService;
-    final CategoryRepository categoryRepository;
-    final RestaurantService restaurantService;
-    private final FoodService foodService;
+    final DashboardService dashboardService;
 
     @PreAuthorization({ROLE.OWNER,ROLE.ADMIN})
     @GetMapping
-    public ResponseEntity<Object> getAdminDashboard() throws Exception {
-        Map<String, Object> res = new HashMap<>();
-        if(UserContext.getUser().getRole().equals(ROLE.OWNER)){
-            var restaurantId= restaurantService.getByUserLogin().getId();
-            res.put("total_users",userService.allHaveBeenOrder( restaurantId));
-            res.put("total_foods", foodService.all(restaurantId));
-        }else {
-            res.put("total_users",userService.all());
-            res.put("total_foods", foodService.all());
-            res.put("total_restaurants", restaurantService.all());
-
-        }
-        res.put("total_orders", 0);
-        res.put("total_categories",categoryRepository.count());
-        return new ResponseEntity<>(res, HttpStatus.OK);
+    public ResponseEntity<DashboardResponse> getAdminDashboard() {
+        return new ResponseEntity<>(dashboardService.overviews(), HttpStatus.OK);
     }
 
     private Map<String, Object> createCard(String id, String title, long value) {

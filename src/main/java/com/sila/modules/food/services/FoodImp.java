@@ -208,12 +208,12 @@ public class FoodImp implements FoodService {
         return new EntityResponseHandler<>(page);
     }
     @Override
-    public Long all() {
+    public Long count() {
         return foodRepository.count();
     }
 
     @Override
-    public Long all(Long restaurantId) throws Exception {
+    public Long count(Long restaurantId) {
         var restaurant = restaurantService.getById(restaurantId);
         return foodRepository.countAllByRestaurant(restaurant);
     }

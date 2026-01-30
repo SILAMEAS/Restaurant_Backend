@@ -19,9 +19,9 @@ public interface RestaurantService {
 
     RestaurantResponse update(RestaurantRequest updateRestaurant, Long restaurantId)throws Exception;
 
-    MessageResponse delete(Long id) throws Exception;
+    MessageResponse delete(Long id);
 
-    Restaurant getById(Long id) throws Exception;
+    Restaurant getById(Long id);
 
     RestaurantResponse getByUserLogin();
 
@@ -31,7 +31,7 @@ public interface RestaurantService {
 
     List<UserResponse> getUsersWhoOrderedFromRestaurant(Long restaurantId);
 
-    Long all();
+    Long count();
 
     Restaurant findRestaurantByOwner(User user);
 

@@ -64,7 +64,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public Long allHaveBeenOrder(Long restaurantId) {
+    public Long countById(Long restaurantId) {
         return userRepository.count(UserSpecification.hasOrderedFromRestaurant(restaurantId));
     }
 
@@ -109,7 +109,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public Long all() {
+    public Long count() {
         return userRepository.count();
     }
 

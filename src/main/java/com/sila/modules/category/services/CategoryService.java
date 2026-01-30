@@ -24,6 +24,7 @@ public interface CategoryService {
     EntityResponseHandler<CategoryResponse> gets(PaginationRequest request);
 
     String deleteAllCategories();
+    Long count();
 
 
 }

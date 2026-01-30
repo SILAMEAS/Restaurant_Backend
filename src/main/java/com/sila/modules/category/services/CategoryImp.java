@@ -130,6 +130,11 @@ public class CategoryImp implements CategoryService {
         return "Deleted all categories successfully";
     }
 
+    @Override
+    public Long count() {
+        return categoryRepository.count();
+    }
+
     public Category getById(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException("category not found"));
     }

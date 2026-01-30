@@ -157,7 +157,7 @@ public class RestaurantImp implements RestaurantService {
 
     @Override
     @Transactional
-    public MessageResponse delete(Long id) throws Exception {
+    public MessageResponse delete(Long id){
         var restaurant = getById(id);
         var images = restaurant.getImages().stream().map(ImageRestaurant::getPublicId).collect(Collectors.toList());
         // First delete categories related to the restaurant
@@ -174,7 +174,7 @@ public class RestaurantImp implements RestaurantService {
 
 
     @Override
-    public Restaurant getById(Long id) throws Exception {
+    public Restaurant getById(Long id) {
         return restaurantRepository.findById(id).orElseThrow(() -> new BadRequestException("Restaurant not found with id " + id));
     }
 
@@ -204,7 +204,7 @@ public class RestaurantImp implements RestaurantService {
     }
 
     @Override
-    public Long all() {
+    public Long count() {
         return restaurantRepository.count();
     }
 
